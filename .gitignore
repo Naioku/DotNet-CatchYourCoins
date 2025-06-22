@@ -55,3 +55,7 @@ nunit-*.xml
 
 # Front-end libs
 /CatchYourCoins/MVC/wwwroot/lib/
+
+# env files
+CatchYourCoins/MVC/appsettings.json
+CatchYourCoins/MVC/appsettings.Development.json
