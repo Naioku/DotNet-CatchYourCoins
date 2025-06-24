@@ -1,7 +1,6 @@
 ﻿using Domain.IdentityEntities;
 using Infrastructure.Persistence;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,15 +15,13 @@ public static class ServiceCollectionExtension
             option => option
                 .UseSqlServer(configuration.GetConnectionString("Main")));
 
-        // services
-        //     .AddIdentityCore<AppUser>()
-        //     .AddRoles<AppRole>()
-        //     .AddEntityFrameworkStores<AppDbContext>()
-        //     .AddDefaultTokenProviders()
-        //     .AddUserStore<UserStore<AppUser, AppRole, AppDbContext, Guid>>()
-        //     .AddRoleStore<RoleStore<AppRole, AppDbContext, Guid>>();
-        
-        // services.AddScoped<>();
+        services
+            .AddIdentity<AppUser, AppRole>(options =>
+            {
+                options.User.RequireUniqueEmail = true;
+            })
+            .AddEntityFrameworkStores<AppDbContext>()
+            .AddDefaultTokenProviders();
         
         return services;
     }
