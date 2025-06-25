@@ -2,15 +2,16 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using MVC.Models.Account;
+using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 
 namespace MVC.Controllers;
 
-public class Account(UserManager<AppUser> userManager) : Controller
+public class Account(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager) : Controller
 {
-    public IActionResult Register()
-    {
-        return View();
-    }
+    private readonly UserManager<AppUser> _userManager = userManager;
+    private readonly SignInManager<AppUser> _signInManager = signInManager;
+
+    public IActionResult Register() => View();
 
     [HttpPost]
     public async Task<IActionResult> Register(Register model)
@@ -20,7 +21,7 @@ public class Account(UserManager<AppUser> userManager) : Controller
             return View(model);
         }
 
-        if (await userManager.FindByEmailAsync(model.Email) != null)
+        if (await _userManager.FindByEmailAsync(model.Email) != null)
         {
             ModelState.AddModelError(string.Empty, "Email already exists");
             return View(model);
@@ -32,9 +33,10 @@ public class Account(UserManager<AppUser> userManager) : Controller
             UserName = model.Name,
         };
 
-        IdentityResult result = await userManager.CreateAsync(user, model.Password);
+        IdentityResult result = await _userManager.CreateAsync(user, model.Password);
         if (result.Succeeded)
         {
+            await _signInManager.SignInAsync(user, false);
             return RedirectToAction("Index", "Home");
         }
 
@@ -44,5 +46,37 @@ public class Account(UserManager<AppUser> userManager) : Controller
         }
 
         return View(model);
+    }
+
+    public IActionResult Login() => View();
+
+    [HttpPost]
+    public async Task<IActionResult> Login(Login model)
+    {
+        if (!ModelState.IsValid)
+        {
+            return View(model);
+        }
+        
+        AppUser? user = await _userManager.FindByEmailAsync(model.Email);
+        if (user == null)
+        {
+            ModelState.AddModelError("Email", "Email does not exist");
+            return View(model);
+        }
+
+        if (await _signInManager.PasswordSignInAsync(user, model.Password, false, false) != SignInResult.Success)
+        {
+            ModelState.AddModelError("Password", "Invalid password");
+            return View(model);
+        }
+        
+        return RedirectToAction("Index", "Home");
+    }
+
+    public async Task<IActionResult> Logout()
+    {
+        await _signInManager.SignOutAsync();
+        return RedirectToAction("Index", "Home");
     }
 }
