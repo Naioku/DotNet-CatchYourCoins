@@ -1,4 +1,5 @@
 ﻿using Domain.IdentityEntities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using MVC.Models.Account;
@@ -6,6 +7,7 @@ using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 
 namespace MVC.Controllers;
 
+[AllowAnonymous]
 public class Account(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager) : Controller
 {
     private readonly UserManager<AppUser> _userManager = userManager;
