@@ -53,7 +53,7 @@ public class Account(UserManager<AppUser> userManager, SignInManager<AppUser> si
     public IActionResult Login() => View();
 
     [HttpPost]
-    public async Task<IActionResult> Login(Login model)
+    public async Task<IActionResult> Login(Login model, string? returnUrl = null)
     {
         if (!ModelState.IsValid)
         {
@@ -71,6 +71,11 @@ public class Account(UserManager<AppUser> userManager, SignInManager<AppUser> si
         {
             ModelState.AddModelError("Password", "Invalid password");
             return View(model);
+        }
+
+        if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+        {
+            return LocalRedirect(returnUrl);
         }
         
         return RedirectToAction("Index", "Home");
