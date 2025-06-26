@@ -22,12 +22,6 @@ public class Account(UserManager<AppUser> userManager, SignInManager<AppUser> si
         {
             return View(model);
         }
-
-        if (await _userManager.FindByEmailAsync(model.Email) != null)
-        {
-            ModelState.AddModelError(string.Empty, "Email already exists");
-            return View(model);
-        }
         
         AppUser user = new()
         {
