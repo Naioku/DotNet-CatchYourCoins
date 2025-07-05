@@ -1,4 +1,6 @@
 ﻿using Domain.IdentityEntities;
+using Domain.Interfaces;
+using Infrastructure.Identity;
 using Infrastructure.Persistence;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -22,6 +24,8 @@ public static class ServiceCollectionExtension
             })
             .AddEntityFrameworkStores<AppDbContext>()
             .AddDefaultTokenProviders();
+
+        services.AddScoped<IServiceIdentity, ServiceIdentity>();
         
         return services;
     }

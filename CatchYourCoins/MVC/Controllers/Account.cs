@@ -1,18 +1,18 @@
-﻿using Domain.IdentityEntities;
+﻿using Application.Account.Commands;
+using Domain;
+using Domain.IdentityEntities;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using MVC.Models.Account;
-using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 
 namespace MVC.Controllers;
 
 [AllowAnonymous]
-public class Account(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager) : Controller
+public class Account(
+    HandlerRegister handlerRegister,
+    HandlerSignOut handlerSignOut,
+    HandlerSignIn handlerSignIn) : Controller
 {
-    private readonly UserManager<AppUser> _userManager = userManager;
-    private readonly SignInManager<AppUser> _signInManager = signInManager;
-
     public IActionResult Register() => View();
 
     [HttpPost]
@@ -22,23 +22,22 @@ public class Account(UserManager<AppUser> userManager, SignInManager<AppUser> si
         {
             return View(model);
         }
-        
-        AppUser user = new()
+
+        Result result = await handlerRegister.Handle(new CommandRegister
         {
             Email = model.Email,
             UserName = model.Name,
-        };
-
-        IdentityResult result = await _userManager.CreateAsync(user, model.Password);
-        if (result.Succeeded)
+            Password = model.Password
+        });
+        
+        if (result.IsSuccess)
         {
-            await _signInManager.SignInAsync(user, false);
             return RedirectToAction("Index", "Home");
         }
 
-        foreach (IdentityError error in result.Errors)
+        foreach (KeyValuePair<string, string> error in result.Errors)
         {
-            ModelState.AddModelError(string.Empty, error.Description);
+            ModelState.AddModelError(string.Empty, error.Value);
         }
 
         return View(model);
@@ -54,17 +53,24 @@ public class Account(UserManager<AppUser> userManager, SignInManager<AppUser> si
             return View(model);
         }
         
-        AppUser? user = await _userManager.FindByEmailAsync(model.Email);
-        if (user == null)
+        Result<ResultSignIn> result = await handlerSignIn.Handle(new CommandSignIn
         {
-            ModelState.AddModelError("Email", "Email does not exist");
+            Email = model.Email,
+            Password = model.Password
+        });
+
+        if (!result.IsSuccess)
+        {
+            foreach (KeyValuePair<string, string> error in result.Errors)
+            {
+                ModelState.AddModelError(error.Key, error.Value);
+            }
             return View(model);
         }
 
-        if (await _signInManager.PasswordSignInAsync(user, model.Password, false, false) != SignInResult.Success)
+        if (result.Value.RequiresTwoFactor)
         {
-            ModelState.AddModelError("Password", "Invalid password");
-            return View(model);
+            // Todo: Two-factor auth.
         }
 
         if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
@@ -77,7 +83,7 @@ public class Account(UserManager<AppUser> userManager, SignInManager<AppUser> si
 
     public async Task<IActionResult> Logout()
     {
-        await _signInManager.SignOutAsync();
+        await handlerSignOut.Handle();
         return RedirectToAction("Index", "Home");
     }
 }
