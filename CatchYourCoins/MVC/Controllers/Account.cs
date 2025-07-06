@@ -1,6 +1,7 @@
 ﻿using Application.Account.Commands;
 using Domain;
 using Domain.IdentityEntities;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MVC.Filters;
@@ -9,10 +10,7 @@ using MVC.Models.Account;
 namespace MVC.Controllers;
 
 [AllowAnonymous]
-public class Account(
-    HandlerRegister handlerRegister,
-    HandlerSignOut handlerSignOut,
-    HandlerSignIn handlerSignIn) : Controller
+public class Account(IMediator mediator) : Controller
 {
     [AllowAnonymousOnly]
     public IActionResult Register() => View();
@@ -26,7 +24,7 @@ public class Account(
             return View(model);
         }
 
-        Result result = await handlerRegister.Handle(new CommandRegister
+        Result result = await mediator.Send(new CommandRegister
         {
             Email = model.Email,
             UserName = model.Name,
@@ -58,7 +56,7 @@ public class Account(
             return View(model);
         }
         
-        Result<ResultSignIn> result = await handlerSignIn.Handle(new CommandSignIn
+        Result<ResultSignIn> result = await mediator.Send(new CommandSignIn
         {
             Email = model.Email,
             Password = model.Password
@@ -88,7 +86,7 @@ public class Account(
 
     public async Task<IActionResult> Logout()
     {
-        await handlerSignOut.Handle();
+        await mediator.Send(new CommandSignOut());
         return RedirectToAction("Index", "Home");
     }
 }
