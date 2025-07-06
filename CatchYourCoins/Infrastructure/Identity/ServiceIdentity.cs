@@ -32,34 +32,34 @@ public class ServiceIdentity(UserManager<AppUser> managerUser, SignInManager<App
         return Result.Failure(errors);
     }
 
-    public async Task<Result<ResultSignIn>> SignIn(string email, string password)
+    public async Task<Result<ResultLogIn>> LogInAsync(string email, string password)
     {
         AppUser? user = await managerUser.FindByEmailAsync(email);
         if (user == null)
         {
-            return Result<ResultSignIn>.Failure(new Dictionary<string, string> { { "Email", "Email does not exist." } });
+            return Result<ResultLogIn>.Failure(new Dictionary<string, string> { { "Email", "Email does not exist." } });
         }
         
         SignInResult result = await managerSignIn.PasswordSignInAsync(user, password, false, false);
 
         if (result.IsLockedOut)
         {
-            return Result<ResultSignIn>.Failure(new Dictionary<string, string> { { "Account", "Account is locked." } });
+            return Result<ResultLogIn>.Failure(new Dictionary<string, string> { { "Account", "Account is locked." } });
         }
 
         if (result.IsNotAllowed)
         {
-            return Result<ResultSignIn>.Failure(new Dictionary<string, string> { { "Account", "Account is not allowed to sign in." } });
+            return Result<ResultLogIn>.Failure(new Dictionary<string, string> { { "Account", "Account is not allowed to sign in." } });
         }
         
         if (result.RequiresTwoFactor)
         {
-            return Result<ResultSignIn>.SetValue(ResultSignIn.TwoFactorRequired());
+            return Result<ResultLogIn>.SetValue(ResultLogIn.TwoFactorRequired());
         }
         
         return result.Succeeded
-            ? Result<ResultSignIn>.SetValue(ResultSignIn.Success())
-            : Result<ResultSignIn>.Failure(new Dictionary<string, string> { { "Password", "Invalid password." } });
+            ? Result<ResultLogIn>.SetValue(ResultLogIn.Success())
+            : Result<ResultLogIn>.Failure(new Dictionary<string, string> { { "Password", "Invalid password." } });
     }
 
     public async Task SignOut() => await managerSignIn.SignOutAsync();

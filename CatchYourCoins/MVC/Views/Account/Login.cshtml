@@ -1,4 +1,4 @@
-﻿@model MVC.Models.Account.Login
+﻿@model Application.Account.Commands.CommandLogIn
 
 @{
     ViewData["Title"] = "Login";
@@ -21,7 +21,7 @@
         <input asp-for="Password"/>
         <span asp-validation-for="Password"></span>
     </div>
-    <button type="submit">Register</button>
+    <button type="submit">Log in</button>
 
     <div asp-validation-summary="ModelOnly"></div>
 </form>

@@ -1,11 +1,11 @@
 ﻿namespace Domain.IdentityEntities;
 
-public class ResultSignIn
+public class ResultLogIn
 {
     public bool SignedIn { get; }
     public bool RequiresTwoFactor { get; }
     
-    private ResultSignIn(
+    private ResultLogIn(
         bool succeeded,
         bool requiresTwoFactor = false)
     {
@@ -13,6 +13,6 @@ public class ResultSignIn
         RequiresTwoFactor = requiresTwoFactor;
     }
 
-    public static ResultSignIn Success() => new(true);
-    public static ResultSignIn TwoFactorRequired() => new(false, requiresTwoFactor: true);
+    public static ResultLogIn Success() => new(true);
+    public static ResultLogIn TwoFactorRequired() => new(false, requiresTwoFactor: true);
 }

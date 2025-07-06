@@ -1,35 +1,35 @@
 ﻿using Application.Account.Commands;
 using Domain;
 using Domain.IdentityEntities;
+using FluentValidation.Results;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MVC.Filters;
-using MVC.Models.Account;
 
 namespace MVC.Controllers;
 
 [AllowAnonymous]
-public class Account(IMediator mediator) : Controller
+public class Account(
+    IMediator mediator,
+    ValidatorRegister validatorRegister,
+    ValidatorLogIn validatorLogIn) : Controller
 {
     [AllowAnonymousOnly]
     public IActionResult Register() => View();
 
     [AllowAnonymousOnly]
     [HttpPost]
-    public async Task<IActionResult> Register(Register model)
+    public async Task<IActionResult> Register(CommandRegister command)
     {
-        if (!ModelState.IsValid)
+        ValidationResult validationResult = await validatorRegister.ValidateAsync(command);
+        if (!validationResult.IsValid)
         {
-            return View(model);
+            validationResult.AddToModelState(ModelState);
+            return View(command);
         }
 
-        Result result = await mediator.Send(new CommandRegister
-        {
-            Email = model.Email,
-            UserName = model.Name,
-            Password = model.Password
-        });
+        Result result = await mediator.Send(command);
         
         if (result.IsSuccess)
         {
@@ -41,7 +41,7 @@ public class Account(IMediator mediator) : Controller
             ModelState.AddModelError(string.Empty, error.Value);
         }
 
-        return View(model);
+        return View(command);
     }
 
     [AllowAnonymousOnly]
@@ -49,18 +49,16 @@ public class Account(IMediator mediator) : Controller
 
     [AllowAnonymousOnly]
     [HttpPost]
-    public async Task<IActionResult> Login(Login model, string? returnUrl = null)
+    public async Task<IActionResult> Login(CommandLogIn command, string? returnUrl = null)
     {
-        if (!ModelState.IsValid)
+        ValidationResult validationResult = await validatorLogIn.ValidateAsync(command);
+        if (!validationResult.IsValid)
         {
-            return View(model);
+            validationResult.AddToModelState(ModelState);
+            return View(command);
         }
         
-        Result<ResultSignIn> result = await mediator.Send(new CommandSignIn
-        {
-            Email = model.Email,
-            Password = model.Password
-        });
+        Result<ResultLogIn> result = await mediator.Send(command);
 
         if (!result.IsSuccess)
         {
@@ -68,7 +66,7 @@ public class Account(IMediator mediator) : Controller
             {
                 ModelState.AddModelError(error.Key, error.Value);
             }
-            return View(model);
+            return View(command);
         }
 
         if (result.Value.RequiresTwoFactor)

@@ -1,5 +1,5 @@
 ﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
-@model MVC.Models.Account.Register
+@model Application.Account.Commands.CommandRegister
 
 @{
     ViewData["Title"] = "Register";
@@ -9,9 +9,9 @@
 
 <form asp-controller="Account" asp-action="Register">
     <div>
-        <label asp-for="Name">Name</label>
-        <input asp-for="Name"/>
-        <span asp-validation-for="Name"></span>
+        <label asp-for="UserName">Name</label>
+        <input asp-for="UserName"/>
+        <span asp-validation-for="UserName"></span>
     </div>
     <div>
         <label asp-for="Email">Email</label>
@@ -24,9 +24,9 @@
         <span asp-validation-for="Password"></span>
     </div>
     <div>
-        <label asp-for="ConfirmPassword">ConfirmPassword</label>
-        <input asp-for="ConfirmPassword"/>
-        <span asp-validation-for="ConfirmPassword"></span>
+        <label asp-for="PasswordConfirmation">PasswordConfirmation</label>
+        <input asp-for="PasswordConfirmation"/>
+        <span asp-validation-for="PasswordConfirmation"></span>
     </div>
     <button type="submit" >Register</button>
 

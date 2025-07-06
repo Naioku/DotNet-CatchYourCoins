@@ -1,30 +1,34 @@
-﻿namespace Domain;
+﻿using System.Diagnostics.CodeAnalysis;
 
-public class Result<T>
+namespace Domain;
+
+public abstract class ResultBase(Dictionary<string, string> errors)
 {
+    public Dictionary<string, string> Errors { get; } = errors;
+}
+
+public class Result<T> : ResultBase
+{
+    [MemberNotNullWhen(true, nameof(Value))]
     public bool IsSuccess => Value != null;
     public T? Value { get; }
-    public Dictionary<string, string> Errors { get; }
     
-    private Result(T? value, Dictionary<string, string> errors)
+    private Result(T? value, Dictionary<string, string> errors) : base(errors)
     {
         Value = value;
-        Errors = errors;
     }
     
     public static Result<T> SetValue(T value) => new(value, []);
     public static Result<T> Failure(Dictionary<string, string> errors) => new(default, errors);
 }
 
-public class Result
+public class Result : ResultBase
 {
     public bool IsSuccess { get; }
-    public Dictionary<string, string> Errors { get; }
-        
-    private Result(bool isSuccess, Dictionary<string, string> errors)
+
+    private Result(bool isSuccess, Dictionary<string, string> errors) : base(errors)
     {
         IsSuccess = isSuccess;
-        Errors = errors;
     }
         
     public static Result Success() => new(true, []);
