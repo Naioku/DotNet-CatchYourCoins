@@ -1,20 +1,14 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using MVC.Filters;
 using MVC.Models;
 
 namespace MVC.Controllers;
 
-public class HomeController : Controller
+[AllowAnonymousOnly]
+public class Home(ILogger<Home> logger) : Controller
 {
-    private readonly ILogger<HomeController> _logger;
-
-    public HomeController(ILogger<HomeController> logger)
-    {
-        _logger = logger;
-    }
-
-    [AllowAnonymous]
     public IActionResult Index()
     {
         return View();

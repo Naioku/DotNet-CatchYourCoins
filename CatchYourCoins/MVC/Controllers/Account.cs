@@ -3,6 +3,7 @@ using Domain;
 using Domain.IdentityEntities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using MVC.Filters;
 using MVC.Models.Account;
 
 namespace MVC.Controllers;
@@ -13,8 +14,10 @@ public class Account(
     HandlerSignOut handlerSignOut,
     HandlerSignIn handlerSignIn) : Controller
 {
+    [AllowAnonymousOnly]
     public IActionResult Register() => View();
 
+    [AllowAnonymousOnly]
     [HttpPost]
     public async Task<IActionResult> Register(Register model)
     {
@@ -32,7 +35,7 @@ public class Account(
         
         if (result.IsSuccess)
         {
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "Dashboard");
         }
 
         foreach (KeyValuePair<string, string> error in result.Errors)
@@ -43,8 +46,10 @@ public class Account(
         return View(model);
     }
 
+    [AllowAnonymousOnly]
     public IActionResult Login() => View();
 
+    [AllowAnonymousOnly]
     [HttpPost]
     public async Task<IActionResult> Login(Login model, string? returnUrl = null)
     {
@@ -78,7 +83,7 @@ public class Account(
             return LocalRedirect(returnUrl);
         }
         
-        return RedirectToAction("Index", "Home");
+        return RedirectToAction("Index", "Dashboard");
     }
 
     public async Task<IActionResult> Logout()
