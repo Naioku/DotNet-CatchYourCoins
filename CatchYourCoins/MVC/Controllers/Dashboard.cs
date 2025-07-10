@@ -4,8 +4,9 @@ namespace MVC.Controllers;
 
 public class Dashboard : Controller
 {
-    public IActionResult Index()
-    {
-        return View();
-    }
+    public IActionResult Index() => View();
+    public IActionResult AddExpense() => View();
+    public IActionResult AddIncome() => View();
+    public IActionResult ViewBalance() => View();
+    public IActionResult Settings() => View();
 }
