@@ -2,6 +2,7 @@
 using Domain.Interfaces;
 using Infrastructure.Identity;
 using Infrastructure.Persistence;
+using Infrastructure.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -26,6 +27,7 @@ public static class ServiceCollectionExtension
             .AddDefaultTokenProviders();
 
         services.AddScoped<IServiceIdentity, ServiceIdentity>();
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
         
         return services;
     }
