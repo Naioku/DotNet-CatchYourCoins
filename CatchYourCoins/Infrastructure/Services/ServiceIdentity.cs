@@ -1,9 +1,9 @@
 ﻿using Domain;
 using Domain.IdentityEntities;
-using Domain.Interfaces;
+using Domain.Interfaces.Services;
 using Microsoft.AspNetCore.Identity;
 
-namespace Infrastructure.Identity;
+namespace Infrastructure.Services;
 
 public class ServiceIdentity(UserManager<AppUser> managerUser, SignInManager<AppUser> managerSignIn) : IServiceIdentity
 {

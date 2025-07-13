@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Domain;
 using Domain.IdentityEntities;
-using Domain.Interfaces;
+using Domain.Interfaces.Services;
 using FluentValidation;
 using JetBrains.Annotations;
 using MediatR;

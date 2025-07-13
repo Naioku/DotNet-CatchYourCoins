@@ -1,6 +1,6 @@
 ﻿using System.Security.Claims;
 using Domain.Dashboard.Entities;
-using Domain.Interfaces;
+using Domain.Interfaces.Services;
 using Microsoft.AspNetCore.Http;
 
 namespace Infrastructure.Services;

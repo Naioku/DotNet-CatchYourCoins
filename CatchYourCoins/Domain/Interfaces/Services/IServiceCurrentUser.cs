@@ -1,6 +1,6 @@
 ﻿using Domain.Dashboard.Entities;
 
-namespace Domain.Interfaces;
+namespace Domain.Interfaces.Services;
 
 public interface IServiceCurrentUser
 {

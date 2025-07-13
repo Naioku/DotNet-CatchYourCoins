@@ -1,6 +1,6 @@
 ﻿using Domain.IdentityEntities;
-using Domain.Interfaces;
-using Infrastructure.Identity;
+using Domain.Interfaces.Repositories;
+using Domain.Interfaces.Services;
 using Infrastructure.Persistence;
 using Infrastructure.Repositories;
 using Infrastructure.Services;
