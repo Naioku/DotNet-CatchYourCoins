@@ -9,7 +9,7 @@ namespace Application.Tests.Expenses.Commands.AddCategory;
 public class ValidatorAddCategoryTest
 {
     [Fact]
-    public void Validate_WithAllValidData_ShouldNotHaveValidationError()
+    public void Validate_AllValidData_NoError()
     {
         // Arrange
         var validator = new ValidatorAddCategory();
@@ -27,7 +27,7 @@ public class ValidatorAddCategoryTest
     }
     
     [Fact]
-    public void Validate_WithoutLimit_ShouldNotHaveValidationError()
+    public void Validate_MinimalValidData_NoError()
     {
         // Arrange
         var validator = new ValidatorAddCategory();
@@ -44,7 +44,7 @@ public class ValidatorAddCategoryTest
     }
     
     [Fact]
-    public void Validate_WithEmptyName_ShouldHaveValidationError()
+    public void Validate_EmptyName_Error()
     {
         // Arrange
         var validator = new ValidatorAddCategory();

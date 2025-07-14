@@ -15,7 +15,7 @@ namespace Application.Tests.Expenses.Commands.AddCategory;
 public class HandlerAddCategoryTest
 {
     [Fact]
-    public async Task AddCategory_WithValidData_ShouldCreateCategory()
+    public async Task AddCategory_ValidData_CreateCategory()
     {
         // Arrange
         const string name = "Test";

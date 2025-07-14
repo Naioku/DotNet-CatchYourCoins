@@ -15,7 +15,7 @@ namespace Application.Tests.Expenses.Commands.AddPaymentMethod;
 public class HandlerAddPaymentMethodTest
 {
     [Fact]
-    public async Task AddPaymentMethod_WithValidData_ShouldCreatePaymentMethod()
+    public async Task AddPaymentMethod_ValidData_CreatePaymentMethod()
     {
         // Arrange
         const string name = "Test";
