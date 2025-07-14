@@ -31,6 +31,7 @@ public static class ServiceCollectionExtension
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IServiceCurrentUser, ServiceCurrentUser>();
         services.AddScoped<IRepositoryCategory, RepositoryCategory>();
+        services.AddScoped<IRepositoryPaymentMethod, RepositoryPaymentMethod>();
         
         return services;
     }

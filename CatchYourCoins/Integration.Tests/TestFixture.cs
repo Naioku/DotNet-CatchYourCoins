@@ -38,6 +38,7 @@ public class TestFixture : IDisposable
             options.UseSqlServer(configuration.GetConnectionString("Main"))
         );
         services.AddScoped<IRepositoryCategory, RepositoryCategory>();
+        services.AddScoped<IRepositoryPaymentMethod, RepositoryPaymentMethod>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IServiceCurrentUser, TestServiceCurrentUser>();
         services.AddMediatR(cfg =>

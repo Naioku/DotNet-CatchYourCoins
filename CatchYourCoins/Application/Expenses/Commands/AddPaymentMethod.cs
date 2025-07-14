@@ -7,20 +7,20 @@ using MediatR;
 
 namespace Application.Expenses.Commands;
 
-public class CommandAddCategory : IRequest
+public class CommandAddPaymentMethod : IRequest
 {
     public required string Name { get; init; }
     public decimal? Limit { get; init; }
 }
 
-public class HandlerAddCategory(
-    IRepositoryCategory repositoryCategory,
+public class HandlerAddPaymentMethod(
+    IRepositoryPaymentMethod repositoryCategory,
     IServiceCurrentUser serviceCurrentUser,
-    IUnitOfWork unitOfWork) : IRequestHandler<CommandAddCategory>
+    IUnitOfWork unitOfWork) : IRequestHandler<CommandAddPaymentMethod>
 {
-    public async Task Handle(CommandAddCategory request, CancellationToken cancellationToken)
+    public async Task Handle(CommandAddPaymentMethod request, CancellationToken cancellationToken)
     {
-        await repositoryCategory.CreateCategoryAsync(new Category
+        await repositoryCategory.CreatePaymentMethodAsync(new PaymentMethod
         {
             Name = request.Name,
             Limit = request.Limit,
@@ -32,9 +32,9 @@ public class HandlerAddCategory(
 }
 
 [UsedImplicitly]
-public class ValidatorAddCategory : AbstractValidator<CommandAddCategory>
+public class ValidatorAddPaymentMethod : AbstractValidator<CommandAddPaymentMethod>
 {
-    public ValidatorAddCategory()
+    public ValidatorAddPaymentMethod()
     {
         RuleFor(x => x.Name)
             .NotEmpty();

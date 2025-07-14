@@ -61,4 +61,28 @@ public class Expenses(TestFixture fixture) : IClassFixture<TestFixture>, IAsyncL
         Assert.NotNull(category);
         Assert.Equal(limit, category.Limit);
     }
+    
+    [Fact]
+    public async Task AddPaymentMethod_WithValidData_ShouldCreatePaymentMethodInDB()
+    {
+        // Arrange
+        string name = "Test";
+        decimal limit = 1000;
+        var command = new CommandAddPaymentMethod
+        {
+            Name = name,
+            Limit = limit
+        };
+
+        // Act
+        await _mediator.Send(command);
+
+        // Assert
+        PaymentMethod? category = await _dbContext.PaymentMethods.FirstOrDefaultAsync(
+            c => c.Name == name && c.UserId == _testServiceCurrentUser.User.Id
+        );
+        
+        Assert.NotNull(category);
+        Assert.Equal(limit, category.Limit);
+    }
 }
