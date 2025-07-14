@@ -39,6 +39,7 @@ public class TestFixture : IDisposable
         );
         services.AddScoped<IRepositoryCategory, RepositoryCategory>();
         services.AddScoped<IRepositoryPaymentMethod, RepositoryPaymentMethod>();
+        services.AddScoped<IRepositoryExpense, RepositoryExpense>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IServiceCurrentUser, TestServiceCurrentUser>();
         services.AddMediatR(cfg =>

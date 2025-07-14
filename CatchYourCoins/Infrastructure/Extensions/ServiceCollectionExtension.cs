@@ -32,6 +32,7 @@ public static class ServiceCollectionExtension
         services.AddScoped<IServiceCurrentUser, ServiceCurrentUser>();
         services.AddScoped<IRepositoryCategory, RepositoryCategory>();
         services.AddScoped<IRepositoryPaymentMethod, RepositoryPaymentMethod>();
+        services.AddScoped<IRepositoryExpense, RepositoryExpense>();
         
         return services;
     }

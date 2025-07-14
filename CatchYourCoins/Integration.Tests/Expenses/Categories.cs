@@ -7,9 +7,9 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Integration;
+namespace Integration.Expenses;
 
-public class Expenses(TestFixture fixture) : IClassFixture<TestFixture>, IAsyncLifetime
+public class Categories(TestFixture fixture) : IClassFixture<TestFixture>, IAsyncLifetime
 {
     private readonly IMediator _mediator = fixture.ServiceProvider.GetRequiredService<IMediator>();
     private readonly AppDbContext _dbContext = fixture.ServiceProvider.GetRequiredService<AppDbContext>();
@@ -21,7 +21,7 @@ public class Expenses(TestFixture fixture) : IClassFixture<TestFixture>, IAsyncL
         await _dbContext.Database.EnsureCreatedAsync();
 
         CurrentUser currentUser = _testServiceCurrentUser.User;
-        var testUser = new AppUser
+        await _dbContext.Users.AddAsync(new AppUser
         {
             Id = currentUser.Id,
             UserName = currentUser.Name,
@@ -30,9 +30,7 @@ public class Expenses(TestFixture fixture) : IClassFixture<TestFixture>, IAsyncL
             NormalizedEmail = currentUser.Email.ToUpper(),
             EmailConfirmed = true,
             SecurityStamp = Guid.NewGuid().ToString()
-        };
-
-        await _dbContext.Users.AddAsync(testUser);
+        });
         await _dbContext.SaveChangesAsync();
     }
 
@@ -42,47 +40,21 @@ public class Expenses(TestFixture fixture) : IClassFixture<TestFixture>, IAsyncL
     public async Task AddCategory_WithValidData_ShouldCreateCategoryInDB()
     {
         // Arrange
-        string name = "Test";
-        decimal limit = 1000;
         var command = new CommandAddCategory
         {
-            Name = name,
-            Limit = limit
+            Name = "Test",
+            Limit = 1000
         };
 
         // Act
         await _mediator.Send(command);
 
         // Assert
-        Category? category = await _dbContext.Categories.FirstOrDefaultAsync(
-            c => c.Name == name && c.UserId == _testServiceCurrentUser.User.Id
-        );
+        Category? category = await _dbContext.Categories.FirstOrDefaultAsync();
         
         Assert.NotNull(category);
-        Assert.Equal(limit, category.Limit);
-    }
-    
-    [Fact]
-    public async Task AddPaymentMethod_WithValidData_ShouldCreatePaymentMethodInDB()
-    {
-        // Arrange
-        string name = "Test";
-        decimal limit = 1000;
-        var command = new CommandAddPaymentMethod
-        {
-            Name = name,
-            Limit = limit
-        };
-
-        // Act
-        await _mediator.Send(command);
-
-        // Assert
-        PaymentMethod? category = await _dbContext.PaymentMethods.FirstOrDefaultAsync(
-            c => c.Name == name && c.UserId == _testServiceCurrentUser.User.Id
-        );
-        
-        Assert.NotNull(category);
-        Assert.Equal(limit, category.Limit);
+        Assert.Equal(category.UserId, _testServiceCurrentUser.User.Id);
+        Assert.Equal(category.Name, command.Name);
+        Assert.Equal(category.Limit, command.Limit);
     }
 }
