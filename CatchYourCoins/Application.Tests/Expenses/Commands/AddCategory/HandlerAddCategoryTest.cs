@@ -9,7 +9,7 @@ using JetBrains.Annotations;
 using Moq;
 using Xunit;
 
-namespace Application.Tests.Expenses.Commands;
+namespace Application.Tests.Expenses.Commands.AddCategory;
 
 [TestSubject(typeof(HandlerAddCategory))]
 public class HandlerAddCategoryTest
