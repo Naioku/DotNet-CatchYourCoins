@@ -30,6 +30,7 @@ public static class ServiceCollectionExtension
         services.AddScoped<IServiceIdentity, ServiceIdentity>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IServiceCurrentUser, ServiceCurrentUser>();
+        services.AddScoped<IRepositoryCategory, RepositoryCategory>();
         
         return services;
     }
