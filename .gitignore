@@ -60,3 +60,4 @@ nunit-*.xml
 CatchYourCoins/MVC/appsettings.json
 CatchYourCoins/MVC/appsettings.Development.json
 CatchYourCoins/Integration.Tests/appsettings.Tests.json
+CatchYourCoins/CatchYourCoins.sln.DotSettings.user
