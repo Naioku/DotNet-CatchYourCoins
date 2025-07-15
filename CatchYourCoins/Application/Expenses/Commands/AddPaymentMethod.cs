@@ -13,6 +13,16 @@ public class CommandAddPaymentMethod : IRequest
     public decimal? Limit { get; init; }
 }
 
+[UsedImplicitly]
+public class ValidatorAddPaymentMethod : AbstractValidator<CommandAddPaymentMethod>
+{
+    public ValidatorAddPaymentMethod()
+    {
+        RuleFor(x => x.Name)
+            .NotEmpty();
+    }
+}
+
 public class HandlerAddPaymentMethod(
     IRepositoryPaymentMethod repositoryCategory,
     IServiceCurrentUser serviceCurrentUser,
@@ -28,15 +38,5 @@ public class HandlerAddPaymentMethod(
         });
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
-    }
-}
-
-[UsedImplicitly]
-public class ValidatorAddPaymentMethod : AbstractValidator<CommandAddPaymentMethod>
-{
-    public ValidatorAddPaymentMethod()
-    {
-        RuleFor(x => x.Name)
-            .NotEmpty();
     }
 }

@@ -13,6 +13,16 @@ public class CommandAddCategory : IRequest
     public decimal? Limit { get; init; }
 }
 
+[UsedImplicitly]
+public class ValidatorAddCategory : AbstractValidator<CommandAddCategory>
+{
+    public ValidatorAddCategory()
+    {
+        RuleFor(x => x.Name)
+            .NotEmpty();
+    }
+}
+
 public class HandlerAddCategory(
     IRepositoryCategory repositoryCategory,
     IServiceCurrentUser serviceCurrentUser,
@@ -28,15 +38,5 @@ public class HandlerAddCategory(
         });
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
-    }
-}
-
-[UsedImplicitly]
-public class ValidatorAddCategory : AbstractValidator<CommandAddCategory>
-{
-    public ValidatorAddCategory()
-    {
-        RuleFor(x => x.Name)
-            .NotEmpty();
     }
 }

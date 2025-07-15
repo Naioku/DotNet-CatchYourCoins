@@ -20,12 +20,6 @@ public class CommandRegister : IRequest<Result>
     public required string PasswordConfirmation { get; init; }
 }
 
-public class HandlerRegister(IServiceIdentity identityService) : IRequestHandler<CommandRegister, Result>
-{
-    public async Task<Result> Handle(CommandRegister request, CancellationToken cancellationToken) =>
-        await identityService.RegisterUserAsync(request.Email, request.UserName, request.Password);
-}
-
 [UsedImplicitly]
 public class ValidatorRegister : AbstractValidator<CommandRegister>
 {
@@ -45,4 +39,10 @@ public class ValidatorRegister : AbstractValidator<CommandRegister>
             .NotEmpty()
             .Equal(x => x.Password);
     }
+}
+
+public class HandlerRegister(IServiceIdentity identityService) : IRequestHandler<CommandRegister, Result>
+{
+    public async Task<Result> Handle(CommandRegister request, CancellationToken cancellationToken) =>
+        await identityService.RegisterUserAsync(request.Email, request.UserName, request.Password);
 }
