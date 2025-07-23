@@ -1,8 +1,9 @@
 ﻿using Domain.IdentityEntities;
+using Domain.Interfaces.Repositories;
 
 namespace Domain.Dashboard.Entities;
 
-public class Expense
+public class Expense : IAutorizable
 {
     public int Id { get; init; }
     public required decimal Amount { get; init; }

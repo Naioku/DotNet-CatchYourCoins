@@ -11,19 +11,16 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Infrastructure.Extensions;
 
-public static class ServiceCollectionExtension
+public static class ExtensionServiceCollection
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddDbContext<AppDbContext>(
-            option => option
-                .UseSqlServer(configuration.GetConnectionString("Main")));
+        services.AddDbContext<AppDbContext>(options =>
+            options.UseSqlServer(configuration.GetConnectionString("Main"))
+        );
 
         services
-            .AddIdentity<AppUser, AppRole>(options =>
-            {
-                options.User.RequireUniqueEmail = true;
-            })
+            .AddIdentity<AppUser, AppRole>(options => { options.User.RequireUniqueEmail = true; })
             .AddEntityFrameworkStores<AppDbContext>()
             .AddDefaultTokenProviders();
 
@@ -33,7 +30,7 @@ public static class ServiceCollectionExtension
         services.AddScoped<IRepositoryCategory, RepositoryCategory>();
         services.AddScoped<IRepositoryPaymentMethod, RepositoryPaymentMethod>();
         services.AddScoped<IRepositoryExpense, RepositoryExpense>();
-        
+
         return services;
     }
 }

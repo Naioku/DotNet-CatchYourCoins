@@ -1,86 +1,168 @@
-﻿using Application.Expenses.Commands;
+﻿using Application.DTOs.Expenses;
+using Application.Expenses.Commands;
+using Application.Expenses.Queries;
+using Domain;
 using Domain.Dashboard.Entities;
-using Domain.IdentityEntities;
 using Domain.Interfaces.Services;
-using Infrastructure.Persistence;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Integration.Expenses;
 
-public class Expenses(TestFixture fixture) : IClassFixture<TestFixture>, IAsyncLifetime
+public class Expenses(TestFixture fixture) : TestBase(fixture)
 {
     private readonly IMediator _mediator = fixture.ServiceProvider.GetRequiredService<IMediator>();
-    private readonly AppDbContext _dbContext = fixture.ServiceProvider.GetRequiredService<AppDbContext>();
     private readonly IServiceCurrentUser _testServiceCurrentUser = fixture.ServiceProvider.GetRequiredService<IServiceCurrentUser>();
 
-    public async Task InitializeAsync()
-    {
-        await _dbContext.Database.EnsureDeletedAsync();
-        await _dbContext.Database.EnsureCreatedAsync();
+    private Category? _categoryUser1;
+    private PaymentMethod? _paymentMethodUser1;
+    private Category? _categoryUser2;
+    private PaymentMethod? _paymentMethodUser2;
 
-        CurrentUser currentUser = _testServiceCurrentUser.User;
-        await _dbContext.Users.AddAsync(new AppUser
+    public override async Task InitializeAsync()
+    {
+        await base.InitializeAsync();
+
+        _categoryUser1 = await AddCategory(new Category
         {
-            Id = currentUser.Id,
-            UserName = currentUser.Name,
-            NormalizedUserName = currentUser.Name.ToUpper(),
-            Email = currentUser.Email,
-            NormalizedEmail = currentUser.Email.ToUpper(),
-            EmailConfirmed = true,
-            SecurityStamp = Guid.NewGuid().ToString()
-        });
-        
-        await _dbContext.Categories.AddAsync(new Category
-        {
-            Name = "Test",
+            Name = "Test1",
             Limit = 1000,
-            UserId = _testServiceCurrentUser.User.Id,
+            UserId = user1.Id,
         });
         
-        await _dbContext.PaymentMethods.AddAsync(new PaymentMethod
+        _categoryUser2 = await AddCategory(new Category
         {
-            Name = "Test",
-            Limit = 1000,
-            UserId = _testServiceCurrentUser.User.Id,
+            Name = "Test2",
+            Limit = 2000,
+            UserId = user2.Id,
         });
         
-        await _dbContext.SaveChangesAsync();
+        _paymentMethodUser1 = await AddPaymentMethod(new PaymentMethod
+        {
+            Name = "Test1",
+            Limit = 1000,
+            UserId = user1.Id,
+        });
+        
+        _paymentMethodUser2 = await AddPaymentMethod(new PaymentMethod
+        {
+            Name = "Test2",
+            Limit = 2000,
+            UserId = user2.Id,
+        });
+        
+        await dbContext.SaveChangesAsync();
     }
 
-    public async Task DisposeAsync() => await _dbContext.Database.EnsureDeletedAsync();
+    private async Task<Category> AddCategory(Category category)
+        => (await dbContext.Categories.AddAsync(category)).Entity;
+
+    private async Task<PaymentMethod> AddPaymentMethod(PaymentMethod paymentMethod)
+        => (await dbContext.PaymentMethods.AddAsync(paymentMethod)).Entity;
 
     [Fact]
     public async Task AddExpense_WithValidData_ShouldCreateExpenseInDB()
     {
         // Arrange
-        var category = await _dbContext.Categories.FirstOrDefaultAsync();
-        var paymentMethod = await _dbContext.PaymentMethods.FirstOrDefaultAsync();
-        
-        Assert.NotNull(category);
-        Assert.NotNull(paymentMethod);
-        
+        Assert.NotNull(_categoryUser1);
+        Assert.NotNull(_paymentMethodUser1);
+    
         var command = new CommandAddExpense
         {
             Amount = 100,
             Date = DateTime.Now,
             Description = "Test",
-            CategoryId = category.Id,
-            PaymentMethodId = paymentMethod.Id,
+            CategoryId = _categoryUser1.Id,
+            PaymentMethodId = _paymentMethodUser1.Id,
         };
-
+    
         // Act
         await _mediator.Send(command);
-
+    
         // Assert
-        Expense? expense = await _dbContext.Expenses.FirstOrDefaultAsync();
+        Expense? result = await dbContext.Expenses.FirstOrDefaultAsync();
+    
+        Assert.NotNull(result);
+        Assert.Equal(result.Amount, command.Amount);
+        Assert.Equal(result.Date, command.Date);
+        Assert.Equal(result.Description, command.Description);
+        Assert.Equal(result.CategoryId, command.CategoryId);
+        Assert.Equal(result.PaymentMethodId, command.PaymentMethodId);
+    }
+    
+    [Fact]
+    public async Task GetExpense_WithValidData_ShouldReturnExpenseForView()
+    {
+        // Arrange
+        Assert.NotNull(_categoryUser1);
+        Assert.NotNull(_paymentMethodUser1);
+    
+        Expense expenseDB = (await dbContext.Expenses.AddAsync(new Expense
+        {
+            Amount = 100,
+            Date = DateTime.Now,
+            Description = "Test",
+            UserId = _testServiceCurrentUser.User.Id,
+            CategoryId = _categoryUser1.Id,
+            PaymentMethodId = _paymentMethodUser1.Id,
+        })).Entity;
         
+        await dbContext.SaveChangesAsync();
+    
+        var query = new QueryGetExpenseById { Id = expenseDB.Id };
+    
+        // Act
+        Result<ExpenseDTO> result = await _mediator.Send(query);
+    
+        // Assert
+        Assert.True(result.IsSuccess);
+        Assert.Empty(result.Errors);
+        Assert.NotNull(result.Value);
+    
+        ExpenseDTO expense = result.Value;
         Assert.NotNull(expense);
-        Assert.Equal(expense.Amount, command.Amount);
-        Assert.Equal(expense.Date, command.Date);
-        Assert.Equal(expense.Description, command.Description);
-        Assert.Equal(expense.CategoryId, command.CategoryId);
-        Assert.Equal(expense.PaymentMethodId, command.PaymentMethodId);
+        Assert.Equal(expense.Id, query.Id);
+        Assert.Equal(expense.Amount, expense.Amount);
+        Assert.Equal(expense.Date, expense.Date);
+        Assert.Equal(expense.Description, expense.Description);
+        Assert.Equal(expense.Category, _categoryUser1.Name);
+        Assert.Equal(expense.PaymentMethod, _paymentMethodUser1.Name);
+    }
+    
+    [Fact]
+    public async Task GetExpense_WithInvalidUser_ShouldReturnNull()
+    {
+        // Arrange
+        Assert.NotNull(_categoryUser2);
+        Assert.NotNull(_paymentMethodUser2);
+        
+        var currentUserId = fixture.ServiceProvider.GetRequiredService<IServiceCurrentUser>().User.Id;
+        Console.WriteLine($"Current user ID: {currentUserId}");
+        Console.WriteLine($"User2 ID: {user2.Id}");
+
+    
+        Expense expenseDB = (await dbContext.Expenses.AddAsync(new Expense
+        {
+            Amount = 100,
+            Date = DateTime.Now,
+            Description = "Test",
+            UserId = user2.Id,
+            CategoryId = _categoryUser2.Id,
+            PaymentMethodId = _paymentMethodUser2.Id,
+        })).Entity;
+        
+        await dbContext.SaveChangesAsync();
+        dbContext.ChangeTracker.Clear();
+    
+        var query = new QueryGetExpenseById { Id = expenseDB.Id };
+    
+        // Act
+        Result<ExpenseDTO> result = await _mediator.Send(query);
+    
+        // Assert
+        Assert.False(result.IsSuccess);
+        Assert.NotEmpty(result.Errors);
+        Assert.Null(result.Value);
     }
 }
