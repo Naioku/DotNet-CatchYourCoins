@@ -1,10 +1,9 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using Application.Expenses.Commands;
+using Application.Tests.Factories;
 using Domain.Dashboard.Entities;
 using Domain.Interfaces.Repositories;
-using Domain.Interfaces.Services;
 using JetBrains.Annotations;
 using Moq;
 using Xunit;
@@ -18,25 +17,15 @@ public class HandlerAddCategoryTest
     public async Task AddCategory_ValidData_CreateCategory()
     {
         // Arrange
-        const string name = "Test";
-        const decimal limit = 1000;
         var command = new CommandAddCategory
         {
-            Name = name,
-            Limit = limit
+            Name = "Test",
+            Limit = 1000
         };
 
         var repositoryCategory = new Mock<IRepositoryCategory>();
-        var serviceCurrentUser = new Mock<IServiceCurrentUser>();
-        serviceCurrentUser.Setup(m => m.User)
-            .Returns(new CurrentUser
-            {
-                Id = Guid.Parse("12345678-1234-1234-1234-123456789012"),
-                Email = "test@example.com",
-                Name = "Test User",
-                IsAuthenticated = true
-            });
-        
+        var serviceCurrentUser = TestFactoryUsers.MockServiceCurrentUser();
+
         var unitOfWork = new Mock<IUnitOfWork>();
         HandlerAddCategory handlerAddCategory = new(
             repositoryCategory.Object,
@@ -48,7 +37,13 @@ public class HandlerAddCategoryTest
         await handlerAddCategory.Handle(command, CancellationToken.None);
 
         // Assert
-        repositoryCategory.Verify(m => m.CreateCategoryAsync(It.IsAny<Category>()), Times.Once);
+        repositoryCategory.Verify(m => m.CreateCategoryAsync(
+                It.Is<Category>(c =>
+                    c.Name == command.Name &&
+                    c.Limit == command.Limit &&
+                    c.UserId == TestFactoryUsers.DefaultUser1Authenticated.Id)),
+            Times.Once
+        );
         unitOfWork.Verify(m => m.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
     }
 }

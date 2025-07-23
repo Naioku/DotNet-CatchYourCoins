@@ -7,7 +7,13 @@ namespace Application.Tests.Factories;
 
 public static class TestFactoryUsers
 {
-    public static CurrentUser DefaultUser1(bool authenticated = true) => new()
+    public static CurrentUser DefaultUser1Authenticated { get; } = DefaultUser1();
+    public static CurrentUser DefaultUser1Anonymous { get; } = DefaultUser1(false);
+    
+    public static CurrentUser DefaultUser2Authenticated { get; } = DefaultUser2();
+    public static CurrentUser DefaultUser2Anonymous { get; } = DefaultUser2(false);
+
+    private static CurrentUser DefaultUser1(bool authenticated = true) => new()
     {
         Id = Guid.Parse("12345678-1234-1234-1234-123456789012"),
         Email = "test1@example.com",
@@ -15,7 +21,7 @@ public static class TestFactoryUsers
         IsAuthenticated = authenticated
     };
     
-    public static CurrentUser DefaultUser2(bool authenticated = true) => new()
+    private static CurrentUser DefaultUser2(bool authenticated = true) => new()
     {
         Id = Guid.Parse("12345678-1234-1234-1234-123456789013"),
         Email = "test2@example.com",
@@ -23,10 +29,15 @@ public static class TestFactoryUsers
         IsAuthenticated = authenticated
     };
 
-    public static Mock<IServiceCurrentUser> MockServiceCurrentUser(CurrentUser loggedInUser)
+    /// <summary>
+    /// Initialize mock with passed user. Defaults to <see cref="DefaultUser1Authenticated"/>.
+    /// </summary>
+    /// <param name="loggedInUser">User, which will be returned.</param>
+    /// <returns></returns>
+    public static Mock<IServiceCurrentUser> MockServiceCurrentUser(CurrentUser loggedInUser = null)
     {
         var mock = new Mock<IServiceCurrentUser>();
-        mock.Setup(m => m.User).Returns(loggedInUser);
+        mock.Setup(m => m.User).Returns(loggedInUser ?? DefaultUser1Authenticated);
         return mock;
     }
 }

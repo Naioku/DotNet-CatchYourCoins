@@ -2,9 +2,9 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Expenses.Commands;
+using Application.Tests.Factories;
 using Domain.Dashboard.Entities;
 using Domain.Interfaces.Repositories;
-using Domain.Interfaces.Services;
 using JetBrains.Annotations;
 using Moq;
 using Xunit;
@@ -27,17 +27,8 @@ public class HandlerAddExpenseTest
             PaymentMethodId = 1
         };
 
-        var currentUser = new CurrentUser
-        {
-            Id = Guid.Parse("12345678-1234-1234-1234-123456789012"),
-            Email = "test@example.com",
-            Name = "Test User",
-            IsAuthenticated = true
-        };
-
         var repository = new Mock<IRepositoryExpense>();
-        var serviceCurrentUser = new Mock<IServiceCurrentUser>();
-        serviceCurrentUser.Setup(m => m.User).Returns(currentUser);
+        var serviceCurrentUser = TestFactoryUsers.MockServiceCurrentUser();
 
         var unitOfWork = new Mock<IUnitOfWork>();
         HandlerAddExpense handler = new(
@@ -54,7 +45,7 @@ public class HandlerAddExpenseTest
             m => m.CreateExpenseAsync(It.Is<Expense>(e =>
                 e.Amount == command.Amount &&
                 e.Date == command.Date &&
-                e.UserId == currentUser.Id &&
+                e.UserId == TestFactoryUsers.DefaultUser1Authenticated.Id &&
                 e.Description == command.Description &&
                 e.CategoryId == command.CategoryId &&
                 e.PaymentMethodId == command.PaymentMethodId)),
@@ -76,18 +67,9 @@ public class HandlerAddExpenseTest
             Amount = 100,
             Date = DateTime.Now,
         };
-
-        var currentUser = new CurrentUser
-        {
-            Id = Guid.Parse("12345678-1234-1234-1234-123456789012"),
-            Email = "test@example.com",
-            Name = "Test User",
-            IsAuthenticated = true
-        };
-
+        
         var repository = new Mock<IRepositoryExpense>();
-        var serviceCurrentUser = new Mock<IServiceCurrentUser>();
-        serviceCurrentUser.Setup(m => m.User).Returns(currentUser);
+        var serviceCurrentUser = TestFactoryUsers.MockServiceCurrentUser();
 
         var unitOfWork = new Mock<IUnitOfWork>();
         HandlerAddExpense handler = new(
@@ -104,7 +86,7 @@ public class HandlerAddExpenseTest
             m => m.CreateExpenseAsync(It.Is<Expense>(e =>
                 e.Amount == command.Amount &&
                 e.Date == command.Date &&
-                e.UserId == currentUser.Id &&
+                e.UserId == TestFactoryUsers.DefaultUser1Authenticated.Id &&
                 e.Description == command.Description &&
                 e.CategoryId == command.CategoryId &&
                 e.PaymentMethodId == command.PaymentMethodId)),

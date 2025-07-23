@@ -30,18 +30,18 @@ public class HandlerGetExpenseByIdTest
             Amount = 100,
             Date = DateTime.Now,
             Description = "Test",
-            UserId = TestFactoryUsers.DefaultUser1().Id,
+            UserId = TestFactoryUsers.DefaultUser1Authenticated.Id,
             CategoryId = 1,
             Category = new Category
             {
                 Name = "Test",
-                UserId = TestFactoryUsers.DefaultUser1().Id,
+                UserId = TestFactoryUsers.DefaultUser1Authenticated.Id,
             },
             PaymentMethodId = 1,
             PaymentMethod = new PaymentMethod
             {
                 Name = "Test",
-                UserId = TestFactoryUsers.DefaultUser1().Id,
+                UserId = TestFactoryUsers.DefaultUser1Authenticated.Id,
             },
         };
 

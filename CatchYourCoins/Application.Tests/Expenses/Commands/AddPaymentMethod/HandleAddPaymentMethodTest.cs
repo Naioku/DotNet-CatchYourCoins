@@ -1,10 +1,9 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using Application.Expenses.Commands;
+using Application.Tests.Factories;
 using Domain.Dashboard.Entities;
 using Domain.Interfaces.Repositories;
-using Domain.Interfaces.Services;
 using JetBrains.Annotations;
 using Moq;
 using Xunit;
@@ -18,37 +17,33 @@ public class HandlerAddPaymentMethodTest
     public async Task AddPaymentMethod_ValidData_CreatePaymentMethod()
     {
         // Arrange
-        const string name = "Test";
-        const decimal limit = 1000;
         var command = new CommandAddPaymentMethod
         {
-            Name = name,
-            Limit = limit
+            Name = "Test",
+            Limit = 1000
         };
 
         var repositoryPaymentMethod = new Mock<IRepositoryPaymentMethod>();
-        var serviceCurrentUser = new Mock<IServiceCurrentUser>();
-        serviceCurrentUser.Setup(m => m.User)
-            .Returns(new CurrentUser
-            {
-                Id = Guid.Parse("12345678-1234-1234-1234-123456789012"),
-                Email = "test@example.com",
-                Name = "Test User",
-                IsAuthenticated = true
-            });
-        
+        var serviceCurrentUser = TestFactoryUsers.MockServiceCurrentUser();
+
         var unitOfWork = new Mock<IUnitOfWork>();
         HandlerAddPaymentMethod handlerAddPaymentMethod = new(
             repositoryPaymentMethod.Object,
             serviceCurrentUser.Object,
             unitOfWork.Object
         );
-        
+
         // Act
         await handlerAddPaymentMethod.Handle(command, CancellationToken.None);
 
         // Assert
-        repositoryPaymentMethod.Verify(m => m.CreatePaymentMethodAsync(It.IsAny<PaymentMethod>()), Times.Once);
+        repositoryPaymentMethod.Verify(m => m.CreatePaymentMethodAsync(
+                It.Is<PaymentMethod>(pm => 
+                    pm.Name == command.Name &&
+                    pm.Limit == command.Limit &&
+                    pm.UserId == TestFactoryUsers.DefaultUser1Authenticated.Id)),
+            Times.Once
+        );
         unitOfWork.Verify(m => m.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
     }
 }
