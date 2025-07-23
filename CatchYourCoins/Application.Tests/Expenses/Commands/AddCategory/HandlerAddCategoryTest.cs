@@ -17,12 +17,6 @@ public class HandlerAddCategoryTest
     public async Task AddCategory_ValidData_CreateCategory()
     {
         // Arrange
-        var command = new CommandAddCategory
-        {
-            Name = "Test",
-            Limit = 1000
-        };
-
         var repositoryCategory = new Mock<IRepositoryCategory>();
         var serviceCurrentUser = TestFactoryUsers.MockServiceCurrentUser();
 
@@ -32,6 +26,12 @@ public class HandlerAddCategoryTest
             serviceCurrentUser.Object,
             unitOfWork.Object
         );
+
+        var command = new CommandAddCategory
+        {
+            Name = "Test",
+            Limit = 1000
+        };
 
         // Act
         await handlerAddCategory.Handle(command, CancellationToken.None);
@@ -44,6 +44,9 @@ public class HandlerAddCategoryTest
                     c.UserId == TestFactoryUsers.DefaultUser1Authenticated.Id)),
             Times.Once
         );
-        unitOfWork.Verify(m => m.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
+        unitOfWork.Verify(
+            m => m.SaveChangesAsync(It.IsAny<CancellationToken>()),
+            Times.Once
+        );
     }
 }
