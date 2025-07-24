@@ -4,6 +4,7 @@ using Application.Expenses.Commands;
 using Application.Tests.Factories;
 using Domain.Dashboard.Entities;
 using Domain.Interfaces.Repositories;
+using Domain.Interfaces.Services;
 using JetBrains.Annotations;
 using Moq;
 using Xunit;
@@ -11,22 +12,28 @@ using Xunit;
 namespace Application.Tests.Expenses.Commands.AddCategory;
 
 [TestSubject(typeof(HandlerAddCategory))]
-public class HandlerAddCategoryTest
+public class HandlerAddCategoryTest : CQRSHandlerTestBase<HandlerAddCategory>
 {
+    public override Task InitializeAsync()
+    {
+        RegisterMock<IRepositoryCategory>();
+        RegisterMock<IUnitOfWork>();
+        return base.InitializeAsync();
+    }
+
+    protected override HandlerAddCategory CreateHandler()
+    {
+        return new HandlerAddCategory(
+            GetMock<IRepositoryCategory>().Object,
+            GetMock<IServiceCurrentUser>().Object,
+            GetMock<IUnitOfWork>().Object
+        );
+    }
+    
     [Fact]
     public async Task AddCategory_ValidData_CreateCategory()
     {
         // Arrange
-        var repositoryCategory = new Mock<IRepositoryCategory>();
-        var serviceCurrentUser = TestFactoryUsers.MockServiceCurrentUser();
-
-        var unitOfWork = new Mock<IUnitOfWork>();
-        HandlerAddCategory handlerAddCategory = new(
-            repositoryCategory.Object,
-            serviceCurrentUser.Object,
-            unitOfWork.Object
-        );
-
         var command = new CommandAddCategory
         {
             Name = "Test",
@@ -34,17 +41,17 @@ public class HandlerAddCategoryTest
         };
 
         // Act
-        await handlerAddCategory.Handle(command, CancellationToken.None);
+        await Handler.Handle(command, CancellationToken.None);
 
         // Assert
-        repositoryCategory.Verify(m => m.CreateCategoryAsync(
+        GetMock<IRepositoryCategory>().Verify(m => m.CreateCategoryAsync(
                 It.Is<Category>(c =>
                     c.Name == command.Name &&
                     c.Limit == command.Limit &&
                     c.UserId == TestFactoryUsers.DefaultUser1Authenticated.Id)),
             Times.Once
         );
-        unitOfWork.Verify(
+        GetMock<IUnitOfWork>().Verify(
             m => m.SaveChangesAsync(It.IsAny<CancellationToken>()),
             Times.Once
         );

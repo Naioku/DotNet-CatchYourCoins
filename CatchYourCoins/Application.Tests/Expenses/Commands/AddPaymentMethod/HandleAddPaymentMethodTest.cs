@@ -12,22 +12,28 @@ using Xunit;
 namespace Application.Tests.Expenses.Commands.AddPaymentMethod;
 
 [TestSubject(typeof(HandlerAddPaymentMethod))]
-public class HandlerAddPaymentMethodTest
+public class HandlerAddPaymentMethodTest : CQRSHandlerTestBase<HandlerAddPaymentMethod>
 {
+    public override Task InitializeAsync()
+    {
+        RegisterMock<IRepositoryPaymentMethod>();
+        RegisterMock<IUnitOfWork>();
+        return base.InitializeAsync();
+    }
+
+    protected override HandlerAddPaymentMethod CreateHandler()
+    {
+        return new HandlerAddPaymentMethod(
+            GetMock<IRepositoryPaymentMethod>().Object,
+            GetMock<IServiceCurrentUser>().Object,
+            GetMock<IUnitOfWork>().Object
+        );
+    }
+
     [Fact]
     public async Task AddPaymentMethod_ValidData_CreatePaymentMethod()
     {
         // Arrange
-        Mock<IRepositoryPaymentMethod> repositoryPaymentMethod = new();
-        Mock<IServiceCurrentUser> serviceCurrentUser = TestFactoryUsers.MockServiceCurrentUser();
-
-        Mock<IUnitOfWork> unitOfWork = new();
-        HandlerAddPaymentMethod handlerAddPaymentMethod = new(
-            repositoryPaymentMethod.Object,
-            serviceCurrentUser.Object,
-            unitOfWork.Object
-        );
-
         CommandAddPaymentMethod command = new()
         {
             Name = "Test",
@@ -35,10 +41,10 @@ public class HandlerAddPaymentMethodTest
         };
 
         // Act
-        await handlerAddPaymentMethod.Handle(command, CancellationToken.None);
+        await Handler.Handle(command, CancellationToken.None);
 
         // Assert
-        repositoryPaymentMethod.Verify(
+        GetMock<IRepositoryPaymentMethod>().Verify(
             m => m.CreatePaymentMethodAsync(
                 It.Is<PaymentMethod>(pm =>
                     pm.Name == command.Name &&
@@ -46,7 +52,7 @@ public class HandlerAddPaymentMethodTest
                     pm.UserId == TestFactoryUsers.DefaultUser1Authenticated.Id)),
             Times.Once
         );
-        unitOfWork.Verify(
+        GetMock<IUnitOfWork>().Verify(
             m => m.SaveChangesAsync(It.IsAny<CancellationToken>()),
             Times.Once
         );

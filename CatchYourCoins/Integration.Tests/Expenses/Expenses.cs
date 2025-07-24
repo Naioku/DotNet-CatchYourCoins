@@ -136,11 +136,6 @@ public class Expenses(TestFixture fixture) : TestBase(fixture)
         // Arrange
         Assert.NotNull(_categoryUser2);
         Assert.NotNull(_paymentMethodUser2);
-        
-        var currentUserId = fixture.ServiceProvider.GetRequiredService<IServiceCurrentUser>().User.Id;
-        Console.WriteLine($"Current user ID: {currentUserId}");
-        Console.WriteLine($"User2 ID: {user2.Id}");
-
     
         Expense expenseDB = (await dbContext.Expenses.AddAsync(new Expense
         {

@@ -28,16 +28,4 @@ public static class TestFactoryUsers
         Name = "Test User 2",
         IsAuthenticated = authenticated
     };
-
-    /// <summary>
-    /// Initialize mock with passed user. Defaults to <see cref="DefaultUser1Authenticated"/>.
-    /// </summary>
-    /// <param name="loggedInUser">User, which will be returned.</param>
-    /// <returns></returns>
-    public static Mock<IServiceCurrentUser> MockServiceCurrentUser(CurrentUser loggedInUser = null)
-    {
-        var mock = new Mock<IServiceCurrentUser>();
-        mock.Setup(m => m.User).Returns(loggedInUser ?? DefaultUser1Authenticated);
-        return mock;
-    }
 }

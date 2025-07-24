@@ -12,31 +12,21 @@ using Xunit;
 namespace Application.Tests.Expenses.Commands.DeleteExpense;
 
 [TestSubject(typeof(HandlerDeleteExpense))]
-public class HandlerDeleteExpenseTest : IAsyncLifetime
+public class HandlerDeleteExpenseTest : CQRSHandlerTestBase<HandlerDeleteExpense>
 {
-    private Mock<IRepositoryExpense> _mockRepository;
-    private Mock<IUnitOfWork> _mockUnitOfWork;
-    private HandlerDeleteExpense _handler;
-    
-    public Task InitializeAsync()
+    public override Task InitializeAsync()
     {
-        _mockRepository = new Mock<IRepositoryExpense>();
-        _mockUnitOfWork = new Mock<IUnitOfWork>();
-        
-        _handler = new HandlerDeleteExpense(
-            _mockRepository.Object,
-            _mockUnitOfWork.Object
-        );
-        
-        return Task.CompletedTask;
+        RegisterMock<IRepositoryExpense>();
+        RegisterMock<IUnitOfWork>();
+        return base.InitializeAsync();
     }
 
-    public Task DisposeAsync()
+    protected override HandlerDeleteExpense CreateHandler()
     {
-        _mockRepository = null;
-        _mockUnitOfWork = null;
-        _handler = null;
-        return Task.CompletedTask;
+        return new HandlerDeleteExpense(
+            GetMock<IRepositoryExpense>().Object,
+            GetMock<IUnitOfWork>().Object
+        );
     }
 
     [Fact]
@@ -44,38 +34,42 @@ public class HandlerDeleteExpenseTest : IAsyncLifetime
     {
         // Arrange
         Expense expense = TestFactoryExpense.CreateExpense(TestFactoryUsers.DefaultUser1Authenticated);
-        _mockRepository
-            .Setup(m => m.GetExpenseByIdAsync(It.IsAny<int>()))
+        GetMock<IRepositoryExpense>()
+            .Setup(m => m.GetExpenseByIdAsync(It.Is<int>(
+                id => id == expense.Id
+            )))
             .ReturnsAsync(expense);
-        
+
         CommandDeleteExpense command = new() { Id = expense.Id };
 
         // Act
-        Result result = await _handler.Handle(command, CancellationToken.None);
-        
+        Result result = await Handler.Handle(command, CancellationToken.None);
+
         // Assert
         Assert.True(result.IsSuccess);
         Assert.Empty(result.Errors);
-        _mockRepository.Verify(m => m.DeleteExpense(It.Is<Expense>(e => e.Id == command.Id)));
-        _mockUnitOfWork.Verify(m => m.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
+        GetMock<IRepositoryExpense>().Verify(m => m.DeleteExpense(It.Is<Expense>(e => e.Id == command.Id)));
+        GetMock<IUnitOfWork>().Verify(m => m.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Fact]
     public async Task DeleteExpense_NoExpenseUnderPassedID_NotDeleteExpense()
     {
         // Arrange
-        _mockRepository
-            .Setup(m => m.GetExpenseByIdAsync(It.IsAny<int>()))
+        GetMock<IRepositoryExpense>()
+            .Setup(m => m.GetExpenseByIdAsync(It.Is<int>(
+                id => id == 1
+            )))
             .ReturnsAsync((Expense)null);
-        
+
         CommandDeleteExpense command = new() { Id = 1 };
-        
+
         // Act
-        Result result = await _handler.Handle(command, CancellationToken.None);
-        
+        Result result = await Handler.Handle(command, CancellationToken.None);
+
         // Assert
         Assert.False(result.IsSuccess);
         Assert.NotEmpty(result.Errors);
-        _mockRepository.Verify(m => m.DeleteExpense(It.IsAny<Expense>()), Times.Never);
+        GetMock<IRepositoryExpense>().Verify(m => m.DeleteExpense(It.IsAny<Expense>()), Times.Never);
     }
 }

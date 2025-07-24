@@ -13,28 +13,23 @@ using Xunit;
 namespace Application.Tests.Expenses.Queries;
 
 [TestSubject(typeof(HandlerGetCategoryById))]
-public class HandlerGetCategoryByIdTest : IAsyncLifetime
+public class HandlerGetCategoryByIdTest : CQRSHandlerTestBase<HandlerGetCategoryById>
 {
-    private Mock<IRepositoryCategory> _mockRepository;
-    
-    public Task InitializeAsync()
+    public override Task InitializeAsync()
     {
-        _mockRepository = new Mock<IRepositoryCategory>();
-        return Task.CompletedTask;
+        RegisterMock<IRepositoryCategory>();
+        return base.InitializeAsync();
     }
 
-    public Task DisposeAsync()
-    {
-        _mockRepository = null;
-        return Task.CompletedTask;
-    }
+    protected override HandlerGetCategoryById CreateHandler() =>
+        new(GetMock<IRepositoryCategory>().Object);
 
     [Fact]
     public async Task GetCategory_ValidData_ReturnCategory()
     {
         // Arrange
         QueryGetCategoryById query = new() { Id = 1 };
-        
+
         Category category = new Category
         {
             Id = query.Id,
@@ -42,37 +37,39 @@ public class HandlerGetCategoryByIdTest : IAsyncLifetime
             Name = "Test",
             UserId = TestFactoryUsers.DefaultUser1Authenticated.Id,
         };
-        _mockRepository.Setup(m => m.GetCategoryByIdAsync(It.IsAny<int>())).ReturnsAsync(category);
-        
-        HandlerGetCategoryById handler = new HandlerGetCategoryById(_mockRepository.Object);
-        
+        GetMock<IRepositoryCategory>()
+            .Setup(m => m.GetCategoryByIdAsync(It.Is<int>(
+                id => id == query.Id
+            )))
+            .ReturnsAsync(category);
+
         // Act
-        Result<CategoryDTO> result = await handler.Handle(query, CancellationToken.None);
+        Result<CategoryDTO> result = await Handler.Handle(query, CancellationToken.None);
 
         // Assert
         Assert.True(result.IsSuccess);
         Assert.NotNull(result.Value);
-        
+
         CategoryDTO categoryDTO = result.Value;
         Assert.Equal(query.Id, categoryDTO.Id);
         Assert.Equal(category.Name, categoryDTO.Name);
         Assert.Equal(category.Limit, categoryDTO.Limit);
     }
-    
+
     [Fact]
     public async Task GetCategory_NoCategory_ReturnNull()
     {
         // Arrange
         QueryGetCategoryById query = new() { Id = 1 };
 
-        _mockRepository
-            .Setup(m => m.GetCategoryByIdAsync(It.IsAny<int>()))
+        GetMock<IRepositoryCategory>()
+            .Setup(m => m.GetCategoryByIdAsync(It.Is<int>(
+                id => id == query.Id
+            )))
             .ReturnsAsync((Category)null);
 
-        HandlerGetCategoryById handler = new(_mockRepository.Object);
-
         // Act
-        Result<CategoryDTO> result = await handler.Handle(query, CancellationToken.None);
+        Result<CategoryDTO> result = await Handler.Handle(query, CancellationToken.None);
 
         // Assert
         Assert.False(result.IsSuccess);

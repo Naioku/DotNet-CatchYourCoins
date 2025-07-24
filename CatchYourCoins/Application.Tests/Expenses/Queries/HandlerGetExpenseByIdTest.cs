@@ -14,76 +14,62 @@ using Xunit;
 namespace Application.Tests.Expenses.Queries;
 
 [TestSubject(typeof(HandlerGetExpenseById))]
-public class HandlerGetExpenseByIdTest
+public class HandlerGetExpenseByIdTest : CQRSHandlerTestBase<HandlerGetExpenseById>
 {
+    public override Task InitializeAsync()
+    {
+        RegisterMock<IRepositoryExpense>();
+        return base.InitializeAsync();
+    }
+
+    protected override HandlerGetExpenseById CreateHandler() =>
+        new(GetMock<IRepositoryExpense>().Object);
+
     [Fact]
     public async Task GetExpense_ValidDataAndExpenseExists_ReturnExpense()
     {
         // Arrange
-        var query = new QueryGetExpenseById { Id = 1 };
+        QueryGetExpenseById query = new() { Id = 1 };
 
-        var mockRepository = new Mock<IRepositoryExpense>();
-
-        var expense = new Expense
-        {
-            Id = 1,
-            Amount = 100,
-            Date = DateTime.Now,
-            Description = "Test",
-            UserId = TestFactoryUsers.DefaultUser1Authenticated.Id,
-            CategoryId = 1,
-            Category = new Category
-            {
-                Name = "Test",
-                UserId = TestFactoryUsers.DefaultUser1Authenticated.Id,
-            },
-            PaymentMethodId = 1,
-            PaymentMethod = new PaymentMethod
-            {
-                Name = "Test",
-                UserId = TestFactoryUsers.DefaultUser1Authenticated.Id,
-            },
-        };
-
-        mockRepository
-            .Setup(m => m.GetExpenseByIdAsync(It.IsAny<int>()))
+        Expense expense = TestFactoryExpense.CreateExpense(TestFactoryUsers.DefaultUser1Authenticated);
+        GetMock<IRepositoryExpense>()
+            .Setup(m => m.GetExpenseByIdAsync(It.Is<int>(
+                id => id == query.Id
+            )))
             .ReturnsAsync(expense);
 
-        var handler = new HandlerGetExpenseById(mockRepository.Object);
-
         // Act
-        Result<ExpenseDTO> result = await handler.Handle(query, CancellationToken.None);
+        Result<ExpenseDTO> result = await Handler.Handle(query, CancellationToken.None);
 
         // Assert
         Assert.True(result.IsSuccess);
 
         ExpenseDTO expenseDTO = result.Value;
         Assert.NotNull(expenseDTO);
-        Assert.Equal(expenseDTO.Id, query.Id);
-        Assert.Equal(expenseDTO.Amount, expense.Amount);
-        Assert.Equal(expenseDTO.Date, expense.Date);
-        Assert.Equal(expenseDTO.Description, expense.Description);
+        Assert.Equal(query.Id, expenseDTO.Id);
+        Assert.Equal(expense.Amount, expenseDTO.Amount);
+        Assert.Equal(expense.Date, expenseDTO.Date);
+        Assert.Equal(expense.Description, expenseDTO.Description);
         Assert.NotNull(expense.Category);
         Assert.NotNull(expense.PaymentMethod);
-        Assert.Equal(expenseDTO.Category, expense.Category.Name);
-        Assert.Equal(expenseDTO.PaymentMethod, expense.PaymentMethod.Name);
+        Assert.Equal(expense.Category.Name, expenseDTO.Category);
+        Assert.Equal(expense.PaymentMethod.Name, expenseDTO.PaymentMethod);
     }
 
     [Fact]
-    public async Task GetExpense_InvalidUserAndExpenseNotExists_ReturnNull()
+    public async Task GetExpense_NoExpense_ReturnNull()
     {
         // Arrange
-        var query = new QueryGetExpenseById { Id = 1 };
+        QueryGetExpenseById query = new() { Id = 1 };
 
-        var mockRepository = new Mock<IRepositoryExpense>();
-        mockRepository
-            .Setup(m => m.GetExpenseByIdAsync(It.IsAny<int>()))
+        GetMock<IRepositoryExpense>()
+            .Setup(m => m.GetExpenseByIdAsync(It.Is<int>(
+                id => id == query.Id
+            )))
             .ReturnsAsync((Expense)null);
 
-        var handler = new HandlerGetExpenseById(mockRepository.Object);
-
         // Act
-        Result<ExpenseDTO> result = await handler.Handle(query, CancellationToken.None);
+        Result<ExpenseDTO> result = await Handler.Handle(query, CancellationToken.None);
 
         // Assert
         Assert.False(result.IsSuccess);

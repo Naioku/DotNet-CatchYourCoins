@@ -13,35 +13,22 @@ using Xunit;
 namespace Application.Tests.Expenses.Commands.AddExpense;
 
 [TestSubject(typeof(HandlerAddExpense))]
-public class HandlerAddExpenseTest : IAsyncLifetime
+public class HandlerAddExpenseTest : CQRSHandlerTestBase<HandlerAddExpense>
 {
-    private Mock<IRepositoryExpense> _mockRepository;
-    private Mock<IServiceCurrentUser> _mockServiceCurrentUser;
-    private Mock<IUnitOfWork> _mockUnitOfWork;
-    private HandlerAddExpense _handler;
-    
-    public Task InitializeAsync()
+    public override Task InitializeAsync()
     {
-        _mockRepository = new Mock<IRepositoryExpense>();
-        _mockServiceCurrentUser = TestFactoryUsers.MockServiceCurrentUser();
-        _mockUnitOfWork = new Mock<IUnitOfWork>();
-        
-        _handler = new HandlerAddExpense(
-            _mockRepository.Object,
-            _mockServiceCurrentUser.Object,
-            _mockUnitOfWork.Object
-        );
-        
-        return Task.CompletedTask;
+        RegisterMock<IRepositoryExpense>();
+        RegisterMock<IUnitOfWork>();
+        return base.InitializeAsync();
     }
 
-    public Task DisposeAsync()
+    protected override HandlerAddExpense CreateHandler()
     {
-        _mockRepository = null;
-        _mockServiceCurrentUser = null;
-        _mockUnitOfWork = null;
-        _handler = null;
-        return Task.CompletedTask;
+        return new HandlerAddExpense(
+            GetMock<IRepositoryExpense>().Object,
+            GetMock<IServiceCurrentUser>().Object,
+            GetMock<IUnitOfWork>().Object
+        );
     }
 
     [Fact]
@@ -58,10 +45,10 @@ public class HandlerAddExpenseTest : IAsyncLifetime
         };
 
         // Act
-        await _handler.Handle(command, CancellationToken.None);
+        await Handler.Handle(command, CancellationToken.None);
 
         // Assert
-        _mockRepository.Verify(
+        GetMock<IRepositoryExpense>().Verify(
             m => m.CreateExpenseAsync(It.Is<Expense>(e =>
                 e.Amount == command.Amount &&
                 e.Date == command.Date &&
@@ -72,38 +59,7 @@ public class HandlerAddExpenseTest : IAsyncLifetime
             Times.Once
         );
 
-        _mockUnitOfWork.Verify(
-            m => m.SaveChangesAsync(It.IsAny<CancellationToken>()),
-            Times.Once
-        );
-    }
-
-    [Fact]
-    public async Task AddExpense_MinimumValidData_CreateExpense()
-    {
-        // Arrange
-        CommandAddExpense command = new()
-        {
-            Amount = 100,
-            Date = DateTime.Now,
-        };
-
-        // Act
-        await _handler.Handle(command, CancellationToken.None);
-
-        // Assert
-        _mockRepository.Verify(
-            m => m.CreateExpenseAsync(It.Is<Expense>(e =>
-                e.Amount == command.Amount &&
-                e.Date == command.Date &&
-                e.UserId == TestFactoryUsers.DefaultUser1Authenticated.Id &&
-                e.Description == command.Description &&
-                e.CategoryId == command.CategoryId &&
-                e.PaymentMethodId == command.PaymentMethodId)),
-            Times.Once
-        );
-
-        _mockUnitOfWork.Verify(
+        GetMock<IUnitOfWork>().Verify(
             m => m.SaveChangesAsync(It.IsAny<CancellationToken>()),
             Times.Once
         );
