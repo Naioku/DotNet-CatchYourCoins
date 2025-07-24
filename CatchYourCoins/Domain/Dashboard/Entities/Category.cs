@@ -1,8 +1,9 @@
 ﻿using Domain.IdentityEntities;
+using Domain.Interfaces.Repositories;
 
 namespace Domain.Dashboard.Entities;
 
-public class Category
+public class Category : IAutorizable
 {
     public int Id { get; init; }
     public required string Name { get; init; }
