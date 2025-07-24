@@ -1,26 +1,15 @@
 ﻿using Domain;
 using Domain.Dashboard.Entities;
 using Domain.Interfaces.Repositories;
-using FluentValidation;
 using JetBrains.Annotations;
 using MediatR;
 
 namespace Application.Expenses.Commands;
 
-public class CommandDeleteExpense : IRequest<Result>
-{
-    public required int Id { get; init; }
-}
+public class CommandDeleteExpense : CommandDeleteBase;
 
 [UsedImplicitly]
-public class ValidatorDeleteExpense : AbstractValidator<CommandDeleteExpense>
-{
-    public ValidatorDeleteExpense()
-    {
-        RuleFor(x => x.Id)
-            .GreaterThanOrEqualTo(0);
-    }
-}
+public class ValidatorDeleteExpense : ValidatorDeleteBase<CommandDeleteExpense>;
 
 public class HandlerDeleteExpense(
     IRepositoryExpense repositoryExpense,

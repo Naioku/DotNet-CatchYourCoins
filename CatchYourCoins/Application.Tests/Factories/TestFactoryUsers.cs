@@ -1,7 +1,5 @@
 ﻿using System;
 using Domain.Dashboard.Entities;
-using Domain.Interfaces.Services;
-using Moq;
 
 namespace Application.Tests.Factories;
 

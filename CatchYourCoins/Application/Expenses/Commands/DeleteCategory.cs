@@ -1,26 +1,15 @@
 ﻿using Domain;
 using Domain.Dashboard.Entities;
 using Domain.Interfaces.Repositories;
-using FluentValidation;
 using JetBrains.Annotations;
 using MediatR;
 
 namespace Application.Expenses.Commands;
 
-public class CommandDeleteCategory : IRequest<Result>
-{
-    public required int Id { get; init; }
-}
+public class CommandDeleteCategory : CommandDeleteBase;
 
 [UsedImplicitly]
-public class ValidatorDeleteCategory : AbstractValidator<CommandDeleteCategory>
-{
-    public ValidatorDeleteCategory()
-    {
-        RuleFor(x => x.Id)
-            .GreaterThanOrEqualTo(0);
-    }
-}
+public class ValidatorDeleteCategory : ValidatorDeleteBase<CommandDeleteCategory>;
 
 public class HandlerDeleteCategory(
     IRepositoryCategory repositoryCategory,

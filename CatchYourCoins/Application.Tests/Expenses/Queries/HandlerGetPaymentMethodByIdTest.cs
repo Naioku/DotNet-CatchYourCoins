@@ -28,18 +28,15 @@ public class HandlerGetPaymentMethodByIdTest : CQRSHandlerTestBase<HandlerGetPay
     public async Task GetPaymentMethod_ValidData_ReturnPaymentMethod()
     {
         // Arrange
-        QueryGetPaymentMethodById query = new() { Id = 1 };
-
-        PaymentMethod paymentMethod = new PaymentMethod
-        {
-            Id = query.Id,
-            Limit = 100,
-            Name = "Test",
-            UserId = TestFactoryUsers.DefaultUser1Authenticated.Id,
-        };
+        PaymentMethod paymentMethod = TestFactoryPaymentMethod.CreatePaymentMethod(TestFactoryUsers.DefaultUser1Authenticated);
         GetMock<IRepositoryPaymentMethod>()
-            .Setup(m => m.GetCategoryByIdAsync(It.IsAny<int>()))
+            .Setup(m => m.GetPaymentMethodByIdAsync(It.Is<int>(
+                id => id == paymentMethod.Id
+            )))
             .ReturnsAsync(paymentMethod);
+
+        QueryGetPaymentMethodById query = new() { Id = paymentMethod.Id };
+
 
         // Act
         Result<PaymentMethodDTO> result = await Handler.Handle(query, CancellationToken.None);
@@ -53,7 +50,7 @@ public class HandlerGetPaymentMethodByIdTest : CQRSHandlerTestBase<HandlerGetPay
         Assert.Equal(paymentMethod.Name, paymentMethodDTO.Name);
         Assert.Equal(paymentMethod.Limit, paymentMethodDTO.Limit);
     }
-    
+
     [Fact]
     public async Task GetPaymentMethod_NoPaymentMethod_ReturnNull()
     {
@@ -61,7 +58,7 @@ public class HandlerGetPaymentMethodByIdTest : CQRSHandlerTestBase<HandlerGetPay
         QueryGetPaymentMethodById query = new() { Id = 1 };
 
         GetMock<IRepositoryPaymentMethod>()
-            .Setup(m => m.GetCategoryByIdAsync(It.Is<int>(
+            .Setup(m => m.GetPaymentMethodByIdAsync(It.Is<int>(
                 id => id == query.Id
             )))
             .ReturnsAsync((PaymentMethod)null);

@@ -5,5 +5,6 @@ namespace Domain.Interfaces.Repositories;
 public interface IRepositoryPaymentMethod
 {
     Task CreatePaymentMethodAsync(PaymentMethod paymentMethod);
-    Task<PaymentMethod?> GetCategoryByIdAsync(int id);
+    Task<PaymentMethod?> GetPaymentMethodByIdAsync(int id);
+    void DeletePaymentMethod(PaymentMethod paymentMethod);
 }

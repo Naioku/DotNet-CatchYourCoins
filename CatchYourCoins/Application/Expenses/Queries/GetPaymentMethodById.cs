@@ -15,7 +15,7 @@ public class HandlerGetPaymentMethodById(IRepositoryPaymentMethod repositoryPaym
 {
     public async Task<Result<PaymentMethodDTO>> Handle(QueryGetPaymentMethodById request, CancellationToken cancellationToken)
     {
-        PaymentMethod? category = await repositoryPaymentMethod.GetCategoryByIdAsync(request.Id);
+        PaymentMethod? category = await repositoryPaymentMethod.GetPaymentMethodByIdAsync(request.Id);
 
         if (category == null)
         {

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using Application.DTOs.Expenses;
 using Application.Expenses.Queries;
@@ -29,14 +28,15 @@ public class HandlerGetExpenseByIdTest : CQRSHandlerTestBase<HandlerGetExpenseBy
     public async Task GetExpense_ValidDataAndExpenseExists_ReturnExpense()
     {
         // Arrange
-        QueryGetExpenseById query = new() { Id = 1 };
-
         Expense expense = TestFactoryExpense.CreateExpense(TestFactoryUsers.DefaultUser1Authenticated);
         GetMock<IRepositoryExpense>()
             .Setup(m => m.GetExpenseByIdAsync(It.Is<int>(
-                id => id == query.Id
+                id => id == expense.Id
             )))
             .ReturnsAsync(expense);
+        
+        QueryGetExpenseById query = new() { Id = expense.Id };
+
 
         // Act
         Result<ExpenseDTO> result = await Handler.Handle(query, CancellationToken.None);

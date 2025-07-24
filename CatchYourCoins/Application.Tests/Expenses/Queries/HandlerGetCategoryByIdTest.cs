@@ -28,14 +28,14 @@ public class HandlerGetCategoryByIdTest : CQRSHandlerTestBase<HandlerGetCategory
     public async Task GetCategory_ValidData_ReturnCategory()
     {
         // Arrange
-        QueryGetCategoryById query = new() { Id = 1 };
-
         Category category = TestFactoryCategory.CreateCategory(TestFactoryUsers.DefaultUser1Authenticated);
         GetMock<IRepositoryCategory>()
             .Setup(m => m.GetCategoryByIdAsync(It.Is<int>(
-                id => id == query.Id
+                id => id == category.Id
             )))
             .ReturnsAsync(category);
+        
+        QueryGetCategoryById query = new() { Id = category.Id };
 
         // Act
         Result<CategoryDTO> result = await Handler.Handle(query, CancellationToken.None);
