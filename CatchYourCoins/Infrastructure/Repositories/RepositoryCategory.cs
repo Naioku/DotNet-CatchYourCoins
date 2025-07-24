@@ -17,4 +17,6 @@ public class RepositoryCategory(
         await dbContext.Categories
             .WhereAuthorized(serviceCurrentUser.User.Id)
             .FirstOrDefaultAsync(c => c.Id == id);
+
+    public void DeleteCategory(Category category) => dbContext.Categories.Remove(category);
 }

@@ -6,4 +6,5 @@ public interface IRepositoryCategory
 {
     Task CreateCategoryAsync(Category category);
     Task<Category?> GetCategoryByIdAsync(int id);
+    void DeleteCategory(Category category);
 }

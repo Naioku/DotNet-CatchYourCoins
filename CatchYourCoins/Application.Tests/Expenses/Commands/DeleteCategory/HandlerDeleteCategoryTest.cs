@@ -1,0 +1,75 @@
+﻿using System.Threading;
+using System.Threading.Tasks;
+using Application.Expenses.Commands;
+using Application.Tests.Factories;
+using Domain;
+using Domain.Dashboard.Entities;
+using Domain.Interfaces.Repositories;
+using JetBrains.Annotations;
+using Moq;
+using Xunit;
+
+namespace Application.Tests.Expenses.Commands.DeleteCategory;
+
+[TestSubject(typeof(HandlerDeleteCategory))]
+public class HandlerDeleteCategoryTest : CQRSHandlerTestBase<HandlerDeleteCategory>
+{
+    public override Task InitializeAsync()
+    {
+        RegisterMock<IRepositoryCategory>();
+        RegisterMock<IUnitOfWork>();
+        return base.InitializeAsync();
+    }
+
+    protected override HandlerDeleteCategory CreateHandler()
+    {
+        return new HandlerDeleteCategory(
+            GetMock<IRepositoryCategory>().Object,
+            GetMock<IUnitOfWork>().Object
+        );
+    }
+
+    [Fact]
+    public async Task DeleteCategory_ValidData_DeleteCategory()
+    {
+        // Arrange
+        Category category = TestFactoryCategory.CreateCategory(TestFactoryUsers.DefaultUser1Authenticated);
+        GetMock<IRepositoryCategory>()
+            .Setup(m => m.GetCategoryByIdAsync(It.Is<int>(
+                id => id == category.Id
+            )))
+            .ReturnsAsync(category);
+
+        CommandDeleteCategory command = new() { Id = category.Id };
+
+        // Act
+        Result result = await Handler.Handle(command, CancellationToken.None);
+
+        // Assert
+        Assert.True(result.IsSuccess);
+        Assert.Empty(result.Errors);
+        GetMock<IRepositoryCategory>().Verify(m => m.DeleteCategory(It.Is<Category>(e => e.Id == command.Id)));
+        GetMock<IUnitOfWork>().Verify(m => m.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
+    }
+
+    [Fact]
+    public async Task DeleteCategory_NoExpenseUnderPassedID_NotDeleteCategory()
+    {
+        // Arrange
+        GetMock<IRepositoryCategory>()
+            .Setup(m => m.GetCategoryByIdAsync(It.Is<int>(
+                id => id == 1
+            )))
+            .ReturnsAsync((Category)null);
+
+        CommandDeleteCategory command = new() { Id = 1 };
+
+        // Act
+        Result result = await Handler.Handle(command, CancellationToken.None);
+
+        // Assert
+        Assert.False(result.IsSuccess);
+        Assert.NotEmpty(result.Errors);
+        GetMock<IRepositoryCategory>().Verify(m => m.DeleteCategory(It.IsAny<Category>()), Times.Never);
+    }
+}

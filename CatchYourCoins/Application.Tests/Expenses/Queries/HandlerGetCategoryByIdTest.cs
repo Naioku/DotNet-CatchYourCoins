@@ -30,13 +30,7 @@ public class HandlerGetCategoryByIdTest : CQRSHandlerTestBase<HandlerGetCategory
         // Arrange
         QueryGetCategoryById query = new() { Id = 1 };
 
-        Category category = new Category
-        {
-            Id = query.Id,
-            Limit = 100,
-            Name = "Test",
-            UserId = TestFactoryUsers.DefaultUser1Authenticated.Id,
-        };
+        Category category = TestFactoryCategory.CreateCategory(TestFactoryUsers.DefaultUser1Authenticated);
         GetMock<IRepositoryCategory>()
             .Setup(m => m.GetCategoryByIdAsync(It.Is<int>(
                 id => id == query.Id
