@@ -19,7 +19,7 @@ public class HandlerGetPaymentMethodById(IRepositoryPaymentMethod repositoryPaym
 
         if (category == null)
         {
-            return Result<PaymentMethodDTO>.Failure(new Dictionary<string, string> { { "Category", "Category not found" } });
+            return Result<PaymentMethodDTO>.Failure(new Dictionary<string, string> { { "PaymentMethod", "Payment method not found" } });
         }
         
         return Result<PaymentMethodDTO>.SetValue(new PaymentMethodDTO
