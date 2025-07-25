@@ -1,8 +1,6 @@
-﻿using Domain;
-using Domain.Dashboard.Entities;
+﻿using Domain.Dashboard.Entities;
 using Domain.Interfaces.Repositories;
 using JetBrains.Annotations;
-using MediatR;
 
 namespace Application.Expenses.Commands;
 
@@ -13,21 +11,11 @@ public class ValidatorDeleteExpense : ValidatorDeleteBase<CommandDeleteExpense>;
 
 public class HandlerDeleteExpense(
     IRepositoryExpense repositoryExpense,
-    IUnitOfWork unitOfWork) : IRequestHandler<CommandDeleteExpense, Result>
+    IUnitOfWork unitOfWork) : HandlerCRUDDelete<Expense, CommandDeleteExpense>(repositoryExpense, unitOfWork)
 {
-    public async Task<Result> Handle(CommandDeleteExpense request, CancellationToken cancellationToken)
-    {
-        Expense? expense = await repositoryExpense.GetByIdAsync(request.Id);
-        if (expense == null)
+    protected override Dictionary<string, string> GetFailureMessages() =>
+        new()
         {
-            return Result.Failure(new Dictionary<string, string>()
-            {
-                {"Expense", "Expense not found"}
-            });
-        }
-        
-        repositoryExpense.Delete(expense);
-        await unitOfWork.SaveChangesAsync(cancellationToken);
-        return Result.Success();
-    }
+            { "Expense", "Expense not found" }
+        };
 }

@@ -1,8 +1,6 @@
-﻿using Domain;
-using Domain.Dashboard.Entities;
+﻿using Domain.Dashboard.Entities;
 using Domain.Interfaces.Repositories;
 using JetBrains.Annotations;
-using MediatR;
 
 namespace Application.Expenses.Commands;
 
@@ -13,21 +11,11 @@ public class ValidatorDeletePaymentMethod : ValidatorDeleteBase<CommandDeletePay
 
 public class HandlerDeletePaymentMethod(
     IRepositoryPaymentMethod repositoryPaymentMethod,
-    IUnitOfWork unitOfWork) : IRequestHandler<CommandDeletePaymentMethod, Result>
+    IUnitOfWork unitOfWork) : HandlerCRUDDelete<PaymentMethod, CommandDeletePaymentMethod>(repositoryPaymentMethod, unitOfWork)
 {
-    public async Task<Result> Handle(CommandDeletePaymentMethod request, CancellationToken cancellationToken)
-    {
-        PaymentMethod? expense = await repositoryPaymentMethod.GetByIdAsync(request.Id);
-        if (expense == null)
+    protected override Dictionary<string, string> GetFailureMessages() =>
+        new()
         {
-            return Result.Failure(new Dictionary<string, string>()
-            {
-                {"PaymentMethod", "Payment method not found"}
-            });
-        }
-        
-        repositoryPaymentMethod.Delete(expense);
-        await unitOfWork.SaveChangesAsync(cancellationToken);
-        return Result.Success();
-    }
+            { "PaymentMethod", "Payment method not found" }
+        };
 }
