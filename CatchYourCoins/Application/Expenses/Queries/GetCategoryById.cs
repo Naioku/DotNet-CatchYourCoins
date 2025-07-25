@@ -1,32 +1,27 @@
 ﻿using Application.DTOs.Expenses;
-using Domain;
 using Domain.Dashboard.Entities;
 using Domain.Interfaces.Repositories;
-using MediatR;
 
 namespace Application.Expenses.Queries;
 
-public class QueryGetCategoryById : IRequest<Result<CategoryDTO>>
-{
-    public required int Id { get; init; }
-}
+public class QueryGetCategoryById : QueryGetByIdBase<CategoryDTO>;
 
-public class HandlerGetCategoryById(IRepositoryCategory repositoryCategory) : IRequestHandler<QueryGetCategoryById, Result<CategoryDTO>>
+public class HandlerGetCategoryById(IRepositoryCategory repositoryCategory)
+    : HandlerCRUDGetById<Category, QueryGetCategoryById, CategoryDTO>(repositoryCategory)
 {
-    public async Task<Result<CategoryDTO>> Handle(QueryGetCategoryById request, CancellationToken cancellationToken)
+    protected override Dictionary<string, string> GetFailureMessages() =>
+        new()
+        {
+            { "Category", "Category not found" }
+        };
+
+    protected override CategoryDTO MapEntityToDTO(Category entity)
     {
-        Category? category = await repositoryCategory.GetByIdAsync(request.Id);
-
-        if (category == null)
+        return new CategoryDTO
         {
-            return Result<CategoryDTO>.Failure(new Dictionary<string, string> { { "Category", "Category not found" } });
-        }
-        
-        return Result<CategoryDTO>.SetValue(new CategoryDTO
-        {
-            Id = category.Id,
-            Name = category.Name,
-            Limit = category.Limit,
-        });
+            Id = entity.Id,
+            Name = entity.Name,
+            Limit = entity.Limit,
+        };
     }
 }

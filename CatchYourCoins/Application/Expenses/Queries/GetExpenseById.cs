@@ -1,35 +1,30 @@
 ﻿using Application.DTOs.Expenses;
-using Domain;
 using Domain.Dashboard.Entities;
 using Domain.Interfaces.Repositories;
-using MediatR;
 
 namespace Application.Expenses.Queries;
 
-public class QueryGetExpenseById : IRequest<Result<ExpenseDTO>>
-{
-    public required int Id { get; init; }
-}
+public class QueryGetExpenseById : QueryGetByIdBase<ExpenseDTO>;
 
-public class HandlerGetExpenseById(IRepositoryExpense repositoryExpense) : IRequestHandler<QueryGetExpenseById, Result<ExpenseDTO>>
+public class HandlerGetExpenseById(IRepositoryExpense repositoryExpense)
+    : HandlerCRUDGetById<Expense, QueryGetExpenseById, ExpenseDTO>(repositoryExpense)
 {
-    public async Task<Result<ExpenseDTO>> Handle(QueryGetExpenseById request, CancellationToken cancellationToken)
+    protected override Dictionary<string, string> GetFailureMessages() =>
+        new()
+        {
+            { "Expense", "Expense not found" }
+        };
+
+    protected override ExpenseDTO MapEntityToDTO(Expense entity)
     {
-        Expense? expense = await repositoryExpense.GetByIdAsync(request.Id);
-
-        if (expense == null)
+        return new ExpenseDTO
         {
-            return Result<ExpenseDTO>.Failure(new Dictionary<string, string> { { "Expense", "Expense not found" } });
-        }
-
-        return Result<ExpenseDTO>.SetValue(new ExpenseDTO
-        {
-            Id = expense.Id,
-            Amount = expense.Amount,
-            Date = expense.Date,
-            Description = expense.Description,
-            Category = expense.Category?.Name,
-            PaymentMethod = expense.PaymentMethod?.Name,
-        });
+            Id = entity.Id,
+            Amount = entity.Amount,
+            Date = entity.Date,
+            Description = entity.Description,
+            Category = entity.Category?.Name,
+            PaymentMethod = entity.PaymentMethod?.Name,
+        };
     }
 }
