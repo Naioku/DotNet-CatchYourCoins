@@ -15,6 +15,11 @@ public class RepositoryExpense(AppDbContext dbContext, IServiceCurrentUser servi
         await dbContext.Expenses
             .WhereAuthorized(serviceCurrentUser.User.Id)
             .FirstOrDefaultAsync(e => e.Id == id);
+    
+    public Task<List<Expense>> GetAllAsync() =>
+        dbContext.Expenses
+            .WhereAuthorized(serviceCurrentUser.User.Id)
+            .ToListAsync();
 
     public void Delete(Expense expense) => dbContext.Expenses.Remove(expense);
 }

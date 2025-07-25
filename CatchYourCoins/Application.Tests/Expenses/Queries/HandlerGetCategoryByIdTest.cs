@@ -42,6 +42,7 @@ public class HandlerGetCategoryByIdTest : CQRSHandlerTestBase<HandlerGetCategory
 
         // Assert
         Assert.True(result.IsSuccess);
+        Assert.Empty(result.Errors);
         Assert.NotNull(result.Value);
 
         CategoryDTO categoryDTO = result.Value;
@@ -68,8 +69,6 @@ public class HandlerGetCategoryByIdTest : CQRSHandlerTestBase<HandlerGetCategory
         // Assert
         Assert.False(result.IsSuccess);
         Assert.NotEmpty(result.Errors);
-
-        CategoryDTO categoryDTO = result.Value;
-        Assert.Null(categoryDTO);
+        Assert.Null(result.Value);
     }
 }

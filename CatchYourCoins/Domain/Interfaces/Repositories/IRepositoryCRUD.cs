@@ -4,5 +4,6 @@ public interface IRepositoryCRUD<T>
 {
     Task CreateAsync(T entity);
     Task<T?> GetByIdAsync(int id);
+    Task<List<T>> GetAllAsync();
     void Delete(T entity);
 }

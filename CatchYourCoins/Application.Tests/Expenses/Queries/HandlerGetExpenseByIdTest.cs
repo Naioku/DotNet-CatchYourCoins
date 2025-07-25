@@ -43,9 +43,10 @@ public class HandlerGetExpenseByIdTest : CQRSHandlerTestBase<HandlerGetExpenseBy
 
         // Assert
         Assert.True(result.IsSuccess);
+        Assert.Empty(result.Errors);
+        Assert.NotNull(result.Value);
 
         ExpenseDTO expenseDTO = result.Value;
-        Assert.NotNull(expenseDTO);
         Assert.Equal(query.Id, expenseDTO.Id);
         Assert.Equal(expense.Amount, expenseDTO.Amount);
         Assert.Equal(expense.Date, expenseDTO.Date);
@@ -74,8 +75,6 @@ public class HandlerGetExpenseByIdTest : CQRSHandlerTestBase<HandlerGetExpenseBy
         // Assert
         Assert.False(result.IsSuccess);
         Assert.NotEmpty(result.Errors);
-
-        ExpenseDTO expenseDTO = result.Value;
-        Assert.Null(expenseDTO);
+        Assert.Null(result.Value);
     }
 }

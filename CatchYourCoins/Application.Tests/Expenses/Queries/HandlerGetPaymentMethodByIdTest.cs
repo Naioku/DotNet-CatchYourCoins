@@ -43,6 +43,7 @@ public class HandlerGetPaymentMethodByIdTest : CQRSHandlerTestBase<HandlerGetPay
 
         // Assert
         Assert.True(result.IsSuccess);
+        Assert.Empty(result.Errors);
         Assert.NotNull(result.Value);
 
         PaymentMethodDTO paymentMethodDTO = result.Value;
@@ -69,8 +70,6 @@ public class HandlerGetPaymentMethodByIdTest : CQRSHandlerTestBase<HandlerGetPay
         // Assert
         Assert.False(result.IsSuccess);
         Assert.NotEmpty(result.Errors);
-
-        PaymentMethodDTO paymentMethodDTO = result.Value;
-        Assert.Null(paymentMethodDTO);
+        Assert.Null(result.Value);
     }
 }
