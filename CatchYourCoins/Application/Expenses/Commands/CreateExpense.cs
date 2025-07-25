@@ -7,7 +7,7 @@ using MediatR;
 
 namespace Application.Expenses.Commands;
 
-public class CommandAddExpense : IRequest
+public class CommandCreateExpense : IRequest
 {
     public required decimal Amount { get; init; }
     public required DateTime Date { get; init; }
@@ -17,9 +17,9 @@ public class CommandAddExpense : IRequest
 }
 
 [UsedImplicitly]
-public class ValidatorAddExpense : AbstractValidator<CommandAddExpense>
+public class ValidatorCreateExpense : AbstractValidator<CommandCreateExpense>
 {
-    public ValidatorAddExpense()
+    public ValidatorCreateExpense()
     {
         RuleFor(x => x.Amount)
             .NotEmpty()
@@ -34,14 +34,13 @@ public class ValidatorAddExpense : AbstractValidator<CommandAddExpense>
     }
 }
 
-public class HandlerAddExpense(
+public class HandlerCreateExpense(
     IRepositoryExpense repositoryExpense,
     IServiceCurrentUser serviceCurrentUser,
-    IUnitOfWork unitOfWork) : IRequestHandler<CommandAddExpense>
+    IUnitOfWork unitOfWork) : HandlerCRUDCreate<Expense, CommandCreateExpense>(repositoryExpense, unitOfWork)
 {
-    public async Task Handle(CommandAddExpense request, CancellationToken cancellationToken)
-    {
-        await repositoryExpense.CreateExpenseAsync(new Expense
+    protected override Expense MapCommandToEntity(CommandCreateExpense request) =>
+        new()
         {
             Amount = request.Amount,
             Date = request.Date,
@@ -49,7 +48,5 @@ public class HandlerAddExpense(
             UserId = serviceCurrentUser.User.Id,
             CategoryId = request.CategoryId,
             PaymentMethodId = request.PaymentMethodId,
-        });
-        await unitOfWork.SaveChangesAsync(cancellationToken);
-    }
+        };
 }

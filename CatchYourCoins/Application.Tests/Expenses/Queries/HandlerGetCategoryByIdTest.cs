@@ -30,7 +30,7 @@ public class HandlerGetCategoryByIdTest : CQRSHandlerTestBase<HandlerGetCategory
         // Arrange
         Category category = TestFactoryCategory.CreateCategory(TestFactoryUsers.DefaultUser1Authenticated);
         GetMock<IRepositoryCategory>()
-            .Setup(m => m.GetCategoryByIdAsync(It.Is<int>(
+            .Setup(m => m.GetByIdAsync(It.Is<int>(
                 id => id == category.Id
             )))
             .ReturnsAsync(category);
@@ -57,7 +57,7 @@ public class HandlerGetCategoryByIdTest : CQRSHandlerTestBase<HandlerGetCategory
         QueryGetCategoryById query = new() { Id = 1 };
 
         GetMock<IRepositoryCategory>()
-            .Setup(m => m.GetCategoryByIdAsync(It.Is<int>(
+            .Setup(m => m.GetByIdAsync(It.Is<int>(
                 id => id == query.Id
             )))
             .ReturnsAsync((Category)null);

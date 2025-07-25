@@ -15,10 +15,10 @@ public class PaymentMethods(TestFixture fixture) : TestBase(fixture)
     private readonly IServiceCurrentUser _testServiceCurrentUser = fixture.ServiceProvider.GetRequiredService<IServiceCurrentUser>();
 
     [Fact]
-    public async Task AddPaymentMethod_WithValidData_ShouldCreatePaymentMethodInDB()
+    public async Task CreatePaymentMethod_WithValidData_ShouldCreatePaymentMethodInDB()
     {
         // Arrange
-        var command = new CommandAddPaymentMethod
+        var command = new CommandCreatePaymentMethod
         {
             Name = "Test",
             Limit = 1000

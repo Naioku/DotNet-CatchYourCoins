@@ -15,7 +15,7 @@ public class HandlerGetExpenseById(IRepositoryExpense repositoryExpense) : IRequ
 {
     public async Task<Result<ExpenseDTO>> Handle(QueryGetExpenseById request, CancellationToken cancellationToken)
     {
-        Expense? expense = await repositoryExpense.GetExpenseByIdAsync(request.Id);
+        Expense? expense = await repositoryExpense.GetByIdAsync(request.Id);
 
         if (expense == null)
         {

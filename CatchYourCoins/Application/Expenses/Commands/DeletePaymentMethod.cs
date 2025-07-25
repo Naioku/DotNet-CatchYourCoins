@@ -17,7 +17,7 @@ public class HandlerDeletePaymentMethod(
 {
     public async Task<Result> Handle(CommandDeletePaymentMethod request, CancellationToken cancellationToken)
     {
-        PaymentMethod? expense = await repositoryPaymentMethod.GetPaymentMethodByIdAsync(request.Id);
+        PaymentMethod? expense = await repositoryPaymentMethod.GetByIdAsync(request.Id);
         if (expense == null)
         {
             return Result.Failure(new Dictionary<string, string>()
@@ -26,7 +26,7 @@ public class HandlerDeletePaymentMethod(
             });
         }
         
-        repositoryPaymentMethod.DeletePaymentMethod(expense);
+        repositoryPaymentMethod.Delete(expense);
         await unitOfWork.SaveChangesAsync(cancellationToken);
         return Result.Success();
     }

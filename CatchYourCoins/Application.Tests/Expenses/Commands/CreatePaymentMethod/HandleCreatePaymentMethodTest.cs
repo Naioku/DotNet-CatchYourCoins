@@ -9,32 +9,32 @@ using JetBrains.Annotations;
 using Moq;
 using Xunit;
 
-namespace Application.Tests.Expenses.Commands.AddCategory;
+namespace Application.Tests.Expenses.Commands.CreatePaymentMethod;
 
-[TestSubject(typeof(HandlerAddCategory))]
-public class HandlerAddCategoryTest : CQRSHandlerTestBase<HandlerAddCategory>
+[TestSubject(typeof(HandlerCreatePaymentMethod))]
+public class HandlerCreatePaymentMethodTest : CQRSHandlerTestBase<HandlerCreatePaymentMethod>
 {
     public override Task InitializeAsync()
     {
-        RegisterMock<IRepositoryCategory>();
+        RegisterMock<IRepositoryPaymentMethod>();
         RegisterMock<IUnitOfWork>();
         return base.InitializeAsync();
     }
 
-    protected override HandlerAddCategory CreateHandler()
+    protected override HandlerCreatePaymentMethod CreateHandler()
     {
-        return new HandlerAddCategory(
-            GetMock<IRepositoryCategory>().Object,
+        return new HandlerCreatePaymentMethod(
+            GetMock<IRepositoryPaymentMethod>().Object,
             GetMock<IServiceCurrentUser>().Object,
             GetMock<IUnitOfWork>().Object
         );
     }
-    
+
     [Fact]
-    public async Task AddCategory_ValidData_CreateCategory()
+    public async Task CreatePaymentMethod_ValidData_CreatePaymentMethod()
     {
         // Arrange
-        var command = new CommandAddCategory
+        CommandCreatePaymentMethod command = new()
         {
             Name = "Test",
             Limit = 1000
@@ -44,11 +44,12 @@ public class HandlerAddCategoryTest : CQRSHandlerTestBase<HandlerAddCategory>
         await Handler.Handle(command, CancellationToken.None);
 
         // Assert
-        GetMock<IRepositoryCategory>().Verify(m => m.CreateCategoryAsync(
-                It.Is<Category>(c =>
-                    c.Name == command.Name &&
-                    c.Limit == command.Limit &&
-                    c.UserId == TestFactoryUsers.DefaultUser1Authenticated.Id)),
+        GetMock<IRepositoryPaymentMethod>().Verify(
+            m => m.CreateAsync(
+                It.Is<PaymentMethod>(pm =>
+                    pm.Name == command.Name &&
+                    pm.Limit == command.Limit &&
+                    pm.UserId == TestFactoryUsers.DefaultUser1Authenticated.Id)),
             Times.Once
         );
         GetMock<IUnitOfWork>().Verify(

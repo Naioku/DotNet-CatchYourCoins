@@ -7,36 +7,32 @@ using MediatR;
 
 namespace Application.Expenses.Commands;
 
-public class CommandAddPaymentMethod : IRequest
+public class CommandCreatePaymentMethod : IRequest
 {
     public required string Name { get; init; }
     public decimal? Limit { get; init; }
 }
 
 [UsedImplicitly]
-public class ValidatorAddPaymentMethod : AbstractValidator<CommandAddPaymentMethod>
+public class ValidatorCreatePaymentMethod : AbstractValidator<CommandCreatePaymentMethod>
 {
-    public ValidatorAddPaymentMethod()
+    public ValidatorCreatePaymentMethod()
     {
         RuleFor(x => x.Name)
             .NotEmpty();
     }
 }
 
-public class HandlerAddPaymentMethod(
+public class HandlerCreatePaymentMethod(
     IRepositoryPaymentMethod repositoryCategory,
     IServiceCurrentUser serviceCurrentUser,
-    IUnitOfWork unitOfWork) : IRequestHandler<CommandAddPaymentMethod>
+    IUnitOfWork unitOfWork) : HandlerCRUDCreate<PaymentMethod, CommandCreatePaymentMethod>(repositoryCategory, unitOfWork)
 {
-    public async Task Handle(CommandAddPaymentMethod request, CancellationToken cancellationToken)
-    {
-        await repositoryCategory.CreatePaymentMethodAsync(new PaymentMethod
+    protected override PaymentMethod MapCommandToEntity(CommandCreatePaymentMethod request) =>
+        new()
         {
             Name = request.Name,
             Limit = request.Limit,
             UserId = serviceCurrentUser.User.Id
-        });
-
-        await unitOfWork.SaveChangesAsync(cancellationToken);
-    }
+        };
 }

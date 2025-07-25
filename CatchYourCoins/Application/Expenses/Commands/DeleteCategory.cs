@@ -17,7 +17,7 @@ public class HandlerDeleteCategory(
 {
     public async Task<Result> Handle(CommandDeleteCategory request, CancellationToken cancellationToken)
     {
-        Category? expense = await repositoryCategory.GetCategoryByIdAsync(request.Id);
+        Category? expense = await repositoryCategory.GetByIdAsync(request.Id);
         if (expense == null)
         {
             return Result.Failure(new Dictionary<string, string>()
@@ -26,7 +26,7 @@ public class HandlerDeleteCategory(
             });
         }
         
-        repositoryCategory.DeleteCategory(expense);
+        repositoryCategory.Delete(expense);
         await unitOfWork.SaveChangesAsync(cancellationToken);
         return Result.Success();
     }

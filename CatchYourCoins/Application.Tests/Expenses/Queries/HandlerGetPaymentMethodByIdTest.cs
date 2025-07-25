@@ -30,7 +30,7 @@ public class HandlerGetPaymentMethodByIdTest : CQRSHandlerTestBase<HandlerGetPay
         // Arrange
         PaymentMethod paymentMethod = TestFactoryPaymentMethod.CreatePaymentMethod(TestFactoryUsers.DefaultUser1Authenticated);
         GetMock<IRepositoryPaymentMethod>()
-            .Setup(m => m.GetPaymentMethodByIdAsync(It.Is<int>(
+            .Setup(m => m.GetByIdAsync(It.Is<int>(
                 id => id == paymentMethod.Id
             )))
             .ReturnsAsync(paymentMethod);
@@ -58,7 +58,7 @@ public class HandlerGetPaymentMethodByIdTest : CQRSHandlerTestBase<HandlerGetPay
         QueryGetPaymentMethodById query = new() { Id = 1 };
 
         GetMock<IRepositoryPaymentMethod>()
-            .Setup(m => m.GetPaymentMethodByIdAsync(It.Is<int>(
+            .Setup(m => m.GetByIdAsync(It.Is<int>(
                 id => id == query.Id
             )))
             .ReturnsAsync((PaymentMethod)null);

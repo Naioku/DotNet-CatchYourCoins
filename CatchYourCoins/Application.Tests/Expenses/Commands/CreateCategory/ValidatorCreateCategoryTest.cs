@@ -2,14 +2,14 @@
 using JetBrains.Annotations;
 using Xunit;
 
-namespace Application.Tests.Expenses.Commands.AddCategory;
+namespace Application.Tests.Expenses.Commands.CreateCategory;
 
-[TestSubject(typeof(ValidatorAddCategory))]
-public class ValidatorAddCategoryTest : ValidatorTestBase<ValidatorAddCategory, CommandAddCategory>
+[TestSubject(typeof(ValidatorCreateCategory))]
+public class ValidatorCreateCategoryTest : ValidatorTestBase<ValidatorCreateCategory, CommandCreateCategory>
 {
     [Fact]
     public void Validate_AllValidData_NoError() =>
-        AssertSuccess(new CommandAddCategory
+        AssertSuccess(new CommandCreateCategory
         {
             Name = "Test",
             Limit = 1000
@@ -17,14 +17,14 @@ public class ValidatorAddCategoryTest : ValidatorTestBase<ValidatorAddCategory, 
 
     [Fact]
     public void Validate_MinimalValidData_NoError() =>
-        AssertSuccess(new CommandAddCategory
+        AssertSuccess(new CommandCreateCategory
         {
             Name = "Test"
         });
 
     [Fact]
     public void Validate_EmptyName_Error() =>
-        AssertFailure(new CommandAddCategory
+        AssertFailure(new CommandCreateCategory
         {
             Name = "",
             Limit = 1000

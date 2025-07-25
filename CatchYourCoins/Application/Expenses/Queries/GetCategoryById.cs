@@ -15,7 +15,7 @@ public class HandlerGetCategoryById(IRepositoryCategory repositoryCategory) : IR
 {
     public async Task<Result<CategoryDTO>> Handle(QueryGetCategoryById request, CancellationToken cancellationToken)
     {
-        Category? category = await repositoryCategory.GetCategoryByIdAsync(request.Id);
+        Category? category = await repositoryCategory.GetByIdAsync(request.Id);
 
         if (category == null)
         {

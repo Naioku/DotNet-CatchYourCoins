@@ -30,7 +30,7 @@ public class HandlerGetExpenseByIdTest : CQRSHandlerTestBase<HandlerGetExpenseBy
         // Arrange
         Expense expense = TestFactoryExpense.CreateExpense(TestFactoryUsers.DefaultUser1Authenticated);
         GetMock<IRepositoryExpense>()
-            .Setup(m => m.GetExpenseByIdAsync(It.Is<int>(
+            .Setup(m => m.GetByIdAsync(It.Is<int>(
                 id => id == expense.Id
             )))
             .ReturnsAsync(expense);
@@ -63,7 +63,7 @@ public class HandlerGetExpenseByIdTest : CQRSHandlerTestBase<HandlerGetExpenseBy
         QueryGetExpenseById query = new() { Id = 1 };
 
         GetMock<IRepositoryExpense>()
-            .Setup(m => m.GetExpenseByIdAsync(It.Is<int>(
+            .Setup(m => m.GetByIdAsync(It.Is<int>(
                 id => id == query.Id
             )))
             .ReturnsAsync((Expense)null);

@@ -35,7 +35,7 @@ public class HandlerDeleteExpenseTest : CQRSHandlerTestBase<HandlerDeleteExpense
         // Arrange
         Expense expense = TestFactoryExpense.CreateExpense(TestFactoryUsers.DefaultUser1Authenticated);
         GetMock<IRepositoryExpense>()
-            .Setup(m => m.GetExpenseByIdAsync(It.Is<int>(
+            .Setup(m => m.GetByIdAsync(It.Is<int>(
                 id => id == expense.Id
             )))
             .ReturnsAsync(expense);
@@ -48,7 +48,7 @@ public class HandlerDeleteExpenseTest : CQRSHandlerTestBase<HandlerDeleteExpense
         // Assert
         Assert.True(result.IsSuccess);
         Assert.Empty(result.Errors);
-        GetMock<IRepositoryExpense>().Verify(m => m.DeleteExpense(It.Is<Expense>(e => e.Id == command.Id)));
+        GetMock<IRepositoryExpense>().Verify(m => m.Delete(It.Is<Expense>(e => e.Id == command.Id)));
         GetMock<IUnitOfWork>().Verify(m => m.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
     }
 
@@ -57,7 +57,7 @@ public class HandlerDeleteExpenseTest : CQRSHandlerTestBase<HandlerDeleteExpense
     {
         // Arrange
         GetMock<IRepositoryExpense>()
-            .Setup(m => m.GetExpenseByIdAsync(It.Is<int>(
+            .Setup(m => m.GetByIdAsync(It.Is<int>(
                 id => id == 1
             )))
             .ReturnsAsync((Expense)null);
@@ -70,6 +70,6 @@ public class HandlerDeleteExpenseTest : CQRSHandlerTestBase<HandlerDeleteExpense
         // Assert
         Assert.False(result.IsSuccess);
         Assert.NotEmpty(result.Errors);
-        GetMock<IRepositoryExpense>().Verify(m => m.DeleteExpense(It.IsAny<Expense>()), Times.Never);
+        GetMock<IRepositoryExpense>().Verify(m => m.Delete(It.IsAny<Expense>()), Times.Never);
     }
 }

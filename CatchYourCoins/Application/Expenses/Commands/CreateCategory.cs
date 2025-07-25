@@ -7,36 +7,32 @@ using MediatR;
 
 namespace Application.Expenses.Commands;
 
-public class CommandAddCategory : IRequest
+public class CommandCreateCategory : IRequest
 {
     public required string Name { get; init; }
     public decimal? Limit { get; init; }
 }
 
 [UsedImplicitly]
-public class ValidatorAddCategory : AbstractValidator<CommandAddCategory>
+public class ValidatorCreateCategory : AbstractValidator<CommandCreateCategory>
 {
-    public ValidatorAddCategory()
+    public ValidatorCreateCategory()
     {
         RuleFor(x => x.Name)
             .NotEmpty();
     }
 }
 
-public class HandlerAddCategory(
+public class HandlerCreateCategory(
     IRepositoryCategory repositoryCategory,
     IServiceCurrentUser serviceCurrentUser,
-    IUnitOfWork unitOfWork) : IRequestHandler<CommandAddCategory>
+    IUnitOfWork unitOfWork) : HandlerCRUDCreate<Category, CommandCreateCategory>(repositoryCategory, unitOfWork)
 {
-    public async Task Handle(CommandAddCategory request, CancellationToken cancellationToken)
-    {
-        await repositoryCategory.CreateCategoryAsync(new Category
+    protected override Category MapCommandToEntity(CommandCreateCategory request) =>
+        new()
         {
             Name = request.Name,
             Limit = request.Limit,
             UserId = serviceCurrentUser.User.Id
-        });
-
-        await unitOfWork.SaveChangesAsync(cancellationToken);
-    }
+        };
 }

@@ -35,7 +35,7 @@ public class HandlerDeleteCategoryTest : CQRSHandlerTestBase<HandlerDeleteCatego
         // Arrange
         Category category = TestFactoryCategory.CreateCategory(TestFactoryUsers.DefaultUser1Authenticated);
         GetMock<IRepositoryCategory>()
-            .Setup(m => m.GetCategoryByIdAsync(It.Is<int>(
+            .Setup(m => m.GetByIdAsync(It.Is<int>(
                 id => id == category.Id
             )))
             .ReturnsAsync(category);
@@ -48,7 +48,7 @@ public class HandlerDeleteCategoryTest : CQRSHandlerTestBase<HandlerDeleteCatego
         // Assert
         Assert.True(result.IsSuccess);
         Assert.Empty(result.Errors);
-        GetMock<IRepositoryCategory>().Verify(m => m.DeleteCategory(It.Is<Category>(e => e.Id == command.Id)));
+        GetMock<IRepositoryCategory>().Verify(m => m.Delete(It.Is<Category>(e => e.Id == command.Id)));
         GetMock<IUnitOfWork>().Verify(m => m.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
     }
 
@@ -57,7 +57,7 @@ public class HandlerDeleteCategoryTest : CQRSHandlerTestBase<HandlerDeleteCatego
     {
         // Arrange
         GetMock<IRepositoryCategory>()
-            .Setup(m => m.GetCategoryByIdAsync(It.Is<int>(
+            .Setup(m => m.GetByIdAsync(It.Is<int>(
                 id => id == 1
             )))
             .ReturnsAsync((Category)null);
@@ -70,6 +70,6 @@ public class HandlerDeleteCategoryTest : CQRSHandlerTestBase<HandlerDeleteCatego
         // Assert
         Assert.False(result.IsSuccess);
         Assert.NotEmpty(result.Errors);
-        GetMock<IRepositoryCategory>().Verify(m => m.DeleteCategory(It.IsAny<Category>()), Times.Never);
+        GetMock<IRepositoryCategory>().Verify(m => m.Delete(It.IsAny<Category>()), Times.Never);
     }
 }

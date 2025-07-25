@@ -62,13 +62,13 @@ public class Expenses(TestFixture fixture) : TestBase(fixture)
         => (await dbContext.PaymentMethods.AddAsync(paymentMethod)).Entity;
 
     [Fact]
-    public async Task AddExpense_WithValidData_ShouldCreateExpenseInDB()
+    public async Task CreateExpense_WithValidData_ShouldCreateExpenseInDB()
     {
         // Arrange
         Assert.NotNull(_categoryUser1);
         Assert.NotNull(_paymentMethodUser1);
     
-        var command = new CommandAddExpense
+        var command = new CommandCreateExpense
         {
             Amount = 100,
             Date = DateTime.Now,

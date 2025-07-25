@@ -15,10 +15,10 @@ public class Categories(TestFixture fixture) : TestBase(fixture)
     private readonly IServiceCurrentUser _testServiceCurrentUser = fixture.ServiceProvider.GetRequiredService<IServiceCurrentUser>();
 
     [Fact]
-    public async Task AddCategory_WithValidData_ShouldCreateCategoryInDB()
+    public async Task CreateCategory_WithValidData_ShouldCreateCategoryInDB()
     {
         // Arrange
-        var command = new CommandAddCategory
+        var command = new CommandCreateCategory
         {
             Name = "Test",
             Limit = 1000

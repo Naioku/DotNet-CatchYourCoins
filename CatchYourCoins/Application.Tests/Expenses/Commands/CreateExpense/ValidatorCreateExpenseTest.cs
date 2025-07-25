@@ -3,14 +3,14 @@ using Application.Expenses.Commands;
 using JetBrains.Annotations;
 using Xunit;
 
-namespace Application.Tests.Expenses.Commands.AddExpense;
+namespace Application.Tests.Expenses.Commands.CreateExpense;
 
-[TestSubject(typeof(ValidatorAddExpense))]
-public class ValidatorAddExpenseTest : ValidatorTestBase<ValidatorAddExpense, CommandAddExpense>
+[TestSubject(typeof(ValidatorCreateExpense))]
+public class ValidatorCreateExpenseTest : ValidatorTestBase<ValidatorCreateExpense, CommandCreateExpense>
 {
     [Fact]
     public void Validate_AllValidData_NoError() =>
-        AssertSuccess(new CommandAddExpense
+        AssertSuccess(new CommandCreateExpense
         {
             Amount = 100,
             Date = DateTime.Now,
@@ -21,7 +21,7 @@ public class ValidatorAddExpenseTest : ValidatorTestBase<ValidatorAddExpense, Co
 
     [Fact]
     public void Validate_MinimumValidData_NoError() =>
-        AssertSuccess(new CommandAddExpense
+        AssertSuccess(new CommandCreateExpense
         {
             Amount = 100,
             Date = DateTime.Now,
@@ -29,7 +29,7 @@ public class ValidatorAddExpenseTest : ValidatorTestBase<ValidatorAddExpense, Co
 
     [Fact]
     public void Validate_InvalidAmount_Error() =>
-        AssertFailure(new CommandAddExpense
+        AssertFailure(new CommandCreateExpense
         {
             Amount = -100,
             Date = DateTime.Now,

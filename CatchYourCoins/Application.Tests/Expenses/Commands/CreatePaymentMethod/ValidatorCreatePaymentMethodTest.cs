@@ -2,14 +2,14 @@
 using JetBrains.Annotations;
 using Xunit;
 
-namespace Application.Tests.Expenses.Commands.AddPaymentMethod;
+namespace Application.Tests.Expenses.Commands.CreatePaymentMethod;
 
-[TestSubject(typeof(ValidatorAddPaymentMethod))]
-public class ValidatorAddPaymentMethodTest : ValidatorTestBase<ValidatorAddPaymentMethod, CommandAddPaymentMethod>
+[TestSubject(typeof(ValidatorCreatePaymentMethod))]
+public class ValidatorCreatePaymentMethodTest : ValidatorTestBase<ValidatorCreatePaymentMethod, CommandCreatePaymentMethod>
 {
     [Fact]
     public void Validate_AllValidData_NoError() =>
-        AssertSuccess(new CommandAddPaymentMethod
+        AssertSuccess(new CommandCreatePaymentMethod
         {
             Name = "Test",
             Limit = 1000
@@ -17,7 +17,7 @@ public class ValidatorAddPaymentMethodTest : ValidatorTestBase<ValidatorAddPayme
 
     [Fact]
     public void Validate_MinimalValidData_NoError() =>
-        AssertSuccess(new CommandAddPaymentMethod
+        AssertSuccess(new CommandCreatePaymentMethod
         {
             Name = "Test",
         });
@@ -25,7 +25,7 @@ public class ValidatorAddPaymentMethodTest : ValidatorTestBase<ValidatorAddPayme
     [Fact]
     public void Validate_EmptyName_Error()
     {
-        AssertFailure(new CommandAddPaymentMethod
+        AssertFailure(new CommandCreatePaymentMethod
         {
             Name = "",
             Limit = 1000

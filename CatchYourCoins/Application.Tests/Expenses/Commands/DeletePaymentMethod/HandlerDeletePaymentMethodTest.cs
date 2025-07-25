@@ -35,7 +35,7 @@ public class HandlerDeletePaymentMethodTest : CQRSHandlerTestBase<HandlerDeleteP
         // Arrange
         PaymentMethod paymentMethod = TestFactoryPaymentMethod.CreatePaymentMethod(TestFactoryUsers.DefaultUser1Authenticated);
         GetMock<IRepositoryPaymentMethod>()
-            .Setup(m => m.GetPaymentMethodByIdAsync(It.Is<int>(
+            .Setup(m => m.GetByIdAsync(It.Is<int>(
                 id => id == paymentMethod.Id
             )))
             .ReturnsAsync(paymentMethod);
@@ -48,7 +48,7 @@ public class HandlerDeletePaymentMethodTest : CQRSHandlerTestBase<HandlerDeleteP
         // Assert
         Assert.True(result.IsSuccess);
         Assert.Empty(result.Errors);
-        GetMock<IRepositoryPaymentMethod>().Verify(m => m.DeletePaymentMethod(It.Is<PaymentMethod>(e => e.Id == command.Id)));
+        GetMock<IRepositoryPaymentMethod>().Verify(m => m.Delete(It.Is<PaymentMethod>(e => e.Id == command.Id)));
         GetMock<IUnitOfWork>().Verify(m => m.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
     }
 
@@ -57,7 +57,7 @@ public class HandlerDeletePaymentMethodTest : CQRSHandlerTestBase<HandlerDeleteP
     {
         // Arrange
         GetMock<IRepositoryPaymentMethod>()
-            .Setup(m => m.GetPaymentMethodByIdAsync(It.Is<int>(
+            .Setup(m => m.GetByIdAsync(It.Is<int>(
                 id => id == 1
             )))
             .ReturnsAsync((PaymentMethod)null);
@@ -70,6 +70,6 @@ public class HandlerDeletePaymentMethodTest : CQRSHandlerTestBase<HandlerDeleteP
         // Assert
         Assert.False(result.IsSuccess);
         Assert.NotEmpty(result.Errors);
-        GetMock<IRepositoryPaymentMethod>().Verify(m => m.DeletePaymentMethod(It.IsAny<PaymentMethod>()), Times.Never);
+        GetMock<IRepositoryPaymentMethod>().Verify(m => m.Delete(It.IsAny<PaymentMethod>()), Times.Never);
     }
 }

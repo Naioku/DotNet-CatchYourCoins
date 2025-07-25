@@ -10,10 +10,10 @@ using JetBrains.Annotations;
 using Moq;
 using Xunit;
 
-namespace Application.Tests.Expenses.Commands.AddExpense;
+namespace Application.Tests.Expenses.Commands.CreateExpense;
 
-[TestSubject(typeof(HandlerAddExpense))]
-public class HandlerAddExpenseTest : CQRSHandlerTestBase<HandlerAddExpense>
+[TestSubject(typeof(HandlerCreateExpense))]
+public class HandlerCreateExpenseTest : CQRSHandlerTestBase<HandlerCreateExpense>
 {
     public override Task InitializeAsync()
     {
@@ -22,9 +22,9 @@ public class HandlerAddExpenseTest : CQRSHandlerTestBase<HandlerAddExpense>
         return base.InitializeAsync();
     }
 
-    protected override HandlerAddExpense CreateHandler()
+    protected override HandlerCreateExpense CreateHandler()
     {
-        return new HandlerAddExpense(
+        return new HandlerCreateExpense(
             GetMock<IRepositoryExpense>().Object,
             GetMock<IServiceCurrentUser>().Object,
             GetMock<IUnitOfWork>().Object
@@ -32,10 +32,10 @@ public class HandlerAddExpenseTest : CQRSHandlerTestBase<HandlerAddExpense>
     }
 
     [Fact]
-    public async Task AddExpense_AllValidData_CreateExpense()
+    public async Task CreateExpense_AllValidData_CreateExpense()
     {
         // Arrange
-        CommandAddExpense command = new()
+        CommandCreateExpense command = new()
         {
             Amount = 100,
             Date = DateTime.Now,
@@ -49,7 +49,7 @@ public class HandlerAddExpenseTest : CQRSHandlerTestBase<HandlerAddExpense>
 
         // Assert
         GetMock<IRepositoryExpense>().Verify(
-            m => m.CreateExpenseAsync(It.Is<Expense>(e =>
+            m => m.CreateAsync(It.Is<Expense>(e =>
                 e.Amount == command.Amount &&
                 e.Date == command.Date &&
                 e.UserId == TestFactoryUsers.DefaultUser1Authenticated.Id &&

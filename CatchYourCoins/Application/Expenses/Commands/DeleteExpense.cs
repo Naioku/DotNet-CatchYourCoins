@@ -17,7 +17,7 @@ public class HandlerDeleteExpense(
 {
     public async Task<Result> Handle(CommandDeleteExpense request, CancellationToken cancellationToken)
     {
-        Expense? expense = await repositoryExpense.GetExpenseByIdAsync(request.Id);
+        Expense? expense = await repositoryExpense.GetByIdAsync(request.Id);
         if (expense == null)
         {
             return Result.Failure(new Dictionary<string, string>()
@@ -26,7 +26,7 @@ public class HandlerDeleteExpense(
             });
         }
         
-        repositoryExpense.DeleteExpense(expense);
+        repositoryExpense.Delete(expense);
         await unitOfWork.SaveChangesAsync(cancellationToken);
         return Result.Success();
     }
