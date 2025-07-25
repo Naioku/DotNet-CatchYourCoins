@@ -15,13 +15,11 @@ public class HandlerGetCategoryById(IRepositoryCategory repositoryCategory)
             { "Category", "Category not found" }
         };
 
-    protected override CategoryDTO MapEntityToDTO(Category entity)
-    {
-        return new CategoryDTO
+    protected override CategoryDTO MapEntityToDTO(Category entity) =>
+        new()
         {
             Id = entity.Id,
             Name = entity.Name,
             Limit = entity.Limit,
         };
-    }
 }

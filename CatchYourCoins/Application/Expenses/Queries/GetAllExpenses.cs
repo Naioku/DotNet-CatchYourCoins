@@ -4,15 +4,14 @@ using Domain.Interfaces.Repositories;
 
 namespace Application.Expenses.Queries;
 
-public class QueryGetExpenseById : QueryGetByIdBase<ExpenseDTO>;
+public class QueryGetAllExpenses : QueryGetAllBase<ExpenseDTO>;
 
-public class HandlerGetExpenseById(IRepositoryExpense repositoryExpense)
-    : HandlerCRUDGetById<Expense, QueryGetExpenseById, ExpenseDTO>(repositoryExpense)
+public class HandlerGetAllExpenses(IRepositoryExpense repository) : HandlerCRUDGetAll<Expense, QueryGetAllExpenses, ExpenseDTO>(repository)
 {
     protected override Dictionary<string, string> GetFailureMessages() =>
         new()
         {
-            { "Expense", "Expense not found" }
+            { "Expenses", "Expenses not found" }
         };
 
     protected override ExpenseDTO MapEntityToDTO(Expense entity) =>

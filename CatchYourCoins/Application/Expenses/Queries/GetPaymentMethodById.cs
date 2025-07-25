@@ -17,13 +17,11 @@ public class HandlerGetPaymentMethodById(IRepositoryPaymentMethod repositoryPaym
             { "PaymentMethod", "Payment method not found" }
         };
 
-    protected override PaymentMethodDTO MapEntityToDTO(PaymentMethod entity)
-    {
-        return new PaymentMethodDTO
+    protected override PaymentMethodDTO MapEntityToDTO(PaymentMethod entity) =>
+        new()
         {
             Id = entity.Id,
             Name = entity.Name,
             Limit = entity.Limit,
         };
-    }
 }
