@@ -1,0 +1,27 @@
+﻿using Domain.Dashboard.Entities;
+using Domain.Interfaces.Repositories;
+using Domain.Interfaces.Services;
+using Infrastructure.Extensions;
+using Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
+
+namespace Infrastructure.Repositories;
+
+public class RepositoryCategory(
+    AppDbContext dbContext,
+    IServiceCurrentUser serviceCurrentUser) : IRepositoryCategory
+{
+    public async Task CreateAsync(Category category) => await dbContext.Categories.AddAsync(category);
+
+    public async Task<Category?> GetByIdAsync(int id) =>
+        await dbContext.Categories
+            .WhereAuthorized(serviceCurrentUser.User.Id)
+            .FirstOrDefaultAsync(c => c.Id == id);
+
+    public Task<List<Category>> GetAllAsync() =>
+        dbContext.Categories
+            .WhereAuthorized(serviceCurrentUser.User.Id)
+            .ToListAsync();
+
+    public void Delete(Category category) => dbContext.Categories.Remove(category);
+}

@@ -1,6 +1,6 @@
 ﻿using Domain.IdentityEntities;
 
-namespace Domain.Interfaces;
+namespace Domain.Interfaces.Services;
 
 public interface IServiceIdentity
 {

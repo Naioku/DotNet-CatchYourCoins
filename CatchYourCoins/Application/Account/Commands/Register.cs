@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Domain;
-using Domain.Interfaces;
+using Domain.Interfaces.Services;
 using FluentValidation;
 using JetBrains.Annotations;
 using MediatR;
@@ -18,12 +18,6 @@ public class CommandRegister : IRequest<Result>
     
     [DataType(DataType.Password)]
     public required string PasswordConfirmation { get; init; }
-}
-
-public class HandlerRegister(IServiceIdentity identityService) : IRequestHandler<CommandRegister, Result>
-{
-    public async Task<Result> Handle(CommandRegister request, CancellationToken cancellationToken) =>
-        await identityService.RegisterUserAsync(request.Email, request.UserName, request.Password);
 }
 
 [UsedImplicitly]
@@ -45,4 +39,10 @@ public class ValidatorRegister : AbstractValidator<CommandRegister>
             .NotEmpty()
             .Equal(x => x.Password);
     }
+}
+
+public class HandlerRegister(IServiceIdentity identityService) : IRequestHandler<CommandRegister, Result>
+{
+    public async Task<Result> Handle(CommandRegister request, CancellationToken cancellationToken) =>
+        await identityService.RegisterUserAsync(request.Email, request.UserName, request.Password);
 }

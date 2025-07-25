@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Domain;
 using Domain.IdentityEntities;
-using Domain.Interfaces;
+using Domain.Interfaces.Services;
 using FluentValidation;
 using JetBrains.Annotations;
 using MediatR;
@@ -17,12 +17,6 @@ public class CommandLogIn : IRequest<Result<ResultLogIn>>
     public required string Password { get; init; }
 }
 
-public class HandlerLogIn(IServiceIdentity identityService) : IRequestHandler<CommandLogIn, Result<ResultLogIn>>
-{
-    public async Task<Result<ResultLogIn>> Handle(CommandLogIn request, CancellationToken cancellationToken) =>
-        await identityService.LogInAsync(request.Email, request.Password);
-}
-
 [UsedImplicitly]
 public class ValidatorLogIn : AbstractValidator<CommandLogIn>
 {
@@ -35,4 +29,10 @@ public class ValidatorLogIn : AbstractValidator<CommandLogIn>
         RuleFor(x => x.Password)
             .NotEmpty();
     }
+}
+
+public class HandlerLogIn(IServiceIdentity identityService) : IRequestHandler<CommandLogIn, Result<ResultLogIn>>
+{
+    public async Task<Result<ResultLogIn>> Handle(CommandLogIn request, CancellationToken cancellationToken) =>
+        await identityService.LogInAsync(request.Email, request.Password);
 }
