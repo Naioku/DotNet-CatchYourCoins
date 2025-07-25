@@ -21,5 +21,10 @@
   <ItemGroup>
     <ProjectReference Include="..\Application\Application.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Expenses\Commands\Create\" />
+    <Folder Include="Expenses\Commands\Delete\" />
+  </ItemGroup>
   
 </Project>
