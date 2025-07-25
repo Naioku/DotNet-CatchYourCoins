@@ -3,7 +3,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Application.DTOs.Expenses;
 using Application.Expenses.Queries;
-using Application.Tests.Factories;
 using Domain;
 using Domain.Dashboard.Entities;
 using Domain.Interfaces.Repositories;
@@ -30,7 +29,7 @@ public class HandlerGetAllPaymentMethodsTest : CQRSHandlerTestBase<HandlerGetAll
     public async Task GetAll_ValidData_ReturnsAll()
     {
         // Arrange
-        List<PaymentMethod> paymentMethods = TestFactoryPaymentMethod.CreatePaymentMethods(TestFactoryUsers.DefaultUser1Authenticated, 5);
+        List<PaymentMethod> paymentMethods = FactoryPaymentMethod.CreateEntities(TestFactoryUsers.DefaultUser1Authenticated, 5);
         GetMock<IRepositoryPaymentMethod>()
             .Setup(m => m.GetAllAsync())
             .ReturnsAsync(paymentMethods);

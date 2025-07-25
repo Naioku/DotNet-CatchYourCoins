@@ -1,26 +1,14 @@
-﻿using System.Collections.Generic;
-using Domain.Dashboard.Entities;
+﻿using Domain.Dashboard.Entities;
 
 namespace Application.Tests.Factories;
 
-public class TestFactoryPaymentMethod
+public class TestFactoryPaymentMethod : TestFactoryBase<PaymentMethod>
 {
-    public static PaymentMethod CreatePaymentMethod(CurrentUser currentUser, int id = 1) => new()
+    public override PaymentMethod CreateEntity(CurrentUser currentUser, int id = 1) => new()
     {
-        Id = 1,
+        Id = id,
         Limit = 100,
         Name = "Test",
         UserId = currentUser.Id
     };
-
-    public static List<PaymentMethod> CreatePaymentMethods(CurrentUser currentUser, int quantity)
-    {
-        List<PaymentMethod> result = [];
-        for (int i = 0; i < quantity; i++)
-        {
-            result.Add(CreatePaymentMethod(currentUser, i + 1));
-        }
-        
-        return result;
-    }
 }

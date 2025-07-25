@@ -3,11 +3,11 @@ using Domain.Dashboard.Entities;
 
 namespace Application.Tests.Factories;
 
-public static class TestFactoryExpense
+public class TestFactoryExpense : TestFactoryBase<Expense>
 {
-    public static Expense CreateExpense(CurrentUser currentUser) => new()
+    public override Expense CreateEntity(CurrentUser currentUser, int id = 1) => new()
     {
-        Id = 1,
+        Id = id,
         Amount = 100,
         Date = DateTime.Now,
         Description = "Test",

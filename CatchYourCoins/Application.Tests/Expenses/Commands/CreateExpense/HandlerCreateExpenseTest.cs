@@ -2,7 +2,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Expenses.Commands;
-using Application.Tests.Factories;
 using Domain.Dashboard.Entities;
 using Domain.Interfaces.Repositories;
 using Domain.Interfaces.Services;
@@ -32,7 +31,7 @@ public class HandlerCreateExpenseTest : CQRSHandlerTestBase<HandlerCreateExpense
     }
 
     [Fact]
-    public async Task CreateExpense_AllValidData_CreateExpense()
+    public async Task Create_ValidData_EntityCreated()
     {
         // Arrange
         CommandCreateExpense command = new()

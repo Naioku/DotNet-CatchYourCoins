@@ -3,13 +3,13 @@ using Domain.Dashboard.Entities;
 
 namespace Application.Tests.Factories;
 
-public static class TestFactoryUsers
+public class TestFactoryUsers
 {
-    public static CurrentUser DefaultUser1Authenticated { get; } = DefaultUser1();
-    public static CurrentUser DefaultUser1Anonymous { get; } = DefaultUser1(false);
+    public CurrentUser DefaultUser1Authenticated { get; } = DefaultUser1();
+    public CurrentUser DefaultUser1Anonymous { get; } = DefaultUser1(false);
     
-    public static CurrentUser DefaultUser2Authenticated { get; } = DefaultUser2();
-    public static CurrentUser DefaultUser2Anonymous { get; } = DefaultUser2(false);
+    public CurrentUser DefaultUser2Authenticated { get; } = DefaultUser2();
+    public CurrentUser DefaultUser2Anonymous { get; } = DefaultUser2(false);
 
     private static CurrentUser DefaultUser1(bool authenticated = true) => new()
     {

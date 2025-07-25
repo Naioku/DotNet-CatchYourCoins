@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using Application.DTOs.Expenses;
 using Application.Expenses.Queries;
-using Application.Tests.Factories;
 using Domain;
 using Domain.Dashboard.Entities;
 using Domain.Interfaces.Repositories;
@@ -25,10 +24,10 @@ public class HandlerGetExpenseByIdTest : CQRSHandlerTestBase<HandlerGetExpenseBy
         new(GetMock<IRepositoryExpense>().Object);
 
     [Fact]
-    public async Task GetExpense_ValidDataAndExpenseExists_ReturnExpense()
+    public async Task GetOne_ValidData_ReturnOne()
     {
         // Arrange
-        Expense expense = TestFactoryExpense.CreateExpense(TestFactoryUsers.DefaultUser1Authenticated);
+        Expense expense = FactoryExpense.CreateEntity(TestFactoryUsers.DefaultUser1Authenticated);
         GetMock<IRepositoryExpense>()
             .Setup(m => m.GetByIdAsync(It.Is<int>(
                 id => id == expense.Id
@@ -58,7 +57,7 @@ public class HandlerGetExpenseByIdTest : CQRSHandlerTestBase<HandlerGetExpenseBy
     }
 
     [Fact]
-    public async Task GetExpense_NoExpense_ReturnNull()
+    public async Task GetOne_NoEntryAtPassedID_ReturnNull()
     {
         // Arrange
         QueryGetExpenseById query = new() { Id = 1 };

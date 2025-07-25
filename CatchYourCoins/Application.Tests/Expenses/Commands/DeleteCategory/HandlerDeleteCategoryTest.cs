@@ -1,7 +1,6 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using Application.Expenses.Commands;
-using Application.Tests.Factories;
 using Domain;
 using Domain.Dashboard.Entities;
 using Domain.Interfaces.Repositories;
@@ -33,7 +32,7 @@ public class HandlerDeleteCategoryTest : CQRSHandlerTestBase<HandlerDeleteCatego
     public async Task DeleteCategory_ValidData_DeleteCategory()
     {
         // Arrange
-        Category category = TestFactoryCategory.CreateCategory(TestFactoryUsers.DefaultUser1Authenticated);
+        Category category = FactoryCategory.CreateEntity(TestFactoryUsers.DefaultUser1Authenticated);
         GetMock<IRepositoryCategory>()
             .Setup(m => m.GetByIdAsync(It.Is<int>(
                 id => id == category.Id
@@ -53,7 +52,7 @@ public class HandlerDeleteCategoryTest : CQRSHandlerTestBase<HandlerDeleteCatego
     }
 
     [Fact]
-    public async Task DeleteCategory_NoExpenseUnderPassedID_NotDeleteCategory()
+    public async Task DeleteCategory_NoCategoryUnderPassedID_NotDeleteCategory()
     {
         // Arrange
         GetMock<IRepositoryCategory>()

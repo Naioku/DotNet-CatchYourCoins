@@ -3,7 +3,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Application.DTOs.Expenses;
 using Application.Expenses.Queries;
-using Application.Tests.Factories;
 using Domain;
 using Domain.Dashboard.Entities;
 using Domain.Interfaces.Repositories;
@@ -30,7 +29,7 @@ public class HandlerGetAllCategoriesTest : CQRSHandlerTestBase<HandlerGetAllCate
     public async Task GetAll_ValidData_ReturnsAll()
     {
         // Arrange
-        List<Category> categories = TestFactoryCategory.CreateCategories(TestFactoryUsers.DefaultUser1Authenticated, 5);
+        List<Category> categories = FactoryCategory.CreateEntities(TestFactoryUsers.DefaultUser1Authenticated, 5);
         GetMock<IRepositoryCategory>()
             .Setup(m => m.GetAllAsync())
             .ReturnsAsync(categories);

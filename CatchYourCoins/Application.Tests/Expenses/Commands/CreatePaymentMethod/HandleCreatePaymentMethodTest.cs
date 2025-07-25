@@ -1,7 +1,6 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using Application.Expenses.Commands;
-using Application.Tests.Factories;
 using Domain.Dashboard.Entities;
 using Domain.Interfaces.Repositories;
 using Domain.Interfaces.Services;
@@ -31,7 +30,7 @@ public class HandlerCreatePaymentMethodTest : CQRSHandlerTestBase<HandlerCreateP
     }
 
     [Fact]
-    public async Task CreatePaymentMethod_ValidData_CreatePaymentMethod()
+    public async Task Create_ValidData_EntryCreated()
     {
         // Arrange
         CommandCreatePaymentMethod command = new()

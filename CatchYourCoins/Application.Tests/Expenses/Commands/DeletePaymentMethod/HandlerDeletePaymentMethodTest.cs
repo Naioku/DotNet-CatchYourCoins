@@ -1,7 +1,6 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using Application.Expenses.Commands;
-using Application.Tests.Factories;
 using Domain;
 using Domain.Dashboard.Entities;
 using Domain.Interfaces.Repositories;
@@ -30,10 +29,10 @@ public class HandlerDeletePaymentMethodTest : CQRSHandlerTestBase<HandlerDeleteP
     }
 
     [Fact]
-    public async Task DeleteCategory_ValidData_DeleteCategory()
+    public async Task Delete_ValidData_EntryDeleted()
     {
         // Arrange
-        PaymentMethod paymentMethod = TestFactoryPaymentMethod.CreatePaymentMethod(TestFactoryUsers.DefaultUser1Authenticated);
+        PaymentMethod paymentMethod = FactoryPaymentMethod.CreateEntity(TestFactoryUsers.DefaultUser1Authenticated);
         GetMock<IRepositoryPaymentMethod>()
             .Setup(m => m.GetByIdAsync(It.Is<int>(
                 id => id == paymentMethod.Id
@@ -53,7 +52,7 @@ public class HandlerDeletePaymentMethodTest : CQRSHandlerTestBase<HandlerDeleteP
     }
 
     [Fact]
-    public async Task DeleteCategory_NoExpenseUnderPassedID_NotDeleteCategory()
+    public async Task Delete_NoEntryInDBAtPassedID_EntryNotDeleted()
     {
         // Arrange
         GetMock<IRepositoryPaymentMethod>()

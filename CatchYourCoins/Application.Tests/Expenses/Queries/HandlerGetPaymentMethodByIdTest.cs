@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using Application.DTOs.Expenses;
 using Application.Expenses.Queries;
-using Application.Tests.Factories;
 using Domain;
 using Domain.Dashboard.Entities;
 using Domain.Interfaces.Repositories;
@@ -25,10 +24,10 @@ public class HandlerGetPaymentMethodByIdTest : CQRSHandlerTestBase<HandlerGetPay
         new(GetMock<IRepositoryPaymentMethod>().Object);
 
     [Fact]
-    public async Task GetPaymentMethod_ValidData_ReturnPaymentMethod()
+    public async Task GetOne_ValidData_Return()
     {
         // Arrange
-        PaymentMethod paymentMethod = TestFactoryPaymentMethod.CreatePaymentMethod(TestFactoryUsers.DefaultUser1Authenticated);
+        PaymentMethod paymentMethod = FactoryPaymentMethod.CreateEntity(TestFactoryUsers.DefaultUser1Authenticated);
         GetMock<IRepositoryPaymentMethod>()
             .Setup(m => m.GetByIdAsync(It.Is<int>(
                 id => id == paymentMethod.Id
@@ -53,7 +52,7 @@ public class HandlerGetPaymentMethodByIdTest : CQRSHandlerTestBase<HandlerGetPay
     }
 
     [Fact]
-    public async Task GetPaymentMethod_NoPaymentMethod_ReturnNull()
+    public async Task GetOne_NoEntryAtPassedID_ReturnNull()
     {
         // Arrange
         QueryGetPaymentMethodById query = new() { Id = 1 };

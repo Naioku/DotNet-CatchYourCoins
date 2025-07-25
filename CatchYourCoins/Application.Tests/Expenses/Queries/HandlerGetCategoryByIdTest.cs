@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using Application.DTOs.Expenses;
 using Application.Expenses.Queries;
-using Application.Tests.Factories;
 using Domain;
 using Domain.Dashboard.Entities;
 using Domain.Interfaces.Repositories;
@@ -25,10 +24,10 @@ public class HandlerGetCategoryByIdTest : CQRSHandlerTestBase<HandlerGetCategory
         new(GetMock<IRepositoryCategory>().Object);
 
     [Fact]
-    public async Task GetCategory_ValidData_ReturnCategory()
+    public async Task GetOne_ValidData_ReturnOne()
     {
         // Arrange
-        Category category = TestFactoryCategory.CreateCategory(TestFactoryUsers.DefaultUser1Authenticated);
+        Category category = FactoryCategory.CreateEntity(TestFactoryUsers.DefaultUser1Authenticated);
         GetMock<IRepositoryCategory>()
             .Setup(m => m.GetByIdAsync(It.Is<int>(
                 id => id == category.Id
@@ -52,7 +51,7 @@ public class HandlerGetCategoryByIdTest : CQRSHandlerTestBase<HandlerGetCategory
     }
 
     [Fact]
-    public async Task GetCategory_NoCategory_ReturnNull()
+    public async Task GetOne_NoEntryAtPassedID_ReturnNull()
     {
         // Arrange
         QueryGetCategoryById query = new() { Id = 1 };

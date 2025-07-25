@@ -15,6 +15,10 @@ public abstract class CQRSHandlerTestBase<THandler> : IAsyncLifetime
     private readonly Dictionary<Type, object> _mocks = new();
 
     protected THandler Handler { get; private set; }
+    protected TestFactoryUsers TestFactoryUsers { get; } = new();
+    public TestFactoryCategory FactoryCategory { get; } = new();
+    public TestFactoryPaymentMethod FactoryPaymentMethod { get; } = new();
+    public TestFactoryExpense FactoryExpense { get; } = new();
 
     protected Mock<T> GetMock<T>() where T : class => _mocks[typeof(T)] as Mock<T>;
     protected void RegisterMock<T>() where T : class => _mocks[typeof(T)] = new Mock<T>();
