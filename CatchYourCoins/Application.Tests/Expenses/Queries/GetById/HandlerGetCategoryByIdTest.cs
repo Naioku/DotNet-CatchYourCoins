@@ -1,18 +1,24 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Application.DTOs.Expenses;
 using Application.Expenses.Queries.GetById;
-using Domain;
+using Application.Tests.Factories;
 using Domain.Dashboard.Entities;
 using Domain.Interfaces.Repositories;
 using JetBrains.Annotations;
-using Moq;
 using Xunit;
 
 namespace Application.Tests.Expenses.Queries.GetById;
 
 [TestSubject(typeof(HandlerGetCategoryById))]
-public class HandlerGetCategoryByIdTest : CQRSHandlerTestBase<HandlerGetCategoryById>
+public class HandlerGetCategoryByIdTest
+    : HandlerGetByIdTest<
+        HandlerGetCategoryById,
+        Category,
+        CategoryDTO,
+        QueryGetCategoryById,
+        IRepositoryCategory,
+        TestFactoryCategory
+    >
 {
     public override Task InitializeAsync()
     {
@@ -22,52 +28,21 @@ public class HandlerGetCategoryByIdTest : CQRSHandlerTestBase<HandlerGetCategory
 
     protected override HandlerGetCategoryById CreateHandler() =>
         new(GetMock<IRepositoryCategory>().Object);
+    
+    protected override QueryGetCategoryById GetQuery() => new() { Id = 1 };
 
     [Fact]
-    public async Task GetOne_ValidData_ReturnOne()
+    public async Task GetOne_ValidData_ReturnedOne()
     {
-        // Arrange
-        Category entity = FactoryCategory.CreateEntity(TestFactoryUsers.DefaultUser1Authenticated);
-        GetMock<IRepositoryCategory>()
-            .Setup(m => m.GetByIdAsync(It.Is<int>(
-                id => id == entity.Id
-            )))
-            .ReturnsAsync(entity);
-        
-        QueryGetCategoryById query = new() { Id = entity.Id };
-
-        // Act
-        Result<CategoryDTO> result = await Handler.Handle(query, CancellationToken.None);
-
-        // Assert
-        Assert.True(result.IsSuccess);
-        Assert.Empty(result.Errors);
-        Assert.NotNull(result.Value);
-
-        CategoryDTO dto = result.Value;
-        Assert.Equal(query.Id, dto.Id);
-        Assert.Equal(entity.Name, dto.Name);
-        Assert.Equal(entity.Limit, dto.Limit);
+        await GetOne_ValidData_ReturnedOne_Base((inputEntity, resultDTO) =>
+        {
+            Assert.Equal(inputEntity.Id, resultDTO.Id);
+            Assert.Equal(inputEntity.Name, resultDTO.Name);
+            Assert.Equal(inputEntity.Limit, resultDTO.Limit);
+        });
     }
 
     [Fact]
-    public async Task GetOne_NoEntryAtPassedID_ReturnNull()
-    {
-        // Arrange
-        QueryGetCategoryById query = new() { Id = 1 };
-
-        GetMock<IRepositoryCategory>()
-            .Setup(m => m.GetByIdAsync(It.Is<int>(
-                id => id == query.Id
-            )))
-            .ReturnsAsync((Category)null);
-
-        // Act
-        Result<CategoryDTO> result = await Handler.Handle(query, CancellationToken.None);
-
-        // Assert
-        Assert.False(result.IsSuccess);
-        Assert.NotEmpty(result.Errors);
-        Assert.Null(result.Value);
-    }
+    public async Task GetOne_NoEntryAtPassedID_ReturnedNull() =>
+        await GetOne_NoEntryAtPassedID_ReturnedNull_Base();
 }

@@ -1,25 +1,26 @@
-﻿using System.Threading;
+﻿using System;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Application.Expenses.Commands.Create;
+using Application.Tests.Factories;
 using Domain.Dashboard.Entities;
 using Domain.Interfaces.Repositories;
 using Domain.Interfaces.Services;
 using JetBrains.Annotations;
-using Moq;
 using Xunit;
 
 namespace Application.Tests.Expenses.Commands.Create.CreatePaymentMethod;
 
 [TestSubject(typeof(HandlerCreatePaymentMethod))]
-public class HandlerCreatePaymentMethodTest : CQRSHandlerTestBase<HandlerCreatePaymentMethod>
+public class HandlerCreatePaymentMethodTest
+    : HandlerCreateTest<
+        HandlerCreatePaymentMethod,
+        PaymentMethod,
+        CommandCreatePaymentMethod,
+        IRepositoryPaymentMethod,
+        TestFactoryPaymentMethod
+    >
 {
-    public override Task InitializeAsync()
-    {
-        RegisterMock<IRepositoryPaymentMethod>();
-        RegisterMock<IUnitOfWork>();
-        return base.InitializeAsync();
-    }
-
     protected override HandlerCreatePaymentMethod CreateHandler()
     {
         return new HandlerCreatePaymentMethod(
@@ -28,32 +29,21 @@ public class HandlerCreatePaymentMethodTest : CQRSHandlerTestBase<HandlerCreateP
             GetMock<IUnitOfWork>().Object
         );
     }
-
-    [Fact]
-    public async Task Create_ValidData_EntryCreated()
-    {
-        // Arrange
-        CommandCreatePaymentMethod command = new()
+    
+    protected override CommandCreatePaymentMethod GetCommand() =>
+        new()
         {
             Name = "Test",
             Limit = 1000
         };
 
-        // Act
-        await Handler.Handle(command, CancellationToken.None);
+    protected override Expression<Func<PaymentMethod, bool>> GetRepositoryMatch(CommandCreatePaymentMethod command) =>
+        pm =>
+            pm.Name == command.Name &&
+            pm.Limit == command.Limit &&
+            pm.UserId == TestFactoryUsers.DefaultUser1Authenticated.Id;
 
-        // Assert
-        GetMock<IRepositoryPaymentMethod>().Verify(
-            m => m.CreateAsync(
-                It.Is<PaymentMethod>(pm =>
-                    pm.Name == command.Name &&
-                    pm.Limit == command.Limit &&
-                    pm.UserId == TestFactoryUsers.DefaultUser1Authenticated.Id)),
-            Times.Once
-        );
-        GetMock<IUnitOfWork>().Verify(
-            m => m.SaveChangesAsync(It.IsAny<CancellationToken>()),
-            Times.Once
-        );
-    }
+    [Fact]
+    public async Task Create_ValidData_EntryCreated() =>
+        await Create_ValidData_EntityCreated_Base();
 }

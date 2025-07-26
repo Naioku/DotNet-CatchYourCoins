@@ -1,17 +1,16 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Application.Expenses.Commands.Delete;
-using Domain;
+using Application.Tests.Factories;
 using Domain.Dashboard.Entities;
 using Domain.Interfaces.Repositories;
 using JetBrains.Annotations;
-using Moq;
 using Xunit;
 
 namespace Application.Tests.Expenses.Commands.Delete.DeleteExpense;
 
 [TestSubject(typeof(HandlerDeleteExpense))]
-public class HandlerDeleteExpenseTest : CQRSHandlerTestBase<HandlerDeleteExpense>
+public class HandlerDeleteExpenseTest
+    : HandlerDeleteTest<HandlerDeleteExpense, Expense, CommandDeleteExpense, IRepositoryExpense, TestFactoryExpense, IUnitOfWork>
 {
     public override Task InitializeAsync()
     {
@@ -28,47 +27,13 @@ public class HandlerDeleteExpenseTest : CQRSHandlerTestBase<HandlerDeleteExpense
         );
     }
     
-    [Fact]
-    public async Task Delete_ValidData_EntryDeleted()
-    {
-        // Arrange
-        Expense entity = FactoryExpense.CreateEntity(TestFactoryUsers.DefaultUser1Authenticated);
-        GetMock<IRepositoryExpense>()
-            .Setup(m => m.GetByIdAsync(It.Is<int>(
-                id => id == entity.Id
-            )))
-            .ReturnsAsync(entity);
-    
-        CommandDeleteExpense command = new() { Id = entity.Id };
-    
-        // Act
-        Result result = await Handler.Handle(command, CancellationToken.None);
-    
-        // Assert
-        Assert.True(result.IsSuccess);
-        Assert.Empty(result.Errors);
-        GetMock<IRepositoryExpense>().Verify(m => m.Delete(It.Is<Expense>(e => e.Id == command.Id)));
-        GetMock<IUnitOfWork>().Verify(m => m.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
-    }
+    protected override CommandDeleteExpense GetCommand() => new() { Id = 1 };
     
     [Fact]
-    public async Task Delete_NoEntryInDBAtPassedID_EntryNotDeleted()
-    {
-        // Arrange
-        GetMock<IRepositoryExpense>()
-            .Setup(m => m.GetByIdAsync(It.Is<int>(
-                id => id == 1
-            )))
-            .ReturnsAsync((Expense)null);
-    
-        CommandDeleteExpense command = new() { Id = 1 };
-    
-        // Act
-        Result result = await Handler.Handle(command, CancellationToken.None);
-    
-        // Assert
-        Assert.False(result.IsSuccess);
-        Assert.NotEmpty(result.Errors);
-        GetMock<IRepositoryExpense>().Verify(m => m.Delete(It.IsAny<Expense>()), Times.Never);
-    }
+    public async Task DeleteOne_ValidData_DeletedEntity() =>
+        await DeleteOne_ValidData_DeletedEntity_Base();
+
+    [Fact]
+    public async Task DeleteOne_NoEntryAtPassedID_DeletedNothing() =>
+        await DeleteOne_NoEntryAtPassedID_DeletedNothing_Base();
 }

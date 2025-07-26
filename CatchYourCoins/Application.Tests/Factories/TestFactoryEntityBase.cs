@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
+using Domain;
 using Domain.Dashboard.Entities;
 
 namespace Application.Tests.Factories;
 
-public abstract class TestFactoryBase<TEntity> where TEntity : class
+public abstract class TestFactoryEntityBase<TEntity> where TEntity : IEntity
 {
    public abstract TEntity CreateEntity(CurrentUser currentUser, int id = 1);
 

@@ -3,7 +3,7 @@ using Domain.Interfaces.Repositories;
 
 namespace Domain.Dashboard.Entities;
 
-public class Expense : IAutorizable
+public class Expense : IAutorizable, IEntity
 {
     public int Id { get; init; }
     public required decimal Amount { get; init; }

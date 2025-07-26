@@ -1,19 +1,17 @@
-﻿using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Application.DTOs.Expenses;
 using Application.Expenses.Queries.GetAll;
-using Domain;
+using Application.Tests.Factories;
 using Domain.Dashboard.Entities;
 using Domain.Interfaces.Repositories;
 using JetBrains.Annotations;
-using Moq;
 using Xunit;
 
 namespace Application.Tests.Expenses.Queries.GetAll;
 
 [TestSubject(typeof(HandlerGetAllCategories))]
-public class HandlerGetAllCategoriesTest : CQRSHandlerTestBase<HandlerGetAllCategories>
+public class HandlerGetAllCategoriesTest
+    : HandlerGetAllTest<HandlerGetAllCategories, Category, CategoryDTO, QueryGetAllCategories, IRepositoryCategory, TestFactoryCategory>
 {
     public override Task InitializeAsync()
     {
@@ -23,53 +21,16 @@ public class HandlerGetAllCategoriesTest : CQRSHandlerTestBase<HandlerGetAllCate
 
     protected override HandlerGetAllCategories CreateHandler() =>
         new(GetMock<IRepositoryCategory>().Object);
-
     
     [Fact]
-    public async Task GetAll_ValidData_ReturnsAll()
-    {
-        // Arrange
-        List<Category> entities = FactoryCategory.CreateEntities(TestFactoryUsers.DefaultUser1Authenticated, 5);
-        GetMock<IRepositoryCategory>()
-            .Setup(m => m.GetAllAsync())
-            .ReturnsAsync(entities);
-        
-        QueryGetAllCategories query = new();
-
-        // Act
-        Result<IReadOnlyList<CategoryDTO>> result = await Handler.Handle(query, CancellationToken.None);
-
-        // Assert
-        Assert.True(result.IsSuccess);
-        Assert.Empty(result.Errors);
-        Assert.NotNull(result.Value);
-
-        IReadOnlyList<CategoryDTO> dtos = result.Value;
-
-        for (var i = 0; i < dtos.Count; i++)
+    public async Task GetAll_ValidData_ReturnedAll() =>
+        await GetAll_ValidData_ReturnedAll_Base((inputEntity, dtoResult) =>
         {
-            CategoryDTO dto = dtos[i];
-            Assert.Equal(entities[i].Name, dto.Name);
-            Assert.Equal(entities[i].Limit, dto.Limit);
-        }
-    }
+            Assert.Equal(inputEntity.Name, dtoResult.Name);
+            Assert.Equal(inputEntity.Limit, dtoResult.Limit);
+        });
     
     [Fact]
-    public async Task GetAll_NoEntryInDB_ReturnsNull()
-    {
-        // Arrange
-        GetMock<IRepositoryCategory>()
-            .Setup(m => m.GetAllAsync())
-            .ReturnsAsync([]);
-        
-        QueryGetAllCategories query = new();
-
-        // Act
-        Result<IReadOnlyList<CategoryDTO>> result = await Handler.Handle(query, CancellationToken.None);
-
-        // Assert
-        Assert.False(result.IsSuccess);
-        Assert.NotEmpty(result.Errors);
-        Assert.Null(result.Value);
-    }
+    public async Task GetAll_NoEntryInDB_ReturnedNull() =>
+        await GetAll_NoEntryInDB_ReturnedNull_Base();
 }

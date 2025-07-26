@@ -3,7 +3,7 @@ using Domain.Dashboard.Entities;
 
 namespace Application.Tests.Factories;
 
-public class TestFactoryExpense : TestFactoryBase<Expense>
+public class TestFactoryExpense : TestFactoryEntityBase<Expense>
 {
     public override Expense CreateEntity(CurrentUser currentUser, int id = 1) => new()
     {

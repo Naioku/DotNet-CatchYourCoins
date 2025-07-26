@@ -6,7 +6,7 @@ namespace Application.Requests.Commands.Create;
 public abstract class HandlerCRUDCreate<TEntity, TCommand>(
     IRepositoryCRUD<TEntity> repository,
     IUnitOfWork unitOfWork) : IRequestHandler<TCommand>
-where TCommand : IRequest
+    where TCommand : IRequest
 {
     protected abstract TEntity MapCommandToEntity(TCommand request);
 
