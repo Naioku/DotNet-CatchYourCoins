@@ -3,7 +3,7 @@ using Domain.Interfaces.Repositories;
 
 namespace Domain.Dashboard.Entities;
 
-public class PaymentMethod : IAutorizable
+public class PaymentMethod : IAutorizable, IEntity
 {
     public int Id { get; init; }
     public required string Name { get; init; }

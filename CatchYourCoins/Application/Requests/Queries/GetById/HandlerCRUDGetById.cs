@@ -1,5 +1,4 @@
-﻿using Application.Expenses.Queries.GetById;
-using Domain;
+﻿using Domain;
 using Domain.Interfaces.Repositories;
 using MediatR;
 

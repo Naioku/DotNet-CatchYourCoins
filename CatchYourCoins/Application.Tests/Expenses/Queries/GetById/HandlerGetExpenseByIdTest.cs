@@ -1,18 +1,24 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Application.DTOs.Expenses;
 using Application.Expenses.Queries.GetById;
-using Domain;
+using Application.Tests.Factories;
 using Domain.Dashboard.Entities;
 using Domain.Interfaces.Repositories;
 using JetBrains.Annotations;
-using Moq;
 using Xunit;
 
 namespace Application.Tests.Expenses.Queries.GetById;
 
 [TestSubject(typeof(HandlerGetExpenseById))]
-public class HandlerGetExpenseByIdTest : CQRSHandlerTestBase<HandlerGetExpenseById>
+public class HandlerGetExpenseByIdTest
+    : HandlerGetByIdTest<
+        HandlerGetExpenseById,
+        Expense,
+        ExpenseDTO,
+        QueryGetExpenseById,
+        IRepositoryExpense,
+        TestFactoryExpense
+    >
 {
     public override Task InitializeAsync()
     {
@@ -22,58 +28,26 @@ public class HandlerGetExpenseByIdTest : CQRSHandlerTestBase<HandlerGetExpenseBy
 
     protected override HandlerGetExpenseById CreateHandler() =>
         new(GetMock<IRepositoryExpense>().Object);
+    
+    protected override QueryGetExpenseById GetQuery() => new() { Id = 1 };
 
     [Fact]
-    public async Task GetOne_ValidData_ReturnOne()
+    public async Task GetOne_ValidData_ReturnedOne()
     {
-        // Arrange
-        Expense entity = FactoryExpense.CreateEntity(TestFactoryUsers.DefaultUser1Authenticated);
-        GetMock<IRepositoryExpense>()
-            .Setup(m => m.GetByIdAsync(It.Is<int>(
-                id => id == entity.Id
-            )))
-            .ReturnsAsync(entity);
-        
-        QueryGetExpenseById query = new() { Id = entity.Id };
-
-
-        // Act
-        Result<ExpenseDTO> result = await Handler.Handle(query, CancellationToken.None);
-
-        // Assert
-        Assert.True(result.IsSuccess);
-        Assert.Empty(result.Errors);
-        Assert.NotNull(result.Value);
-
-        ExpenseDTO dto = result.Value;
-        Assert.Equal(query.Id, dto.Id);
-        Assert.Equal(entity.Amount, dto.Amount);
-        Assert.Equal(entity.Date, dto.Date);
-        Assert.Equal(entity.Description, dto.Description);
-        Assert.NotNull(entity.Category);
-        Assert.NotNull(entity.PaymentMethod);
-        Assert.Equal(entity.Category.Name, dto.Category);
-        Assert.Equal(entity.PaymentMethod.Name, dto.PaymentMethod);
+        await GetOne_ValidData_ReturnedOne_Base((inputEntity, resultDTO) =>
+        {
+            Assert.Equal(inputEntity.Id, resultDTO.Id);
+            Assert.Equal(inputEntity.Amount, resultDTO.Amount);
+            Assert.Equal(inputEntity.Date, resultDTO.Date);
+            Assert.Equal(inputEntity.Description, resultDTO.Description);
+            Assert.NotNull(inputEntity.Category);
+            Assert.NotNull(inputEntity.PaymentMethod);
+            Assert.Equal(inputEntity.Category.Name, resultDTO.Category);
+            Assert.Equal(inputEntity.PaymentMethod.Name, resultDTO.PaymentMethod);
+        });
     }
 
     [Fact]
-    public async Task GetOne_NoEntryAtPassedID_ReturnNull()
-    {
-        // Arrange
-        QueryGetExpenseById query = new() { Id = 1 };
-
-        GetMock<IRepositoryExpense>()
-            .Setup(m => m.GetByIdAsync(It.Is<int>(
-                id => id == query.Id
-            )))
-            .ReturnsAsync((Expense)null);
-
-        // Act
-        Result<ExpenseDTO> result = await Handler.Handle(query, CancellationToken.None);
-
-        // Assert
-        Assert.False(result.IsSuccess);
-        Assert.NotEmpty(result.Errors);
-        Assert.Null(result.Value);
-    }
+    public async Task GetOne_NoEntryAtPassedID_ReturnedNull() =>
+        await GetOne_NoEntryAtPassedID_ReturnedNull_Base();
 }
