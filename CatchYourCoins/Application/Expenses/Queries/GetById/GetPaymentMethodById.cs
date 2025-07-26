@@ -7,7 +7,7 @@ namespace Application.Expenses.Queries.GetById;
 
 public class QueryGetPaymentMethodById : QueryGetByIdBase<PaymentMethodDTO>;
 
-public class HandlerGetPaymentMethodById(IRepositoryPaymentMethod repositoryPaymentMethod)
+public class TestHandlerGetPaymentMethodById(IRepositoryPaymentMethod repositoryPaymentMethod)
     : HandlerCRUDGetById<PaymentMethod, QueryGetPaymentMethodById, PaymentMethodDTO>(repositoryPaymentMethod)
 {
     protected override Dictionary<string, string> GetFailureMessages() =>

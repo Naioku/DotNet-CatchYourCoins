@@ -7,7 +7,7 @@ namespace Application.Expenses.Queries.GetById;
 
 public class QueryGetExpenseById : QueryGetByIdBase<ExpenseDTO>;
 
-public class HandlerGetExpenseById(IRepositoryExpense repositoryExpense)
+public class TestHandlerGetExpenseById(IRepositoryExpense repositoryExpense)
     : HandlerCRUDGetById<Expense, QueryGetExpenseById, ExpenseDTO>(repositoryExpense)
 {
     protected override Dictionary<string, string> GetFailureMessages() =>

@@ -8,9 +8,9 @@ namespace Application.Expenses.Commands.Delete;
 public class CommandDeleteCategory : CommandDeleteBase;
 
 [UsedImplicitly]
-public class ValidatorDeleteCategory : ValidatorDeleteBase<CommandDeleteCategory>;
+public class TestValidatorDeleteCategory : ValidatorDeleteBase<CommandDeleteCategory>;
 
-public class HandlerDeleteCategory(
+public class TestHandlerDeleteCategory(
     IRepositoryCategory repositoryCategory,
     IUnitOfWork unitOfWork) : HandlerCRUDDelete<Category, CommandDeleteCategory>(repositoryCategory, unitOfWork)
 {

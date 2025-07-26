@@ -11,7 +11,7 @@ using Xunit;
 
 namespace Application.Tests;
 
-public abstract class HandlerGetAllTest<THandler, TEntity, TDTO, TQuery, TRepository, TFactory>
+public abstract class TestHandlerGetAll<THandler, TEntity, TDTO, TQuery, TRepository, TFactory>
     : CQRSHandlerTestBase<THandler, TFactory, TEntity>
     where THandler : HandlerCRUDGetAll<TEntity, TQuery, TDTO>
     where TEntity : IEntity

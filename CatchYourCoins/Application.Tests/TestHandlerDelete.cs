@@ -9,7 +9,7 @@ using Xunit;
 
 namespace Application.Tests;
 
-public abstract class HandlerDeleteTest<THandler, TEntity, TCommand, TRepository, TFactory, TUnitOfWork>
+public abstract class TestHandlerDelete<THandler, TEntity, TCommand, TRepository, TFactory, TUnitOfWork>
     : CQRSHandlerTestBase<THandler, TFactory, TEntity>
     where THandler : HandlerCRUDDelete<TEntity, TCommand>
     where TEntity : class, IEntity

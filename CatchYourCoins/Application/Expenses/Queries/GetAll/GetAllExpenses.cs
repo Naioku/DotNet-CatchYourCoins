@@ -7,7 +7,7 @@ namespace Application.Expenses.Queries.GetAll;
 
 public class QueryGetAllExpenses : QueryGetAllBase<ExpenseDTO>;
 
-public class HandlerGetAllExpenses(IRepositoryExpense repository) : HandlerCRUDGetAll<Expense, QueryGetAllExpenses, ExpenseDTO>(repository)
+public class TestHandlerGetAllExpenses(IRepositoryExpense repository) : HandlerCRUDGetAll<Expense, QueryGetAllExpenses, ExpenseDTO>(repository)
 {
     protected override Dictionary<string, string> GetFailureMessages() =>
         new()

@@ -3,7 +3,7 @@ using FluentValidation.TestHelper;
 
 namespace Application.Tests;
 
-public abstract class ValidatorTestBase<TValidator, TCommand>
+public abstract class TestValidatorBase<TValidator, TCommand>
     where TValidator : AbstractValidator<TCommand>, new()
 {
     protected void AssertSuccess(TCommand command)

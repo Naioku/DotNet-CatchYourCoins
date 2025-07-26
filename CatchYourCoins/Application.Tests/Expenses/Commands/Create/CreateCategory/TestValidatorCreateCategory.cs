@@ -4,8 +4,8 @@ using Xunit;
 
 namespace Application.Tests.Expenses.Commands.Create.CreateCategory;
 
-[TestSubject(typeof(ValidatorCreateCategory))]
-public class ValidatorCreateCategoryTest : ValidatorTestBase<ValidatorCreateCategory, CommandCreateCategory>
+[TestSubject(typeof(Application.Expenses.Commands.Create.TestValidatorCreateCategory))]
+public class TestValidatorCreateCategory : TestValidatorBase<Application.Expenses.Commands.Create.TestValidatorCreateCategory, CommandCreateCategory>
 {
     [Fact]
     public void Validate_AllValidData_NoError() =>

@@ -7,7 +7,7 @@ namespace Application.Expenses.Queries.GetAll;
 
 public class QueryGetAllCategories : QueryGetAllBase<CategoryDTO>;
 
-public class HandlerGetAllCategories(IRepositoryCategory repository) : HandlerCRUDGetAll<Category, QueryGetAllCategories, CategoryDTO>(repository)
+public class TestHandlerGetAllCategories(IRepositoryCategory repository) : HandlerCRUDGetAll<Category, QueryGetAllCategories, CategoryDTO>(repository)
 {
     protected override Dictionary<string, string> GetFailureMessages() =>
         new()

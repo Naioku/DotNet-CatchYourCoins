@@ -11,19 +11,19 @@ using Xunit;
 
 namespace Application.Tests.Expenses.Commands.Create.CreateCategory;
 
-[TestSubject(typeof(HandlerCreateCategory))]
-public class HandlerCreateCategoryTest
-    : HandlerCreateTest<
-        HandlerCreateCategory,
+[TestSubject(typeof(Application.Expenses.Commands.Create.TestHandlerCreateCategory))]
+public class TestHandlerCreateCategory
+    : TestHandlerCreate<
+        Application.Expenses.Commands.Create.TestHandlerCreateCategory,
         Category,
         CommandCreateCategory,
         IRepositoryCategory,
         TestFactoryCategory
     >
 {
-    protected override HandlerCreateCategory CreateHandler()
+    protected override Application.Expenses.Commands.Create.TestHandlerCreateCategory CreateHandler()
     {
-        return new HandlerCreateCategory(
+        return new Application.Expenses.Commands.Create.TestHandlerCreateCategory(
             GetMock<IRepositoryCategory>().Object,
             GetMock<IServiceCurrentUser>().Object,
             GetMock<IUnitOfWork>().Object

@@ -9,9 +9,9 @@ using Xunit;
 
 namespace Application.Tests.Expenses.Queries.GetAll;
 
-[TestSubject(typeof(HandlerGetAllExpenses))]
-public class HandlerGetAllExpensesTest
-    : HandlerGetAllTest<HandlerGetAllExpenses, Expense, ExpenseDTO, QueryGetAllExpenses, IRepositoryExpense, TestFactoryExpense>
+[TestSubject(typeof(Application.Expenses.Queries.GetAll.TestHandlerGetAllExpenses))]
+public class TestHandlerGetAllExpenses
+    : TestHandlerGetAll<Application.Expenses.Queries.GetAll.TestHandlerGetAllExpenses, Expense, ExpenseDTO, QueryGetAllExpenses, IRepositoryExpense, TestFactoryExpense>
 {
     public override Task InitializeAsync()
     {
@@ -19,7 +19,7 @@ public class HandlerGetAllExpensesTest
         return base.InitializeAsync();
     }
 
-    protected override HandlerGetAllExpenses CreateHandler() =>
+    protected override Application.Expenses.Queries.GetAll.TestHandlerGetAllExpenses CreateHandler() =>
         new(GetMock<IRepositoryExpense>().Object);
     
     [Fact]

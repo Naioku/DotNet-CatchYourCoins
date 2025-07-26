@@ -10,7 +10,7 @@ using Xunit;
 
 namespace Application.Tests;
 
-public abstract class HandlerGetByIdTest<THandler, TEntity, TDTO, TQuery, TRepository, TFactory>
+public abstract class TestHandlerGetById<THandler, TEntity, TDTO, TQuery, TRepository, TFactory>
     : CQRSHandlerTestBase<THandler, TFactory, TEntity>
     where THandler : HandlerCRUDGetById<TEntity, TQuery, TDTO>
     where TEntity : class, IEntity

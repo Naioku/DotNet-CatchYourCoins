@@ -8,9 +8,9 @@ using Xunit;
 
 namespace Application.Tests.Expenses.Commands.Delete.DeleteCategory;
 
-[TestSubject(typeof(HandlerDeleteCategory))]
-public class HandlerDeleteCategoryTest
-    : HandlerDeleteTest<HandlerDeleteCategory, Category, CommandDeleteCategory, IRepositoryCategory, TestFactoryCategory, IUnitOfWork>
+[TestSubject(typeof(Application.Expenses.Commands.Delete.TestHandlerDeleteCategory))]
+public class TestHandlerDeleteCategory
+    : TestHandlerDelete<Application.Expenses.Commands.Delete.TestHandlerDeleteCategory, Category, CommandDeleteCategory, IRepositoryCategory, TestFactoryCategory, IUnitOfWork>
 {
     public override Task InitializeAsync()
     {
@@ -19,9 +19,9 @@ public class HandlerDeleteCategoryTest
         return base.InitializeAsync();
     }
 
-    protected override HandlerDeleteCategory CreateHandler()
+    protected override Application.Expenses.Commands.Delete.TestHandlerDeleteCategory CreateHandler()
     {
-        return new HandlerDeleteCategory(
+        return new Application.Expenses.Commands.Delete.TestHandlerDeleteCategory(
             GetMock<IRepositoryCategory>().Object,
             GetMock<IUnitOfWork>().Object
         );

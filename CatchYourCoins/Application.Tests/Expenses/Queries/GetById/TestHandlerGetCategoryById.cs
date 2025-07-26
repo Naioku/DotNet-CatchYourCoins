@@ -9,27 +9,27 @@ using Xunit;
 
 namespace Application.Tests.Expenses.Queries.GetById;
 
-[TestSubject(typeof(HandlerGetPaymentMethodById))]
-public class HandlerGetPaymentMethodByIdTest
-    : HandlerGetByIdTest<
-        HandlerGetPaymentMethodById,
-        PaymentMethod,
-        PaymentMethodDTO,
-        QueryGetPaymentMethodById,
-        IRepositoryPaymentMethod,
-        TestFactoryPaymentMethod
+[TestSubject(typeof(Application.Expenses.Queries.GetById.TestHandlerGetCategoryById))]
+public class TestHandlerGetCategoryById
+    : TestHandlerGetById<
+        Application.Expenses.Queries.GetById.TestHandlerGetCategoryById,
+        Category,
+        CategoryDTO,
+        QueryGetCategoryById,
+        IRepositoryCategory,
+        TestFactoryCategory
     >
 {
     public override Task InitializeAsync()
     {
-        RegisterMock<IRepositoryPaymentMethod>();
+        RegisterMock<IRepositoryCategory>();
         return base.InitializeAsync();
     }
 
-    protected override HandlerGetPaymentMethodById CreateHandler() =>
-        new(GetMock<IRepositoryPaymentMethod>().Object);
+    protected override Application.Expenses.Queries.GetById.TestHandlerGetCategoryById CreateHandler() =>
+        new(GetMock<IRepositoryCategory>().Object);
     
-    protected override QueryGetPaymentMethodById GetQuery() => new() { Id = 1 };
+    protected override QueryGetCategoryById GetQuery() => new() { Id = 1 };
 
     [Fact]
     public async Task GetOne_ValidData_ReturnedOne()

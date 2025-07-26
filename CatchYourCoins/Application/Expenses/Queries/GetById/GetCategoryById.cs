@@ -7,7 +7,7 @@ namespace Application.Expenses.Queries.GetById;
 
 public class QueryGetCategoryById : QueryGetByIdBase<CategoryDTO>;
 
-public class HandlerGetCategoryById(IRepositoryCategory repositoryCategory)
+public class TestHandlerGetCategoryById(IRepositoryCategory repositoryCategory)
     : HandlerCRUDGetById<Category, QueryGetCategoryById, CategoryDTO>(repositoryCategory)
 {
     protected override Dictionary<string, string> GetFailureMessages() =>

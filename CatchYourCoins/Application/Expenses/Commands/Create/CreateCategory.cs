@@ -15,16 +15,16 @@ public class CommandCreateCategory : IRequest
 }
 
 [UsedImplicitly]
-public class ValidatorCreateCategory : AbstractValidator<CommandCreateCategory>
+public class TestValidatorCreateCategory : AbstractValidator<CommandCreateCategory>
 {
-    public ValidatorCreateCategory()
+    public TestValidatorCreateCategory()
     {
         RuleFor(x => x.Name)
             .NotEmpty();
     }
 }
 
-public class HandlerCreateCategory(
+public class TestHandlerCreateCategory(
     IRepositoryCategory repositoryCategory,
     IServiceCurrentUser serviceCurrentUser,
     IUnitOfWork unitOfWork) : HandlerCRUDCreate<Category, CommandCreateCategory>(repositoryCategory, unitOfWork)

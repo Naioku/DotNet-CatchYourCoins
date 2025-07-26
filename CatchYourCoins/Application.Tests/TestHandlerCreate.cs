@@ -11,7 +11,7 @@ using Moq;
 
 namespace Application.Tests;
 
-public abstract class HandlerCreateTest<THandler, TEntity, TCommand, TRepository, TFactory>
+public abstract class TestHandlerCreate<THandler, TEntity, TCommand, TRepository, TFactory>
     : CQRSHandlerTestBase<THandler, TFactory, TEntity>
     where THandler : HandlerCRUDCreate<TEntity, TCommand>
     where TEntity : class, IEntity

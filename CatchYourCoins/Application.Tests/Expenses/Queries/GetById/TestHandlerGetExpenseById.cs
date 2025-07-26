@@ -9,10 +9,10 @@ using Xunit;
 
 namespace Application.Tests.Expenses.Queries.GetById;
 
-[TestSubject(typeof(HandlerGetExpenseById))]
-public class HandlerGetExpenseByIdTest
-    : HandlerGetByIdTest<
-        HandlerGetExpenseById,
+[TestSubject(typeof(Application.Expenses.Queries.GetById.TestHandlerGetExpenseById))]
+public class TestHandlerGetExpenseById
+    : TestHandlerGetById<
+        Application.Expenses.Queries.GetById.TestHandlerGetExpenseById,
         Expense,
         ExpenseDTO,
         QueryGetExpenseById,
@@ -26,7 +26,7 @@ public class HandlerGetExpenseByIdTest
         return base.InitializeAsync();
     }
 
-    protected override HandlerGetExpenseById CreateHandler() =>
+    protected override Application.Expenses.Queries.GetById.TestHandlerGetExpenseById CreateHandler() =>
         new(GetMock<IRepositoryExpense>().Object);
     
     protected override QueryGetExpenseById GetQuery() => new() { Id = 1 };

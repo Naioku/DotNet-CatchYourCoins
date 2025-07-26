@@ -15,16 +15,16 @@ public class CommandCreatePaymentMethod : IRequest
 }
 
 [UsedImplicitly]
-public class ValidatorCreatePaymentMethod : AbstractValidator<CommandCreatePaymentMethod>
+public class TestValidatorCreatePaymentMethod : AbstractValidator<CommandCreatePaymentMethod>
 {
-    public ValidatorCreatePaymentMethod()
+    public TestValidatorCreatePaymentMethod()
     {
         RuleFor(x => x.Name)
             .NotEmpty();
     }
 }
 
-public class HandlerCreatePaymentMethod(
+public class TestHandlerCreatePaymentMethod(
     IRepositoryPaymentMethod repositoryCategory,
     IServiceCurrentUser serviceCurrentUser,
     IUnitOfWork unitOfWork) : HandlerCRUDCreate<PaymentMethod, CommandCreatePaymentMethod>(repositoryCategory, unitOfWork)

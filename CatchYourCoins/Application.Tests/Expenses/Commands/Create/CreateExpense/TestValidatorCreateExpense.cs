@@ -5,8 +5,8 @@ using Xunit;
 
 namespace Application.Tests.Expenses.Commands.Create.CreateExpense;
 
-[TestSubject(typeof(ValidatorCreateExpense))]
-public class ValidatorCreateExpenseTest : ValidatorTestBase<ValidatorCreateExpense, CommandCreateExpense>
+[TestSubject(typeof(Application.Expenses.Commands.Create.TestValidatorCreateExpense))]
+public class TestValidatorCreateExpense : TestValidatorBase<Application.Expenses.Commands.Create.TestValidatorCreateExpense, CommandCreateExpense>
 {
     [Fact]
     public void Validate_AllValidData_NoError() =>
