@@ -4,15 +4,15 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infrastructure.Persistence.Configurations;
 
-public class ConfigurationCategoryExpenses : IEntityTypeConfiguration<CategoryExpenses>
+public class ConfigurationCategoryIncomes : IEntityTypeConfiguration<CategoryIncomes>
 {
-    public void Configure(EntityTypeBuilder<CategoryExpenses> builder)
+    public void Configure(EntityTypeBuilder<CategoryIncomes> builder)
     {
         ConfigureProperties(builder);
         ConfigureRelationships(builder);
     }
 
-    private static void ConfigureProperties(EntityTypeBuilder<CategoryExpenses> builder)
+    private static void ConfigureProperties(EntityTypeBuilder<CategoryIncomes> builder)
     {
         builder.Property(c => c.Name)
             .HasMaxLength(50)
@@ -22,11 +22,11 @@ public class ConfigurationCategoryExpenses : IEntityTypeConfiguration<CategoryEx
             .HasColumnType("decimal(18, 2)");
     }
 
-    private static void ConfigureRelationships(EntityTypeBuilder<CategoryExpenses> builder)
+    private static void ConfigureRelationships(EntityTypeBuilder<CategoryIncomes> builder)
     {
         builder
             .HasOne(c => c.User)
-            .WithMany(u => u.CategoriesExpenses)
+            .WithMany(u => u.CategoriesIncomes)
             .HasForeignKey(c => c.UserId)
             .OnDelete(DeleteBehavior.Cascade);
     }
