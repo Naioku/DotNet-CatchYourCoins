@@ -8,10 +8,10 @@ namespace Application.Tests.Expenses.Commands.Delete.DeleteExpense;
 public class TestValidatorDeleteExpense : TestValidatorBase<ValidatorDeleteExpense, CommandDeleteExpense>
 {
     [Fact]
-    public void DeletePaymentMethod_AllValidData_NoError() =>
+    public void Validate_AllValidData_NoError() =>
         AssertSuccess(new CommandDeleteExpense { Id = 1 });
 
     [Fact]
-    public void DeletePaymentMethod_InvalidId_Error() =>
+    public void Validate_InvalidId_Error() =>
         AssertFailure(new CommandDeleteExpense { Id = -1 });
 }
