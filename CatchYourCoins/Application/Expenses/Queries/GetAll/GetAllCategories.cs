@@ -1,4 +1,4 @@
-﻿using Application.DTOs.Expenses;
+﻿using Application.DTOs;
 using Application.Requests.Queries.GetAll;
 using Domain.Dashboard.Entities;
 using Domain.Interfaces.Repositories;

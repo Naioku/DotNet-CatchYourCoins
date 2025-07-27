@@ -19,6 +19,12 @@ public abstract class TestHandlerGetById<THandler, TEntity, TDTO, TQuery, TRepos
     where TRepository : class, IRepositoryCRUD<TEntity>
     where TFactory : TestFactoryEntityBase<TEntity>, new()
 {
+    public override Task InitializeAsync()
+    {
+        RegisterMock<TRepository>();
+        return base.InitializeAsync();
+    }
+    
     protected abstract TQuery GetQuery();
     
     protected async Task GetOne_ValidData_ReturnedOne_Base(Action<TEntity, TDTO> assertions)

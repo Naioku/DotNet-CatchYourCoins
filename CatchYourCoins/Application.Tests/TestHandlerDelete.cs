@@ -18,6 +18,13 @@ public abstract class TestHandlerDelete<THandler, TEntity, TCommand, TRepository
     where TFactory : TestFactoryEntityBase<TEntity>, new()
     where TUnitOfWork : class, IUnitOfWork
 {
+    public override Task InitializeAsync()
+    {
+        RegisterMock<TRepository>();
+        RegisterMock<IUnitOfWork>();
+        return base.InitializeAsync();
+    }
+    
     protected abstract TCommand GetCommand();
     
     protected async Task DeleteOne_ValidData_DeletedEntity_Base()

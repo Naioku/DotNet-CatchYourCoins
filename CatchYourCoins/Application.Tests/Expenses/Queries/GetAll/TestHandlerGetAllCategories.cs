@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using Application.DTOs.Expenses;
+using Application.DTOs;
 using Application.Expenses.Queries.GetAll;
 using Application.Tests.Factories;
 using Domain.Dashboard.Entities;
@@ -11,14 +11,14 @@ namespace Application.Tests.Expenses.Queries.GetAll;
 
 [TestSubject(typeof(HandlerGetAllCategories))]
 public class TestHandlerGetAllCategories
-    : TestHandlerGetAll<HandlerGetAllCategories, CategoryExpenses, CategoryDTO, QueryGetAllCategories, IRepositoryCategoryExpenses, TestFactoryCategoryExpenses>
+    : TestHandlerGetAll<
+        HandlerGetAllCategories,
+        CategoryExpenses, CategoryDTO,
+        QueryGetAllCategories,
+        IRepositoryCategoryExpenses,
+        TestFactoryCategoryExpenses
+    >
 {
-    public override Task InitializeAsync()
-    {
-        RegisterMock<IRepositoryCategoryExpenses>();
-        return base.InitializeAsync();
-    }
-
     protected override HandlerGetAllCategories CreateHandler() =>
         new(GetMock<IRepositoryCategoryExpenses>().Object);
     

@@ -1,29 +1,29 @@
 ﻿using System.Threading.Tasks;
-using Application.DTOs.Expenses;
-using Application.Expenses.Queries.GetById;
+using Application.DTOs;
+using Application.Incomes.Queries.GetById;
 using Application.Tests.Factories;
 using Domain.Dashboard.Entities;
 using Domain.Interfaces.Repositories;
 using JetBrains.Annotations;
 using Xunit;
 
-namespace Application.Tests.Expenses.Queries.GetById;
+namespace Application.Tests.Incomes.Queries.GetById;
 
-[TestSubject(typeof(HandlerGetPaymentMethodById))]
-public class TestHandlerGetPaymentMethodById
+[TestSubject(typeof(HandlerGetCategoryById))]
+public class HandlerGetCategoryByIdTest
     : TestHandlerGetById<
-        HandlerGetPaymentMethodById,
-        PaymentMethod,
-        PaymentMethodDTO,
-        QueryGetPaymentMethodById,
-        IRepositoryPaymentMethod,
-        TestFactoryPaymentMethod
+        HandlerGetCategoryById,
+        CategoryIncomes,
+        CategoryDTO,
+        QueryGetCategoryById,
+        IRepositoryCategoryIncomes,
+        TestFactoryCategoryIncomes
     >
 {
-    protected override HandlerGetPaymentMethodById CreateHandler() =>
-        new(GetMock<IRepositoryPaymentMethod>().Object);
+    protected override HandlerGetCategoryById CreateHandler() =>
+        new(GetMock<IRepositoryCategoryIncomes>().Object);
     
-    protected override QueryGetPaymentMethodById GetQuery() => new() { Id = 1 };
+    protected override QueryGetCategoryById GetQuery() => new() { Id = 1 };
 
     [Fact]
     public async Task GetOne_ValidData_ReturnedOne()

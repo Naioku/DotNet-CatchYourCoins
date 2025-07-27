@@ -1,4 +1,4 @@
-﻿namespace Application.DTOs.Expenses;
+﻿namespace Application.DTOs;
 
 public class CategoryDTO
 {

@@ -3,12 +3,12 @@ using Application.Requests.Queries.GetById;
 using Domain.Dashboard.Entities;
 using Domain.Interfaces.Repositories;
 
-namespace Application.Expenses.Queries.GetById;
+namespace Application.Incomes.Queries.GetById;
 
 public class QueryGetCategoryById : QueryGetByIdBase<CategoryDTO>;
 
-public class HandlerGetCategoryById(IRepositoryCategoryExpenses repositoryCategory)
-    : HandlerCRUDGetById<CategoryExpenses, QueryGetCategoryById, CategoryDTO>(repositoryCategory)
+public class HandlerGetCategoryById(IRepositoryCategoryIncomes repository)
+    : HandlerCRUDGetById<CategoryIncomes, QueryGetCategoryById, CategoryDTO>(repository)
 {
     protected override Dictionary<string, string> GetFailureMessages() =>
         new()
@@ -16,7 +16,7 @@ public class HandlerGetCategoryById(IRepositoryCategoryExpenses repositoryCatego
             { "Category", "Category not found" }
         };
 
-    protected override CategoryDTO MapEntityToDTO(CategoryExpenses entity) =>
+    protected override CategoryDTO MapEntityToDTO(CategoryIncomes entity) =>
         new()
         {
             Id = entity.Id,

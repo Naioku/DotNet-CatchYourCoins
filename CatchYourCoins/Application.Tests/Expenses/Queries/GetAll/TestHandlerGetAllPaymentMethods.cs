@@ -11,14 +11,15 @@ namespace Application.Tests.Expenses.Queries.GetAll;
 
 [TestSubject(typeof(HandlerGetAllPaymentMethods))]
 public class TestHandlerGetAllPaymentMethods
-    : TestHandlerGetAll<HandlerGetAllPaymentMethods, PaymentMethod, PaymentMethodDTO, QueryGetAllPaymentMethods, IRepositoryPaymentMethod, TestFactoryPaymentMethod>
+    : TestHandlerGetAll<
+        HandlerGetAllPaymentMethods,
+        PaymentMethod,
+        PaymentMethodDTO,
+        QueryGetAllPaymentMethods,
+        IRepositoryPaymentMethod,
+        TestFactoryPaymentMethod
+    >
 {
-    public override Task InitializeAsync()
-    {
-        RegisterMock<IRepositoryPaymentMethod>();
-        return base.InitializeAsync();
-    }
-
     protected override HandlerGetAllPaymentMethods CreateHandler() =>
         new(GetMock<IRepositoryPaymentMethod>().Object);
 
