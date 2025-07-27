@@ -1,0 +1,22 @@
+﻿using System;
+using Domain.Dashboard.Entities;
+
+namespace Application.Tests.Factories;
+
+public class TestFactoryIncome : TestFactoryEntityBase<Income>
+{
+    public override Income CreateEntity(CurrentUser currentUser, int id = 1) => new()
+    {
+        Id = id,
+        Amount = 100,
+        Date = DateTime.Now,
+        Description = "Test",
+        UserId = currentUser.Id,
+        CategoryId = 1,
+        Category = new CategoryIncomes
+        {
+            Name = "Test",
+            UserId = currentUser.Id,
+        },
+    };
+}
