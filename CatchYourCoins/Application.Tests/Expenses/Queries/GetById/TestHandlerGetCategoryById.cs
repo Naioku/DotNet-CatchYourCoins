@@ -9,25 +9,25 @@ using Xunit;
 
 namespace Application.Tests.Expenses.Queries.GetById;
 
-[TestSubject(typeof(Application.Expenses.Queries.GetById.TestHandlerGetCategoryById))]
+[TestSubject(typeof(HandlerGetCategoryById))]
 public class TestHandlerGetCategoryById
     : TestHandlerGetById<
-        Application.Expenses.Queries.GetById.TestHandlerGetCategoryById,
-        Category,
+        HandlerGetCategoryById,
+        CategoryExpenses,
         CategoryDTO,
         QueryGetCategoryById,
-        IRepositoryCategory,
+        IRepositoryCategoryExpenses,
         TestFactoryCategory
     >
 {
     public override Task InitializeAsync()
     {
-        RegisterMock<IRepositoryCategory>();
+        RegisterMock<IRepositoryCategoryExpenses>();
         return base.InitializeAsync();
     }
 
-    protected override Application.Expenses.Queries.GetById.TestHandlerGetCategoryById CreateHandler() =>
-        new(GetMock<IRepositoryCategory>().Object);
+    protected override HandlerGetCategoryById CreateHandler() =>
+        new(GetMock<IRepositoryCategoryExpenses>().Object);
     
     protected override QueryGetCategoryById GetQuery() => new() { Id = 1 };
 

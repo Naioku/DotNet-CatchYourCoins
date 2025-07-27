@@ -9,18 +9,18 @@ using Xunit;
 
 namespace Application.Tests.Expenses.Queries.GetAll;
 
-[TestSubject(typeof(Application.Expenses.Queries.GetAll.TestHandlerGetAllCategories))]
+[TestSubject(typeof(HandlerGetAllCategories))]
 public class TestHandlerGetAllCategories
-    : TestHandlerGetAll<Application.Expenses.Queries.GetAll.TestHandlerGetAllCategories, Category, CategoryDTO, QueryGetAllCategories, IRepositoryCategory, TestFactoryCategory>
+    : TestHandlerGetAll<HandlerGetAllCategories, CategoryExpenses, CategoryDTO, QueryGetAllCategories, IRepositoryCategoryExpenses, TestFactoryCategory>
 {
     public override Task InitializeAsync()
     {
-        RegisterMock<IRepositoryCategory>();
+        RegisterMock<IRepositoryCategoryExpenses>();
         return base.InitializeAsync();
     }
 
-    protected override Application.Expenses.Queries.GetAll.TestHandlerGetAllCategories CreateHandler() =>
-        new(GetMock<IRepositoryCategory>().Object);
+    protected override HandlerGetAllCategories CreateHandler() =>
+        new(GetMock<IRepositoryCategoryExpenses>().Object);
     
     [Fact]
     public async Task GetAll_ValidData_ReturnedAll() =>

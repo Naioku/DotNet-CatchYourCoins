@@ -8,9 +8,9 @@ namespace Application.Expenses.Commands.Delete;
 public class CommandDeletePaymentMethod : CommandDeleteBase;
 
 [UsedImplicitly]
-public class TestValidatorDeletePaymentMethod : ValidatorDeleteBase<CommandDeletePaymentMethod>;
+public class ValidatorDeletePaymentMethod : ValidatorDeleteBase<CommandDeletePaymentMethod>;
 
-public class TestHandlerDeletePaymentMethod(
+public class HandlerDeletePaymentMethod(
     IRepositoryPaymentMethod repositoryPaymentMethod,
     IUnitOfWork unitOfWork) : HandlerCRUDDelete<PaymentMethod, CommandDeletePaymentMethod>(repositoryPaymentMethod, unitOfWork)
 {

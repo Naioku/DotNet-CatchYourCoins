@@ -11,19 +11,19 @@ using Xunit;
 
 namespace Application.Tests.Expenses.Commands.Create.CreatePaymentMethod;
 
-[TestSubject(typeof(Application.Expenses.Commands.Create.TestHandlerCreatePaymentMethod))]
+[TestSubject(typeof(HandlerCreatePaymentMethod))]
 public class TestHandlerCreatePaymentMethod
     : TestHandlerCreate<
-        Application.Expenses.Commands.Create.TestHandlerCreatePaymentMethod,
+        HandlerCreatePaymentMethod,
         PaymentMethod,
         CommandCreatePaymentMethod,
         IRepositoryPaymentMethod,
         TestFactoryPaymentMethod
     >
 {
-    protected override Application.Expenses.Commands.Create.TestHandlerCreatePaymentMethod CreateHandler()
+    protected override HandlerCreatePaymentMethod CreateHandler()
     {
-        return new Application.Expenses.Commands.Create.TestHandlerCreatePaymentMethod(
+        return new HandlerCreatePaymentMethod(
             GetMock<IRepositoryPaymentMethod>().Object,
             GetMock<IServiceCurrentUser>().Object,
             GetMock<IUnitOfWork>().Object

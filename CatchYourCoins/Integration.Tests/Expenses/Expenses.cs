@@ -17,23 +17,23 @@ public class Expenses(TestFixture fixture) : TestBase(fixture)
     private readonly IMediator _mediator = fixture.ServiceProvider.GetRequiredService<IMediator>();
     private readonly IServiceCurrentUser _testServiceCurrentUser = fixture.ServiceProvider.GetRequiredService<IServiceCurrentUser>();
 
-    private Category? _categoryUser1;
+    private CategoryExpenses? _categoryUser1;
     private PaymentMethod? _paymentMethodUser1;
-    private Category? _categoryUser2;
+    private CategoryExpenses? _categoryUser2;
     private PaymentMethod? _paymentMethodUser2;
 
     public override async Task InitializeAsync()
     {
         await base.InitializeAsync();
 
-        _categoryUser1 = await AddCategory(new Category
+        _categoryUser1 = await AddCategory(new CategoryExpenses
         {
             Name = "Test1",
             Limit = 1000,
             UserId = user1.Id,
         });
         
-        _categoryUser2 = await AddCategory(new Category
+        _categoryUser2 = await AddCategory(new CategoryExpenses
         {
             Name = "Test2",
             Limit = 2000,
@@ -57,8 +57,8 @@ public class Expenses(TestFixture fixture) : TestBase(fixture)
         await dbContext.SaveChangesAsync();
     }
 
-    private async Task<Category> AddCategory(Category category)
-        => (await dbContext.Categories.AddAsync(category)).Entity;
+    private async Task<CategoryExpenses> AddCategory(CategoryExpenses category)
+        => (await dbContext.CategoriesExpenses.AddAsync(category)).Entity;
 
     private async Task<PaymentMethod> AddPaymentMethod(PaymentMethod paymentMethod)
         => (await dbContext.PaymentMethods.AddAsync(paymentMethod)).Entity;

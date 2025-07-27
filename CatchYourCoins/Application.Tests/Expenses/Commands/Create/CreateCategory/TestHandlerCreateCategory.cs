@@ -11,20 +11,20 @@ using Xunit;
 
 namespace Application.Tests.Expenses.Commands.Create.CreateCategory;
 
-[TestSubject(typeof(Application.Expenses.Commands.Create.TestHandlerCreateCategory))]
+[TestSubject(typeof(HandlerCreateCategory))]
 public class TestHandlerCreateCategory
     : TestHandlerCreate<
-        Application.Expenses.Commands.Create.TestHandlerCreateCategory,
-        Category,
+        HandlerCreateCategory,
+        CategoryExpenses,
         CommandCreateCategory,
-        IRepositoryCategory,
+        IRepositoryCategoryExpenses,
         TestFactoryCategory
     >
 {
-    protected override Application.Expenses.Commands.Create.TestHandlerCreateCategory CreateHandler()
+    protected override HandlerCreateCategory CreateHandler()
     {
-        return new Application.Expenses.Commands.Create.TestHandlerCreateCategory(
-            GetMock<IRepositoryCategory>().Object,
+        return new HandlerCreateCategory(
+            GetMock<IRepositoryCategoryExpenses>().Object,
             GetMock<IServiceCurrentUser>().Object,
             GetMock<IUnitOfWork>().Object
         );
@@ -37,7 +37,7 @@ public class TestHandlerCreateCategory
             Limit = 1000
         };
 
-    protected override Expression<Func<Category, bool>> GetRepositoryMatch(CommandCreateCategory command) =>
+    protected override Expression<Func<CategoryExpenses, bool>> GetRepositoryMatch(CommandCreateCategory command) =>
         c =>
             c.Name == command.Name &&
             c.Limit == command.Limit &&

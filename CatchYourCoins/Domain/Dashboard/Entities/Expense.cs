@@ -13,7 +13,7 @@ public class Expense : IAutorizable, IEntity
     public required Guid UserId { get; init; }
     public AppUser User { get; init; }
     public int? CategoryId { get; init; }
-    public Category? Category { get; init; }
+    public CategoryExpenses? Category { get; init; }
     public int? PaymentMethodId { get; init; }
     public PaymentMethod? PaymentMethod { get; init; }
     

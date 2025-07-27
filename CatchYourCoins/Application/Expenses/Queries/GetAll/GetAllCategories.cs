@@ -7,7 +7,7 @@ namespace Application.Expenses.Queries.GetAll;
 
 public class QueryGetAllCategories : QueryGetAllBase<CategoryDTO>;
 
-public class TestHandlerGetAllCategories(IRepositoryCategory repository) : HandlerCRUDGetAll<Category, QueryGetAllCategories, CategoryDTO>(repository)
+public class HandlerGetAllCategories(IRepositoryCategoryExpenses repository) : HandlerCRUDGetAll<CategoryExpenses, QueryGetAllCategories, CategoryDTO>(repository)
 {
     protected override Dictionary<string, string> GetFailureMessages() =>
         new()
@@ -15,7 +15,7 @@ public class TestHandlerGetAllCategories(IRepositoryCategory repository) : Handl
             { "Categories", "Categories not found" }
         };
 
-    protected override CategoryDTO MapEntityToDTO(Category entity) =>
+    protected override CategoryDTO MapEntityToDTO(CategoryExpenses entity) =>
         new()
         {
             Id = entity.Id,

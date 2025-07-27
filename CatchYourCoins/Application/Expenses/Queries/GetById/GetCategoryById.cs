@@ -7,8 +7,8 @@ namespace Application.Expenses.Queries.GetById;
 
 public class QueryGetCategoryById : QueryGetByIdBase<CategoryDTO>;
 
-public class TestHandlerGetCategoryById(IRepositoryCategory repositoryCategory)
-    : HandlerCRUDGetById<Category, QueryGetCategoryById, CategoryDTO>(repositoryCategory)
+public class HandlerGetCategoryById(IRepositoryCategoryExpenses repositoryCategory)
+    : HandlerCRUDGetById<CategoryExpenses, QueryGetCategoryById, CategoryDTO>(repositoryCategory)
 {
     protected override Dictionary<string, string> GetFailureMessages() =>
         new()
@@ -16,7 +16,7 @@ public class TestHandlerGetCategoryById(IRepositoryCategory repositoryCategory)
             { "Category", "Category not found" }
         };
 
-    protected override CategoryDTO MapEntityToDTO(Category entity) =>
+    protected override CategoryDTO MapEntityToDTO(CategoryExpenses entity) =>
         new()
         {
             Id = entity.Id,

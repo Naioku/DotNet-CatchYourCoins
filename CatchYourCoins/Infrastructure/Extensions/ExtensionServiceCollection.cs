@@ -27,7 +27,7 @@ public static class ExtensionServiceCollection
         services.AddScoped<IServiceIdentity, ServiceIdentity>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IServiceCurrentUser, ServiceCurrentUser>();
-        services.AddScoped<IRepositoryCategory, RepositoryCategory>();
+        services.AddScoped<IRepositoryCategoryExpenses, RepositoryCategoryExpenses>();
         services.AddScoped<IRepositoryPaymentMethod, RepositoryPaymentMethod>();
         services.AddScoped<IRepositoryExpense, RepositoryExpense>();
 

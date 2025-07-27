@@ -18,9 +18,9 @@ public class CommandCreateExpense : IRequest
 }
 
 [UsedImplicitly]
-public class TestValidatorCreateExpense : AbstractValidator<CommandCreateExpense>
+public class ValidatorCreateExpense : AbstractValidator<CommandCreateExpense>
 {
-    public TestValidatorCreateExpense()
+    public ValidatorCreateExpense()
     {
         RuleFor(x => x.Amount)
             .NotEmpty()
@@ -35,7 +35,7 @@ public class TestValidatorCreateExpense : AbstractValidator<CommandCreateExpense
     }
 }
 
-public class TestHandlerCreateExpense(
+public class HandlerCreateExpense(
     IRepositoryExpense repositoryExpense,
     IServiceCurrentUser serviceCurrentUser,
     IUnitOfWork unitOfWork) : HandlerCRUDCreate<Expense, CommandCreateExpense>(repositoryExpense, unitOfWork)

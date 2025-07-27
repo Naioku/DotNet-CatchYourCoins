@@ -15,21 +15,21 @@ public class CommandCreateCategory : IRequest
 }
 
 [UsedImplicitly]
-public class TestValidatorCreateCategory : AbstractValidator<CommandCreateCategory>
+public class ValidatorCreateCategory : AbstractValidator<CommandCreateCategory>
 {
-    public TestValidatorCreateCategory()
+    public ValidatorCreateCategory()
     {
         RuleFor(x => x.Name)
             .NotEmpty();
     }
 }
 
-public class TestHandlerCreateCategory(
-    IRepositoryCategory repositoryCategory,
+public class HandlerCreateCategory(
+    IRepositoryCategoryExpenses repositoryCategory,
     IServiceCurrentUser serviceCurrentUser,
-    IUnitOfWork unitOfWork) : HandlerCRUDCreate<Category, CommandCreateCategory>(repositoryCategory, unitOfWork)
+    IUnitOfWork unitOfWork) : HandlerCRUDCreate<CategoryExpenses, CommandCreateCategory>(repositoryCategory, unitOfWork)
 {
-    protected override Category MapCommandToEntity(CommandCreateCategory request) =>
+    protected override CategoryExpenses MapCommandToEntity(CommandCreateCategory request) =>
         new()
         {
             Name = request.Name,

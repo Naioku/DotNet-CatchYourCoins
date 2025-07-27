@@ -6,7 +6,7 @@ namespace Infrastructure.Persistence;
 
 public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbContext<AppUser, AppRole, Guid>(options)
 {
-    public DbSet<Domain.Dashboard.Entities.Category> Categories { get; set; }
+    public DbSet<Domain.Dashboard.Entities.CategoryExpenses> CategoriesExpenses { get; set; }
     public DbSet<Domain.Dashboard.Entities.PaymentMethod> PaymentMethods { get; set; }
     public DbSet<Domain.Dashboard.Entities.Expense> Expenses { get; set; }
     

@@ -4,15 +4,15 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infrastructure.Persistence.Configurations;
 
-public class ConfigurationCategory : IEntityTypeConfiguration<Category>
+public class ConfigurationCategoryExpenses : IEntityTypeConfiguration<CategoryExpenses>
 {
-    public void Configure(EntityTypeBuilder<Category> builder)
+    public void Configure(EntityTypeBuilder<CategoryExpenses> builder)
     {
         ConfigureProperties(builder);
         ConfigureRelationships(builder);
     }
 
-    private static void ConfigureProperties(EntityTypeBuilder<Category> builder)
+    private static void ConfigureProperties(EntityTypeBuilder<CategoryExpenses> builder)
     {
         builder.Property(c => c.Name)
             .HasMaxLength(50)
@@ -22,7 +22,7 @@ public class ConfigurationCategory : IEntityTypeConfiguration<Category>
             .HasColumnType("decimal(18, 2)");
     }
 
-    private static void ConfigureRelationships(EntityTypeBuilder<Category> builder)
+    private static void ConfigureRelationships(EntityTypeBuilder<CategoryExpenses> builder)
     {
         builder
             .HasOne(c => c.User)

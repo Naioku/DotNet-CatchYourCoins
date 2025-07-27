@@ -3,11 +3,11 @@ using Domain.Interfaces.Repositories;
 
 namespace Domain.Dashboard.Entities;
 
-public class Category : IAutorizable, IEntity
+public abstract class FinancialCategory : IAutorizable, IEntity
 {
     public int Id { get; init; }
     public required string Name { get; init; }
     public decimal? Limit { get; init; }
     public required Guid UserId { get; init; }
-    public AppUser User { get; }
+    public AppUser User { get; init; }
 }

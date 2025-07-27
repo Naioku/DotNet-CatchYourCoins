@@ -13,7 +13,7 @@ public class TestFactoryExpense : TestFactoryEntityBase<Expense>
         Description = "Test",
         UserId = currentUser.Id,
         CategoryId = 1,
-        Category = new Category
+        Category = new CategoryExpenses
         {
             Name = "Test",
             UserId = currentUser.Id,

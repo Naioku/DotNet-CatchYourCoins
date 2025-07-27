@@ -8,11 +8,11 @@ namespace Application.Expenses.Commands.Delete;
 public class CommandDeleteCategory : CommandDeleteBase;
 
 [UsedImplicitly]
-public class TestValidatorDeleteCategory : ValidatorDeleteBase<CommandDeleteCategory>;
+public class ValidatorDeleteCategory : ValidatorDeleteBase<CommandDeleteCategory>;
 
-public class TestHandlerDeleteCategory(
-    IRepositoryCategory repositoryCategory,
-    IUnitOfWork unitOfWork) : HandlerCRUDDelete<Category, CommandDeleteCategory>(repositoryCategory, unitOfWork)
+public class HandlerDeleteCategory(
+    IRepositoryCategoryExpenses repositoryCategory,
+    IUnitOfWork unitOfWork) : HandlerCRUDDelete<CategoryExpenses, CommandDeleteCategory>(repositoryCategory, unitOfWork)
 {
     protected override Dictionary<string, string> GetFailureMessages() =>
         new()

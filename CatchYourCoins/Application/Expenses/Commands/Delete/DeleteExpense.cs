@@ -8,9 +8,9 @@ namespace Application.Expenses.Commands.Delete;
 public class CommandDeleteExpense : CommandDeleteBase;
 
 [UsedImplicitly]
-public class TestValidatorDeleteExpense : ValidatorDeleteBase<CommandDeleteExpense>;
+public class ValidatorDeleteExpense : ValidatorDeleteBase<CommandDeleteExpense>;
 
-public class TestHandlerDeleteExpense(
+public class HandlerDeleteExpense(
     IRepositoryExpense repositoryExpense,
     IUnitOfWork unitOfWork) : HandlerCRUDDelete<Expense, CommandDeleteExpense>(repositoryExpense, unitOfWork)
 {

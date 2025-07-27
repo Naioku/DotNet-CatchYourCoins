@@ -4,8 +4,8 @@ using Xunit;
 
 namespace Application.Tests.Expenses.Commands.Create.CreatePaymentMethod;
 
-[TestSubject(typeof(Application.Expenses.Commands.Create.TestValidatorCreatePaymentMethod))]
-public class TestValidatorCreatePaymentMethod : TestValidatorBase<Application.Expenses.Commands.Create.TestValidatorCreatePaymentMethod, CommandCreatePaymentMethod>
+[TestSubject(typeof(ValidatorCreatePaymentMethod))]
+public class TestValidatorCreatePaymentMethod : TestValidatorBase<ValidatorCreatePaymentMethod, CommandCreatePaymentMethod>
 {
     [Fact]
     public void Validate_AllValidData_NoError() =>

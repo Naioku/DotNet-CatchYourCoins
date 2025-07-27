@@ -9,10 +9,10 @@ using Xunit;
 
 namespace Application.Tests.Expenses.Queries.GetById;
 
-[TestSubject(typeof(Application.Expenses.Queries.GetById.TestHandlerGetPaymentMethodById))]
+[TestSubject(typeof(HandlerGetPaymentMethodById))]
 public class TestHandlerGetPaymentMethodById
     : TestHandlerGetById<
-        Application.Expenses.Queries.GetById.TestHandlerGetPaymentMethodById,
+        HandlerGetPaymentMethodById,
         PaymentMethod,
         PaymentMethodDTO,
         QueryGetPaymentMethodById,
@@ -26,7 +26,7 @@ public class TestHandlerGetPaymentMethodById
         return base.InitializeAsync();
     }
 
-    protected override Application.Expenses.Queries.GetById.TestHandlerGetPaymentMethodById CreateHandler() =>
+    protected override HandlerGetPaymentMethodById CreateHandler() =>
         new(GetMock<IRepositoryPaymentMethod>().Object);
     
     protected override QueryGetPaymentMethodById GetQuery() => new() { Id = 1 };

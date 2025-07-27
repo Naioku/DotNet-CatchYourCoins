@@ -4,8 +4,8 @@ using Xunit;
 
 namespace Application.Tests.Expenses.Commands.Delete.DeleteExpense;
 
-[TestSubject(typeof(Application.Expenses.Commands.Delete.TestValidatorDeleteExpense))]
-public class TestValidatorDeleteExpense : TestValidatorBase<Application.Expenses.Commands.Delete.TestValidatorDeleteExpense, CommandDeleteExpense>
+[TestSubject(typeof(ValidatorDeleteExpense))]
+public class TestValidatorDeleteExpense : TestValidatorBase<ValidatorDeleteExpense, CommandDeleteExpense>
 {
     [Fact]
     public void DeletePaymentMethod_AllValidData_NoError() =>

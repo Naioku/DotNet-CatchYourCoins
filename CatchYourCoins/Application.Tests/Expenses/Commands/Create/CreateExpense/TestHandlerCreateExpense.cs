@@ -11,19 +11,19 @@ using Xunit;
 
 namespace Application.Tests.Expenses.Commands.Create.CreateExpense;
 
-[TestSubject(typeof(Application.Expenses.Commands.Create.TestHandlerCreateExpense))]
+[TestSubject(typeof(HandlerCreateExpense))]
 public class TestHandlerCreateExpense
     : TestHandlerCreate<
-        Application.Expenses.Commands.Create.TestHandlerCreateExpense,
+        HandlerCreateExpense,
         Expense,
         CommandCreateExpense,
         IRepositoryExpense,
         TestFactoryExpense
     >
 {
-    protected override Application.Expenses.Commands.Create.TestHandlerCreateExpense CreateHandler()
+    protected override HandlerCreateExpense CreateHandler()
     {
-        return new Application.Expenses.Commands.Create.TestHandlerCreateExpense(
+        return new HandlerCreateExpense(
             GetMock<IRepositoryExpense>().Object,
             GetMock<IServiceCurrentUser>().Object,
             GetMock<IUnitOfWork>().Object
