@@ -11,7 +11,7 @@ namespace Application.Tests.Expenses.Queries.GetAll;
 
 [TestSubject(typeof(HandlerGetAllCategories))]
 public class TestHandlerGetAllCategories
-    : TestHandlerGetAll<HandlerGetAllCategories, CategoryExpenses, CategoryDTO, QueryGetAllCategories, IRepositoryCategoryExpenses, TestFactoryCategory>
+    : TestHandlerGetAll<HandlerGetAllCategories, CategoryExpenses, CategoryDTO, QueryGetAllCategories, IRepositoryCategoryExpenses, TestFactoryCategoryExpenses>
 {
     public override Task InitializeAsync()
     {

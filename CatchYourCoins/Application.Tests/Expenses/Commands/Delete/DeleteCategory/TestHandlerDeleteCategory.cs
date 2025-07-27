@@ -10,7 +10,7 @@ namespace Application.Tests.Expenses.Commands.Delete.DeleteCategory;
 
 [TestSubject(typeof(HandlerDeleteCategory))]
 public class TestHandlerDeleteCategory
-    : TestHandlerDelete<HandlerDeleteCategory, CategoryExpenses, CommandDeleteCategory, IRepositoryCategoryExpenses, TestFactoryCategory, IUnitOfWork>
+    : TestHandlerDelete<HandlerDeleteCategory, CategoryExpenses, CommandDeleteCategory, IRepositoryCategoryExpenses, TestFactoryCategoryExpenses, IUnitOfWork>
 {
     public override Task InitializeAsync()
     {

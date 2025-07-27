@@ -17,7 +17,7 @@ public class TestHandlerGetCategoryById
         CategoryDTO,
         QueryGetCategoryById,
         IRepositoryCategoryExpenses,
-        TestFactoryCategory
+        TestFactoryCategoryExpenses
     >
 {
     public override Task InitializeAsync()

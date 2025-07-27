@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using Application.Expenses.Commands.Create;
+using Application.Incomes.Commands.Create;
 using Application.Tests.Factories;
 using Domain.Dashboard.Entities;
 using Domain.Interfaces.Repositories;
@@ -9,22 +9,22 @@ using Domain.Interfaces.Services;
 using JetBrains.Annotations;
 using Xunit;
 
-namespace Application.Tests.Expenses.Commands.Create.CreateCategory;
+namespace Application.Tests.Incomes.Commands.Create.CreateCategory;
 
 [TestSubject(typeof(HandlerCreateCategory))]
-public class TestHandlerCreateCategory
+public class HandlerCreateCategoryTest
     : TestHandlerCreate<
         HandlerCreateCategory,
-        CategoryExpenses,
+        CategoryIncomes,
         CommandCreateCategory,
-        IRepositoryCategoryExpenses,
-        TestFactoryCategoryExpenses
+        IRepositoryCategoryIncomes,
+        TestFactoryCategoryIncomes
     >
 {
     protected override HandlerCreateCategory CreateHandler()
     {
         return new HandlerCreateCategory(
-            GetMock<IRepositoryCategoryExpenses>().Object,
+            GetMock<IRepositoryCategoryIncomes>().Object,
             GetMock<IServiceCurrentUser>().Object,
             GetMock<IUnitOfWork>().Object
         );
@@ -37,7 +37,7 @@ public class TestHandlerCreateCategory
             Limit = 1000
         };
 
-    protected override Expression<Func<CategoryExpenses, bool>> GetRepositoryMatch(CommandCreateCategory command) =>
+    protected override Expression<Func<CategoryIncomes, bool>> GetRepositoryMatch(CommandCreateCategory command) =>
         c =>
             c.Name == command.Name &&
             c.Limit == command.Limit &&
