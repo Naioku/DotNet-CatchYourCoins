@@ -4,18 +4,17 @@ using Domain.Interfaces.Repositories;
 using Domain.Interfaces.Services;
 using FluentValidation;
 using JetBrains.Annotations;
-using MediatR;
 
 namespace Application.Incomes.Commands.Create;
 
-public class CommandCreateCategory : IRequest
+public class CommandCreateCategory : CommandCreateBase
 {
     public required string Name { get; init; }
     public decimal? Limit { get; init; }
 }
 
 [UsedImplicitly]
-public class ValidatorCreateCategory : AbstractValidator<CommandCreateCategory>
+public class ValidatorCreateCategory : ValidatorCreateBase<CommandCreateCategory>
 {
     public ValidatorCreateCategory()
     {

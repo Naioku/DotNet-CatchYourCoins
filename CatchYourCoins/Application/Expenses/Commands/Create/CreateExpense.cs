@@ -4,11 +4,10 @@ using Domain.Interfaces.Repositories;
 using Domain.Interfaces.Services;
 using FluentValidation;
 using JetBrains.Annotations;
-using MediatR;
 
 namespace Application.Expenses.Commands.Create;
 
-public class CommandCreateExpense : IRequest
+public class CommandCreateExpense : CommandCreateBase
 {
     public required decimal Amount { get; init; }
     public required DateTime Date { get; init; }
@@ -18,7 +17,7 @@ public class CommandCreateExpense : IRequest
 }
 
 [UsedImplicitly]
-public class ValidatorCreateExpense : AbstractValidator<CommandCreateExpense>
+public class ValidatorCreateExpense : ValidatorCreateBase<CommandCreateExpense>
 {
     public ValidatorCreateExpense()
     {

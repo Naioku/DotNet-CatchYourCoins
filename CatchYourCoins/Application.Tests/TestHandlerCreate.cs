@@ -6,7 +6,6 @@ using Application.Requests.Commands.Create;
 using Application.Tests.Factories;
 using Domain;
 using Domain.Interfaces.Repositories;
-using MediatR;
 using Moq;
 
 namespace Application.Tests;
@@ -15,7 +14,7 @@ public abstract class TestHandlerCreate<THandler, TEntity, TCommand, TRepository
     : CQRSHandlerTestBase<THandler, TFactory, TEntity>
     where THandler : HandlerCRUDCreate<TEntity, TCommand>
     where TEntity : class, IEntity
-    where TCommand : IRequest
+    where TCommand : CommandCreateBase
     where TRepository : class, IRepositoryCRUD<TEntity>
     where TFactory : TestFactoryEntityBase<TEntity>, new()
 {

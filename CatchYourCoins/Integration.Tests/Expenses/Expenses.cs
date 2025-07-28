@@ -92,6 +92,27 @@ public class Expenses(TestFixture fixture) : TestBase(fixture)
     }
     
     [Fact]
+    public async Task CreateCategory_WithInvalidCategoryIdAndPaymentMethodId_ShouldNotCreateCategoryInDB()
+    {
+        // Arrange
+        var command = new CommandCreateExpense
+        {
+            Amount = 100,
+            Date = DateTime.Now,
+            Description = "Test",
+            CategoryId = -1,
+            PaymentMethodId = -1,
+        };
+    
+        // Act
+        Result result = await _mediator.Send(command);
+        
+        // Assert
+        Assert.False(result.IsSuccess);
+        Assert.NotEmpty(result.Errors);
+    }
+    
+    [Fact]
     public async Task GetExpense_WithValidData_ShouldReturnExpenseForView()
     {
         // Arrange

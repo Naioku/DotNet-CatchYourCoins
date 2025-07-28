@@ -4,18 +4,17 @@ using Domain.Interfaces.Repositories;
 using Domain.Interfaces.Services;
 using FluentValidation;
 using JetBrains.Annotations;
-using MediatR;
 
 namespace Application.Expenses.Commands.Create;
 
-public class CommandCreatePaymentMethod : IRequest
+public class CommandCreatePaymentMethod : CommandCreateBase
 {
     public required string Name { get; init; }
     public decimal? Limit { get; init; }
 }
 
 [UsedImplicitly]
-public class ValidatorCreatePaymentMethod : AbstractValidator<CommandCreatePaymentMethod>
+public class ValidatorCreatePaymentMethod : ValidatorCreateBase<CommandCreatePaymentMethod>
 {
     public ValidatorCreatePaymentMethod()
     {
