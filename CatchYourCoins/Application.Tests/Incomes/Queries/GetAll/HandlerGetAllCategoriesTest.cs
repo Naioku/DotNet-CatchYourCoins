@@ -1,27 +1,27 @@
 ﻿using System.Threading.Tasks;
 using Application.DTOs;
-using Application.Expenses.Queries.GetAll;
+using Application.Incomes.Queries.GetAll;
 using Application.Tests.Factories;
 using Domain.Dashboard.Entities;
 using Domain.Interfaces.Repositories;
 using JetBrains.Annotations;
 using Xunit;
 
-namespace Application.Tests.Expenses.Queries.GetAll;
+namespace Application.Tests.Incomes.Queries.GetAll;
 
 [TestSubject(typeof(HandlerGetAllCategories))]
-public class TestHandlerGetAllCategories
+public class HandlerGetAllCategoriesTest
     : TestHandlerGetAll<
         HandlerGetAllCategories,
-        CategoryExpenses,
+        CategoryIncomes,
         CategoryDTO,
         QueryGetAllCategories,
-        IRepositoryCategoryExpenses,
-        TestFactoryCategoryExpenses
+        IRepositoryCategoryIncomes,
+        TestFactoryCategoryIncomes
     >
 {
     protected override HandlerGetAllCategories CreateHandler() =>
-        new(GetMock<IRepositoryCategoryExpenses>().Object);
+        new(GetMock<IRepositoryCategoryIncomes>().Object);
     
     [Fact]
     public async Task GetAll_ValidData_ReturnedAll() =>
