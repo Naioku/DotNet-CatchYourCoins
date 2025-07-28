@@ -1,27 +1,27 @@
 ﻿using System.Threading.Tasks;
-using Application.DTOs.Expenses;
-using Application.Expenses.Queries.GetAll;
+using Application.DTOs.Incomes;
+using Application.Incomes.Queries.GetAll;
 using Application.Tests.Factories;
 using Domain.Dashboard.Entities;
 using Domain.Interfaces.Repositories;
 using JetBrains.Annotations;
 using Xunit;
 
-namespace Application.Tests.Expenses.Queries.GetAll;
+namespace Application.Tests.Incomes.Queries.GetAll;
 
-[TestSubject(typeof(HandlerGetAllExpenses))]
-public class TestHandlerGetAllExpenses
+[TestSubject(typeof(HandlerGetAllIncomes))]
+public class HandlerGetAllIncomesTest
     : TestHandlerGetAll<
-        HandlerGetAllExpenses,
-        Expense,
-        ExpenseDTO,
-        QueryGetAllExpenses,
-        IRepositoryExpense,
-        TestFactoryExpense
+        HandlerGetAllIncomes,
+        Income,
+        IncomeDTO,
+        QueryGetAllIncomes,
+        IRepositoryIncome,
+        TestFactoryIncome
     >
 {
-    protected override HandlerGetAllExpenses CreateHandler() =>
-        new(GetMock<IRepositoryExpense>().Object);
+    protected override HandlerGetAllIncomes CreateHandler() =>
+        new(GetMock<IRepositoryIncome>().Object);
     
     [Fact]
     public async Task GetAll_ValidData_ReturnedAll() =>
@@ -32,9 +32,7 @@ public class TestHandlerGetAllExpenses
             Assert.Equal(inputEntity.Date, resultDTO.Date);
             Assert.Equal(inputEntity.Description, resultDTO.Description);
             Assert.NotNull(inputEntity.Category);
-            Assert.NotNull(inputEntity.PaymentMethod);
             Assert.Equal(inputEntity.Category.Name, resultDTO.Category);
-            Assert.Equal(inputEntity.PaymentMethod.Name, resultDTO.PaymentMethod);
         });
     
     [Fact]

@@ -25,10 +25,10 @@ public class TestHandlerGetAllCategories
     
     [Fact]
     public async Task GetAll_ValidData_ReturnedAll() =>
-        await GetAll_ValidData_ReturnedAll_Base((inputEntity, dtoResult) =>
+        await GetAll_ValidData_ReturnedAll_Base((inputEntity, resultDTO) =>
         {
-            Assert.Equal(inputEntity.Name, dtoResult.Name);
-            Assert.Equal(inputEntity.Limit, dtoResult.Limit);
+            Assert.Equal(inputEntity.Name, resultDTO.Name);
+            Assert.Equal(inputEntity.Limit, resultDTO.Limit);
         });
     
     [Fact]
