@@ -20,6 +20,12 @@ public abstract class TestHandlerGetAll<THandler, TEntity, TDTO, TQuery, TReposi
     where TRepository : class, IRepositoryCRUD<TEntity>
     where TFactory : TestFactoryEntityBase<TEntity>, new()
 {
+    public override Task InitializeAsync()
+    {
+        RegisterMock<TRepository>();
+        return base.InitializeAsync();
+    }
+    
     protected async Task GetAll_ValidData_ReturnedAll_Base(Action<TEntity, TDTO> assertions)
     {
         // Arrange

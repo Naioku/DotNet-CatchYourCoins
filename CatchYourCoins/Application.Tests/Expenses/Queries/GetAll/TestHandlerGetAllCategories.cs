@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using Application.DTOs.Expenses;
+using Application.DTOs;
 using Application.Expenses.Queries.GetAll;
 using Application.Tests.Factories;
 using Domain.Dashboard.Entities;
@@ -11,23 +11,24 @@ namespace Application.Tests.Expenses.Queries.GetAll;
 
 [TestSubject(typeof(HandlerGetAllCategories))]
 public class TestHandlerGetAllCategories
-    : TestHandlerGetAll<HandlerGetAllCategories, CategoryExpenses, CategoryDTO, QueryGetAllCategories, IRepositoryCategoryExpenses, TestFactoryCategory>
+    : TestHandlerGetAll<
+        HandlerGetAllCategories,
+        CategoryExpenses,
+        CategoryDTO,
+        QueryGetAllCategories,
+        IRepositoryCategoryExpenses,
+        TestFactoryCategoryExpenses
+    >
 {
-    public override Task InitializeAsync()
-    {
-        RegisterMock<IRepositoryCategoryExpenses>();
-        return base.InitializeAsync();
-    }
-
     protected override HandlerGetAllCategories CreateHandler() =>
         new(GetMock<IRepositoryCategoryExpenses>().Object);
     
     [Fact]
     public async Task GetAll_ValidData_ReturnedAll() =>
-        await GetAll_ValidData_ReturnedAll_Base((inputEntity, dtoResult) =>
+        await GetAll_ValidData_ReturnedAll_Base((inputEntity, resultDTO) =>
         {
-            Assert.Equal(inputEntity.Name, dtoResult.Name);
-            Assert.Equal(inputEntity.Limit, dtoResult.Limit);
+            Assert.Equal(inputEntity.Name, resultDTO.Name);
+            Assert.Equal(inputEntity.Limit, resultDTO.Limit);
         });
     
     [Fact]

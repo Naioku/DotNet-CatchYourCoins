@@ -25,9 +25,9 @@ public class ValidatorCreateCategory : AbstractValidator<CommandCreateCategory>
 }
 
 public class HandlerCreateCategory(
-    IRepositoryCategoryExpenses repositoryCategory,
+    IRepositoryCategoryExpenses repository,
     IServiceCurrentUser serviceCurrentUser,
-    IUnitOfWork unitOfWork) : HandlerCRUDCreate<CategoryExpenses, CommandCreateCategory>(repositoryCategory, unitOfWork)
+    IUnitOfWork unitOfWork) : HandlerCRUDCreate<CategoryExpenses, CommandCreateCategory>(repository, unitOfWork)
 {
     protected override CategoryExpenses MapCommandToEntity(CommandCreateCategory request) =>
         new()

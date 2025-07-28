@@ -48,6 +48,32 @@ namespace Infrastructure.Migrations
                     b.ToTable("CategoriesExpenses", (string)null);
                 });
 
+            modelBuilder.Entity("Domain.Dashboard.Entities.CategoryIncomes", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal?>("Limit")
+                        .HasColumnType("decimal(18, 2)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("CategoriesIncomes", (string)null);
+                });
+
             modelBuilder.Entity("Domain.Dashboard.Entities.Expense", b =>
                 {
                     b.Property<int>("Id")
@@ -89,6 +115,44 @@ namespace Infrastructure.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Expenses", (string)null);
+                });
+
+            modelBuilder.Entity("Domain.Dashboard.Entities.Income", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18, 2)");
+
+                    b.Property<int?>("CategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasDefaultValueSql("getutcdate()");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("date");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(8000)
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Incomes", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Dashboard.Entities.PaymentMethod", b =>
@@ -317,7 +381,18 @@ namespace Infrastructure.Migrations
             modelBuilder.Entity("Domain.Dashboard.Entities.CategoryExpenses", b =>
                 {
                     b.HasOne("Domain.IdentityEntities.AppUser", "User")
-                        .WithMany("Categories")
+                        .WithMany("CategoriesExpenses")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Domain.Dashboard.Entities.CategoryIncomes", b =>
+                {
+                    b.HasOne("Domain.IdentityEntities.AppUser", "User")
+                        .WithMany("CategoriesIncomes")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -346,6 +421,24 @@ namespace Infrastructure.Migrations
                     b.Navigation("Category");
 
                     b.Navigation("PaymentMethod");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Domain.Dashboard.Entities.Income", b =>
+                {
+                    b.HasOne("Domain.Dashboard.Entities.CategoryIncomes", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("Domain.IdentityEntities.AppUser", "User")
+                        .WithMany("Incomes")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Category");
 
                     b.Navigation("User");
                 });
@@ -414,9 +507,13 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.IdentityEntities.AppUser", b =>
                 {
-                    b.Navigation("Categories");
+                    b.Navigation("CategoriesExpenses");
+
+                    b.Navigation("CategoriesIncomes");
 
                     b.Navigation("Expenses");
+
+                    b.Navigation("Incomes");
 
                     b.Navigation("PaymentMethods");
                 });

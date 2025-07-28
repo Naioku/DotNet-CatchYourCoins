@@ -30,6 +30,8 @@ public static class ExtensionServiceCollection
         services.AddScoped<IRepositoryCategoryExpenses, RepositoryCategoryExpenses>();
         services.AddScoped<IRepositoryPaymentMethod, RepositoryPaymentMethod>();
         services.AddScoped<IRepositoryExpense, RepositoryExpense>();
+        services.AddScoped<IRepositoryCategoryIncomes, RepositoryCategoryIncomes>();
+        services.AddScoped<IRepositoryIncome, RepositoryIncome>();
 
         return services;
     }

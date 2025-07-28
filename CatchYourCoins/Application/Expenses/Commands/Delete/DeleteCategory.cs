@@ -11,8 +11,8 @@ public class CommandDeleteCategory : CommandDeleteBase;
 public class ValidatorDeleteCategory : ValidatorDeleteBase<CommandDeleteCategory>;
 
 public class HandlerDeleteCategory(
-    IRepositoryCategoryExpenses repositoryCategory,
-    IUnitOfWork unitOfWork) : HandlerCRUDDelete<CategoryExpenses, CommandDeleteCategory>(repositoryCategory, unitOfWork)
+    IRepositoryCategoryExpenses repository,
+    IUnitOfWork unitOfWork) : HandlerCRUDDelete<CategoryExpenses, CommandDeleteCategory>(repository, unitOfWork)
 {
     protected override Dictionary<string, string> GetFailureMessages() =>
         new()

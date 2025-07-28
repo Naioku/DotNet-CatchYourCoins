@@ -20,12 +20,6 @@ public class TestHandlerGetExpenseById
         TestFactoryExpense
     >
 {
-    public override Task InitializeAsync()
-    {
-        RegisterMock<IRepositoryExpense>();
-        return base.InitializeAsync();
-    }
-
     protected override HandlerGetExpenseById CreateHandler() =>
         new(GetMock<IRepositoryExpense>().Object);
     

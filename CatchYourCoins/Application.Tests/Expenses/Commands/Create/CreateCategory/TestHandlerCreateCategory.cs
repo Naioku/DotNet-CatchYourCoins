@@ -18,7 +18,7 @@ public class TestHandlerCreateCategory
         CategoryExpenses,
         CommandCreateCategory,
         IRepositoryCategoryExpenses,
-        TestFactoryCategory
+        TestFactoryCategoryExpenses
     >
 {
     protected override HandlerCreateCategory CreateHandler()

@@ -11,8 +11,8 @@ public class CommandDeletePaymentMethod : CommandDeleteBase;
 public class ValidatorDeletePaymentMethod : ValidatorDeleteBase<CommandDeletePaymentMethod>;
 
 public class HandlerDeletePaymentMethod(
-    IRepositoryPaymentMethod repositoryPaymentMethod,
-    IUnitOfWork unitOfWork) : HandlerCRUDDelete<PaymentMethod, CommandDeletePaymentMethod>(repositoryPaymentMethod, unitOfWork)
+    IRepositoryPaymentMethod repository,
+    IUnitOfWork unitOfWork) : HandlerCRUDDelete<PaymentMethod, CommandDeletePaymentMethod>(repository, unitOfWork)
 {
     protected override Dictionary<string, string> GetFailureMessages() =>
         new()

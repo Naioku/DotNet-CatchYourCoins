@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using Application.DTOs.Expenses;
+using Application.DTOs;
 using Application.Expenses.Queries.GetById;
 using Application.Tests.Factories;
 using Domain.Dashboard.Entities;
@@ -17,15 +17,9 @@ public class TestHandlerGetCategoryById
         CategoryDTO,
         QueryGetCategoryById,
         IRepositoryCategoryExpenses,
-        TestFactoryCategory
+        TestFactoryCategoryExpenses
     >
 {
-    public override Task InitializeAsync()
-    {
-        RegisterMock<IRepositoryCategoryExpenses>();
-        return base.InitializeAsync();
-    }
-
     protected override HandlerGetCategoryById CreateHandler() =>
         new(GetMock<IRepositoryCategoryExpenses>().Object);
     

@@ -7,7 +7,8 @@ namespace Application.Expenses.Queries.GetAll;
 
 public class QueryGetAllPaymentMethods : QueryGetAllBase<PaymentMethodDTO>;
 
-public class HandlerGetAllPaymentMethods(IRepositoryPaymentMethod repository) : HandlerCRUDGetAll<PaymentMethod, QueryGetAllPaymentMethods, PaymentMethodDTO>(repository)
+public class HandlerGetAllPaymentMethods(IRepositoryPaymentMethod repository)
+    : HandlerCRUDGetAll<PaymentMethod, QueryGetAllPaymentMethods, PaymentMethodDTO>(repository)
 {
     protected override Dictionary<string, string> GetFailureMessages() =>
         new()

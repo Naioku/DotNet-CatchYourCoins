@@ -26,7 +26,7 @@ public class ConfigurationCategoryExpenses : IEntityTypeConfiguration<CategoryEx
     {
         builder
             .HasOne(c => c.User)
-            .WithMany(u => u.Categories)
+            .WithMany(u => u.CategoriesExpenses)
             .HasForeignKey(c => c.UserId)
             .OnDelete(DeleteBehavior.Cascade);
     }

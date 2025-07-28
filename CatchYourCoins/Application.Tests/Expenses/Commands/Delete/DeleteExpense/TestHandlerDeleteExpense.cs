@@ -10,15 +10,15 @@ namespace Application.Tests.Expenses.Commands.Delete.DeleteExpense;
 
 [TestSubject(typeof(HandlerDeleteExpense))]
 public class TestHandlerDeleteExpense
-    : TestHandlerDelete<HandlerDeleteExpense, Expense, CommandDeleteExpense, IRepositoryExpense, TestFactoryExpense, IUnitOfWork>
+    : TestHandlerDelete<
+        HandlerDeleteExpense,
+        Expense,
+        CommandDeleteExpense,
+        IRepositoryExpense,
+        TestFactoryExpense,
+        IUnitOfWork
+    >
 {
-    public override Task InitializeAsync()
-    {
-        RegisterMock<IRepositoryExpense>();
-        RegisterMock<IUnitOfWork>();
-        return base.InitializeAsync();
-    }
-
     protected override HandlerDeleteExpense CreateHandler()
     {
         return new HandlerDeleteExpense(

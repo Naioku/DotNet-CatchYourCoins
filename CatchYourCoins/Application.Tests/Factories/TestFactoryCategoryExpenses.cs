@@ -2,7 +2,7 @@
 
 namespace Application.Tests.Factories;
 
-public class TestFactoryCategory : TestFactoryEntityBase<CategoryExpenses>
+public class TestFactoryCategoryExpenses : TestFactoryEntityBase<CategoryExpenses>
 {
     public override CategoryExpenses CreateEntity(CurrentUser currentUser, int id = 1) => new()
     {

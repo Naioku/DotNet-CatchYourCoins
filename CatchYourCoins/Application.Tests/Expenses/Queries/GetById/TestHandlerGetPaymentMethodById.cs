@@ -20,12 +20,6 @@ public class TestHandlerGetPaymentMethodById
         TestFactoryPaymentMethod
     >
 {
-    public override Task InitializeAsync()
-    {
-        RegisterMock<IRepositoryPaymentMethod>();
-        return base.InitializeAsync();
-    }
-
     protected override HandlerGetPaymentMethodById CreateHandler() =>
         new(GetMock<IRepositoryPaymentMethod>().Object);
     
