@@ -11,8 +11,8 @@ public class CommandDeleteExpense : CommandDeleteBase;
 public class ValidatorDeleteExpense : ValidatorDeleteBase<CommandDeleteExpense>;
 
 public class HandlerDeleteExpense(
-    IRepositoryExpense repositoryExpense,
-    IUnitOfWork unitOfWork) : HandlerCRUDDelete<Expense, CommandDeleteExpense>(repositoryExpense, unitOfWork)
+    IRepositoryExpense repository,
+    IUnitOfWork unitOfWork) : HandlerCRUDDelete<Expense, CommandDeleteExpense>(repository, unitOfWork)
 {
     protected override Dictionary<string, string> GetFailureMessages() =>
         new()

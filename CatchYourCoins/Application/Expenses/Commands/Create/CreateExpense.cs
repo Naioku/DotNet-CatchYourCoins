@@ -36,9 +36,9 @@ public class ValidatorCreateExpense : AbstractValidator<CommandCreateExpense>
 }
 
 public class HandlerCreateExpense(
-    IRepositoryExpense repositoryExpense,
+    IRepositoryExpense repository,
     IServiceCurrentUser serviceCurrentUser,
-    IUnitOfWork unitOfWork) : HandlerCRUDCreate<Expense, CommandCreateExpense>(repositoryExpense, unitOfWork)
+    IUnitOfWork unitOfWork) : HandlerCRUDCreate<Expense, CommandCreateExpense>(repository, unitOfWork)
 {
     protected override Expense MapCommandToEntity(CommandCreateExpense request) =>
         new()
