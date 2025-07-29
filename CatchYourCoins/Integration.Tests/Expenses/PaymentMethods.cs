@@ -28,7 +28,7 @@ public class PaymentMethods(TestFixture fixture) : TestBase(fixture)
         await _mediator.Send(command);
 
         // Assert
-        PaymentMethod? paymentMethod = await _dbContext.PaymentMethods.FirstOrDefaultAsync();
+        PaymentMethod? paymentMethod = await _dbContext.Set<PaymentMethod>().FirstOrDefaultAsync();
         
         Assert.NotNull(paymentMethod);
         Assert.Equal(paymentMethod.UserId, _testServiceCurrentUser.User.Id);

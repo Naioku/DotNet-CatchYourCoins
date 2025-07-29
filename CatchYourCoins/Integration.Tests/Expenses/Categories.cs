@@ -28,7 +28,7 @@ public class Categories(TestFixture fixture) : TestBase(fixture)
         await _mediator.Send(command);
 
         // Assert
-        CategoryExpenses? category = await _dbContext.CategoriesExpenses.FirstOrDefaultAsync();
+        CategoryExpenses? category = await _dbContext.Set<CategoryExpenses>().FirstOrDefaultAsync();
         
         Assert.NotNull(category);
         Assert.Equal(category.UserId, _testServiceCurrentUser.User.Id);

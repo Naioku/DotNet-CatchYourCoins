@@ -56,10 +56,10 @@ public class Expenses(TestFixture fixture) : TestBase(fixture)
     }
 
     private async Task<CategoryExpenses> AddCategory(CategoryExpenses category)
-        => (await dbContext.CategoriesExpenses.AddAsync(category)).Entity;
+        => (await dbContext.Set<CategoryExpenses>().AddAsync(category)).Entity;
 
     private async Task<PaymentMethod> AddPaymentMethod(PaymentMethod paymentMethod)
-        => (await dbContext.PaymentMethods.AddAsync(paymentMethod)).Entity;
+        => (await dbContext.Set<PaymentMethod>().AddAsync(paymentMethod)).Entity;
 
     [Fact]
     public async Task CreateExpense_WithValidData_ShouldCreateExpenseInDB()
@@ -81,7 +81,7 @@ public class Expenses(TestFixture fixture) : TestBase(fixture)
         await _mediator.Send(command);
     
         // Assert
-        Expense? result = await dbContext.Expenses.FirstOrDefaultAsync();
+        Expense? result = await dbContext.Set<Expense>().FirstOrDefaultAsync();
     
         Assert.NotNull(result);
         Assert.Equal(result.Amount, command.Amount);
@@ -119,7 +119,7 @@ public class Expenses(TestFixture fixture) : TestBase(fixture)
         Assert.NotNull(_categoryUser1);
         Assert.NotNull(_paymentMethodUser1);
     
-        Expense expenseDB = (await dbContext.Expenses.AddAsync(new Expense
+        Expense expenseDB = (await dbContext.Set<Expense>().AddAsync(new Expense
         {
             Amount = 100,
             Date = DateTime.Now,
@@ -158,7 +158,7 @@ public class Expenses(TestFixture fixture) : TestBase(fixture)
         Assert.NotNull(_categoryUser2);
         Assert.NotNull(_paymentMethodUser2);
     
-        Expense expenseDB = (await dbContext.Expenses.AddAsync(new Expense
+        Expense expenseDB = (await dbContext.Set<Expense>().AddAsync(new Expense
         {
             Amount = 100,
             Date = DateTime.Now,
