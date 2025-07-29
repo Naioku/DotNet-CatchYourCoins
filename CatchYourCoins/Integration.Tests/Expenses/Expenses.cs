@@ -68,7 +68,7 @@ public class Expenses(TestFixture fixture) : TestBase(fixture)
         Assert.NotNull(_categoryUser1);
         Assert.NotNull(_paymentMethodUser1);
     
-        var command = new CommandCreateExpense
+        CommandCreateExpense command = new()
         {
             Amount = 100,
             Date = DateTime.Now,
@@ -78,24 +78,27 @@ public class Expenses(TestFixture fixture) : TestBase(fixture)
         };
     
         // Act
-        await _mediator.Send(command);
+        Result result = await _mediator.Send(command);
     
         // Assert
-        Expense? result = await dbContext.Set<Expense>().FirstOrDefaultAsync();
+        Assert.True(result.IsSuccess);
+        Assert.Empty(result.Errors);
+        
+        Expense? entity = await dbContext.Set<Expense>().FirstOrDefaultAsync();
     
-        Assert.NotNull(result);
-        Assert.Equal(result.Amount, command.Amount);
-        Assert.Equal(result.Date, command.Date);
-        Assert.Equal(result.Description, command.Description);
-        Assert.Equal(result.CategoryId, command.CategoryId);
-        Assert.Equal(result.PaymentMethodId, command.PaymentMethodId);
+        Assert.NotNull(entity);
+        Assert.Equal(entity.Amount, command.Amount);
+        Assert.Equal(entity.Date, command.Date);
+        Assert.Equal(entity.Description, command.Description);
+        Assert.Equal(entity.CategoryId, command.CategoryId);
+        Assert.Equal(entity.PaymentMethodId, command.PaymentMethodId);
     }
     
     [Fact]
-    public async Task CreateCategory_WithInvalidCategoryIdAndPaymentMethodId_ShouldNotCreateCategoryInDB()
+    public async Task CreateExpense_WithInvalidCategoryIdAndPaymentMethodId_ShouldNotCreateExpenseInDB()
     {
         // Arrange
-        var command = new CommandCreateExpense
+        CommandCreateExpense command = new()
         {
             Amount = 100,
             Date = DateTime.Now,
@@ -113,13 +116,73 @@ public class Expenses(TestFixture fixture) : TestBase(fixture)
     }
     
     [Fact]
+    public async Task CreateExpense_WithOnlyCategoryId_ShouldCreateExpenseInDBWithNullPaymentMethodId()
+    {
+        // Arrange
+        Assert.NotNull(_categoryUser1);
+        
+        CommandCreateExpense command = new()
+        {
+            Amount = 100,
+            Date = DateTime.Now,
+            Description = "Test",
+            CategoryId = _categoryUser1.Id,
+        };
+    
+        // Act
+        Result result = await _mediator.Send(command);
+        
+        // Assert
+        Assert.True(result.IsSuccess);
+        Assert.Empty(result.Errors);
+        
+        Expense? entity = await dbContext.Set<Expense>().FirstOrDefaultAsync();
+        Assert.NotNull(entity);
+        Assert.Equal(command.Amount, entity.Amount);
+        Assert.Equal(command.Date, entity.Date);
+        Assert.Equal(command.Description, entity.Description);
+        Assert.Equal(command.CategoryId, entity.CategoryId);
+        Assert.Null(entity.PaymentMethodId);
+    }
+    
+    [Fact]
+    public async Task CreateExpense_WithOnlyPaymentMethodId_ShouldCreateExpenseInDBWithNullCategoryId()
+    {
+        // Arrange
+        Assert.NotNull(_paymentMethodUser1);
+        
+        CommandCreateExpense command = new()
+        {
+            Amount = 100,
+            Date = DateTime.Now,
+            Description = "Test",
+            PaymentMethodId = _paymentMethodUser1.Id,
+        };
+    
+        // Act
+        Result result = await _mediator.Send(command);
+        
+        // Assert
+        Assert.True(result.IsSuccess);
+        Assert.Empty(result.Errors);
+        
+        Expense? entity = await dbContext.Set<Expense>().FirstOrDefaultAsync();
+        Assert.NotNull(entity);
+        Assert.Equal(command.Amount, entity.Amount);
+        Assert.Equal(command.Date, entity.Date);
+        Assert.Equal(command.Description, entity.Description);
+        Assert.Equal(command.PaymentMethodId, entity.PaymentMethodId);
+        Assert.Null(entity.CategoryId);
+    }
+    
+    [Fact]
     public async Task GetExpense_WithValidData_ShouldReturnExpenseForView()
     {
         // Arrange
         Assert.NotNull(_categoryUser1);
         Assert.NotNull(_paymentMethodUser1);
-    
-        Expense expenseDB = (await dbContext.Set<Expense>().AddAsync(new Expense
+
+        Expense expense = new()
         {
             Amount = 100,
             Date = DateTime.Now,
@@ -127,11 +190,11 @@ public class Expenses(TestFixture fixture) : TestBase(fixture)
             UserId = _testServiceCurrentUser.User.Id,
             CategoryId = _categoryUser1.Id,
             PaymentMethodId = _paymentMethodUser1.Id,
-        })).Entity;
-        
+        };
+        await dbContext.Set<Expense>().AddAsync(expense);
         await dbContext.SaveChangesAsync();
     
-        var query = new QueryGetExpenseById { Id = expenseDB.Id };
+        var query = new QueryGetExpenseById { Id = expense.Id };
     
         // Act
         Result<ExpenseDTO> result = await _mediator.Send(query);
@@ -141,14 +204,14 @@ public class Expenses(TestFixture fixture) : TestBase(fixture)
         Assert.Empty(result.Errors);
         Assert.NotNull(result.Value);
     
-        ExpenseDTO expense = result.Value;
-        Assert.NotNull(expense);
-        Assert.Equal(expense.Id, query.Id);
-        Assert.Equal(expense.Amount, expense.Amount);
-        Assert.Equal(expense.Date, expense.Date);
-        Assert.Equal(expense.Description, expense.Description);
-        Assert.Equal(expense.Category, _categoryUser1.Name);
-        Assert.Equal(expense.PaymentMethod, _paymentMethodUser1.Name);
+        ExpenseDTO dto = result.Value;
+        Assert.NotNull(dto);
+        Assert.Equal(query.Id, dto.Id);
+        Assert.Equal(dto.Amount, dto.Amount);
+        Assert.Equal(dto.Date, dto.Date);
+        Assert.Equal(dto.Description, dto.Description);
+        Assert.Equal(_categoryUser1.Name, dto.Category);
+        Assert.Equal(_paymentMethodUser1.Name, dto.PaymentMethod);
     }
     
     [Fact]
@@ -157,8 +220,8 @@ public class Expenses(TestFixture fixture) : TestBase(fixture)
         // Arrange
         Assert.NotNull(_categoryUser2);
         Assert.NotNull(_paymentMethodUser2);
-    
-        Expense expenseDB = (await dbContext.Set<Expense>().AddAsync(new Expense
+
+        Expense expense = new()
         {
             Amount = 100,
             Date = DateTime.Now,
@@ -166,12 +229,11 @@ public class Expenses(TestFixture fixture) : TestBase(fixture)
             UserId = user2.Id,
             CategoryId = _categoryUser2.Id,
             PaymentMethodId = _paymentMethodUser2.Id,
-        })).Entity;
-        
+        };
+        await dbContext.Set<Expense>().AddAsync(expense);
         await dbContext.SaveChangesAsync();
-        dbContext.ChangeTracker.Clear();
     
-        var query = new QueryGetExpenseById { Id = expenseDB.Id };
+        var query = new QueryGetExpenseById { Id = expense.Id };
     
         // Act
         Result<ExpenseDTO> result = await _mediator.Send(query);
