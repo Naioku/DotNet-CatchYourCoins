@@ -2,7 +2,9 @@
 using Domain.Interfaces.Repositories;
 using MediatR;
 
-namespace Application.Requests.Queries.GetAll;
+namespace Application.Requests.Queries;
+
+public class QueryGetAllBase<TDTO> : IRequest<Result<IReadOnlyList<TDTO>>>;
 
 public abstract class HandlerCRUDGetAll<TEntity, TQuery, TDTO>(IRepositoryCRUD<TEntity> repository)
     : IRequestHandler<TQuery, Result<IReadOnlyList<TDTO>>>

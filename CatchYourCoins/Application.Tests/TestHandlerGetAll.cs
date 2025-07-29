@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Application.Requests.Queries.GetAll;
+using Application.Requests.Queries;
 using Application.Tests.Factories;
 using Domain;
 using Domain.Interfaces.Repositories;

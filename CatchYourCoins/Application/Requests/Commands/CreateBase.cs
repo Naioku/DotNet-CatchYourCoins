@@ -1,8 +1,13 @@
 ﻿using Domain;
 using Domain.Interfaces.Repositories;
+using FluentValidation;
 using MediatR;
 
-namespace Application.Requests.Commands.Create;
+namespace Application.Requests.Commands;
+
+public class CommandCreateBase : IRequest<Result>;
+
+public abstract class ValidatorCreateBase<T> : AbstractValidator<T> where T : CommandCreateBase;
 
 public abstract class HandlerCRUDCreate<TEntity, TCommand>(
     IRepositoryCRUD<TEntity> repository,
@@ -28,3 +33,4 @@ public abstract class HandlerCRUDCreate<TEntity, TCommand>(
         }
     }
 }
+

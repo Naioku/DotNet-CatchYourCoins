@@ -2,7 +2,7 @@
 using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
-using Application.Requests.Commands.Create;
+using Application.Requests.Commands;
 using Application.Tests.Factories;
 using Domain;
 using Domain.Interfaces.Repositories;

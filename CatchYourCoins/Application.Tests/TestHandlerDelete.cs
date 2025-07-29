@@ -1,6 +1,6 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using Application.Requests.Commands.Delete;
+using Application.Requests.Commands;
 using Application.Tests.Factories;
 using Domain;
 using Domain.Interfaces.Repositories;

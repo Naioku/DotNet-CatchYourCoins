@@ -1,5 +1,5 @@
 ﻿using Application.DTOs.Incomes;
-using Application.Requests.Queries.GetAll;
+using Application.Requests.Queries;
 using Domain.Dashboard.Entities;
 using Domain.Dashboard.Entities.Incomes;
 using Domain.Interfaces.Repositories;

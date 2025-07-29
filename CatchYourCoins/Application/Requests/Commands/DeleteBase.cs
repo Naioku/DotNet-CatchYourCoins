@@ -1,8 +1,23 @@
 ﻿using Domain;
 using Domain.Interfaces.Repositories;
+using FluentValidation;
 using MediatR;
 
-namespace Application.Requests.Commands.Delete;
+namespace Application.Requests.Commands;
+
+public class CommandDeleteBase : IRequest<Result>
+{
+    public required int Id { get; init; }
+}
+
+public abstract class ValidatorDeleteBase<T> : AbstractValidator<T> where T : CommandDeleteBase
+{
+    protected ValidatorDeleteBase()
+    {
+        RuleFor(x => x.Id)
+            .GreaterThanOrEqualTo(0);
+    }
+}
 
 public abstract class HandlerCRUDDelete<TEntity, TCommand>(
     IRepositoryCRUD<TEntity> repository,

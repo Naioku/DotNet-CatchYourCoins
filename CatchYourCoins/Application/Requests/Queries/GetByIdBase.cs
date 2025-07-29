@@ -2,7 +2,12 @@
 using Domain.Interfaces.Repositories;
 using MediatR;
 
-namespace Application.Requests.Queries.GetById;
+namespace Application.Requests.Queries;
+
+public abstract class QueryGetByIdBase<TDTO> : IRequest<Result<TDTO>>
+{
+    public required int Id { get; init; }
+}
 
 public abstract class HandlerCRUDGetById<TEntity, TQuery, TDTO>(IRepositoryCRUD<TEntity> repository)
     : IRequestHandler<TQuery, Result<TDTO>>
