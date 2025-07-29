@@ -7,22 +7,22 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repositories;
 
-public class RepositoryCRUD<T>(
+public class RepositoryCRUD<TEntity>(
     AppDbContext dbContext,
-    IServiceCurrentUser serviceCurrentUser) : IRepositoryCRUD<T>
-    where T : class, IAutorizable, IEntity
+    IServiceCurrentUser serviceCurrentUser) : IRepositoryCRUD<TEntity>
+    where TEntity : class, IAutorizable, IEntity
 {
-    public async Task CreateAsync(T category) => await dbContext.Set<T>().AddAsync(category);
+    public async Task CreateAsync(TEntity entity) => await dbContext.Set<TEntity>().AddAsync(entity);
 
-    public async Task<T?> GetByIdAsync(int id) =>
-        await dbContext.Set<T>()
+    public async Task<TEntity?> GetByIdAsync(int id) =>
+        await dbContext.Set<TEntity>()
             .WhereAuthorized(serviceCurrentUser.User.Id)
             .FirstOrDefaultAsync(c => c.Id == id);
 
-    public Task<List<T>> GetAllAsync() =>
-        dbContext.Set<T>()
+    public Task<List<TEntity>> GetAllAsync() =>
+        dbContext.Set<TEntity>()
             .WhereAuthorized(serviceCurrentUser.User.Id)
             .ToListAsync();
 
-    public void Delete(T category) => dbContext.Set<T>().Remove(category);
+    public void Delete(TEntity entity) => dbContext.Set<TEntity>().Remove(entity);
 }
