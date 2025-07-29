@@ -3,7 +3,7 @@ using Domain.Interfaces.Repositories;
 
 namespace Domain.Dashboard.Entities;
 
-public class FinancialOperation<T> : IAutorizable, IEntity
+public class FinancialOperation<TCategory> : IAutorizable, IEntity
 {
     public int Id { get; init; }
     public required decimal Amount { get; init; }
@@ -13,7 +13,7 @@ public class FinancialOperation<T> : IAutorizable, IEntity
     public required Guid UserId { get; init; }
     public AppUser User { get; init; }
     public int? CategoryId { get; init; }
-    public T? Category { get; init; }
+    public TCategory? Category { get; init; }
     
     public DateTime CreatedAt { get; init; }
 }

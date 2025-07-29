@@ -10,4 +10,6 @@ public abstract class FinancialCategory : IAutorizable, IEntity
     public decimal? Limit { get; init; }
     public required Guid UserId { get; init; }
     public AppUser User { get; init; }
+    
+    public DateTime CreatedAt { get; init; }
 }
