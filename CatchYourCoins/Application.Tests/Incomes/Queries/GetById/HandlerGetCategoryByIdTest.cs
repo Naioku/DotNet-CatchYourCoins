@@ -2,7 +2,7 @@
 using Application.DTOs;
 using Application.Incomes.Queries.GetById;
 using Application.Tests.Factories;
-using Domain.Dashboard.Entities;
+using Domain.Dashboard.Entities.Incomes;
 using Domain.Interfaces.Repositories;
 using JetBrains.Annotations;
 using Xunit;
@@ -13,15 +13,15 @@ namespace Application.Tests.Incomes.Queries.GetById;
 public class HandlerGetCategoryByIdTest
     : TestHandlerGetById<
         HandlerGetCategoryById,
-        CategoryIncomes,
+        IncomeCategory,
         CategoryDTO,
         QueryGetCategoryById,
-        IRepositoryCategoryIncomes,
+        IRepositoryIncomeCategory,
         TestFactoryCategoryIncomes
     >
 {
     protected override HandlerGetCategoryById CreateHandler() =>
-        new(GetMock<IRepositoryCategoryIncomes>().Object);
+        new(GetMock<IRepositoryIncomeCategory>().Object);
     
     protected override QueryGetCategoryById GetQuery() => new() { Id = 1 };
 

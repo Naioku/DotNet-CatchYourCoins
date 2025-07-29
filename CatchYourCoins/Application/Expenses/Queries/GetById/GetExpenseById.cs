@@ -1,6 +1,7 @@
 ﻿using Application.DTOs.Expenses;
 using Application.Requests.Queries.GetById;
 using Domain.Dashboard.Entities;
+using Domain.Dashboard.Entities.Expenses;
 using Domain.Interfaces.Repositories;
 
 namespace Application.Expenses.Queries.GetById;

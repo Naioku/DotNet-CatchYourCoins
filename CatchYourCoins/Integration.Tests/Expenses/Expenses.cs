@@ -2,7 +2,7 @@
 using Application.Expenses.Commands.Create;
 using Application.Expenses.Queries.GetById;
 using Domain;
-using Domain.Dashboard.Entities;
+using Domain.Dashboard.Entities.Expenses;
 using Domain.Interfaces.Services;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -15,37 +15,37 @@ public class Expenses(TestFixture fixture) : TestBase(fixture)
     private readonly IMediator _mediator = fixture.ServiceProvider.GetRequiredService<IMediator>();
     private readonly IServiceCurrentUser _testServiceCurrentUser = fixture.ServiceProvider.GetRequiredService<IServiceCurrentUser>();
 
-    private CategoryExpenses? _categoryUser1;
-    private PaymentMethod? _paymentMethodUser1;
-    private CategoryExpenses? _categoryUser2;
-    private PaymentMethod? _paymentMethodUser2;
+    private ExpenseCategory? _categoryUser1;
+    private ExpensePaymentMethod? _paymentMethodUser1;
+    private ExpenseCategory? _categoryUser2;
+    private ExpensePaymentMethod? _paymentMethodUser2;
 
     public override async Task InitializeAsync()
     {
         await base.InitializeAsync();
 
-        _categoryUser1 = await AddCategory(new CategoryExpenses
+        _categoryUser1 = await AddCategory(new ExpenseCategory
         {
             Name = "Test1",
             Limit = 1000,
             UserId = user1.Id,
         });
         
-        _categoryUser2 = await AddCategory(new CategoryExpenses
+        _categoryUser2 = await AddCategory(new ExpenseCategory
         {
             Name = "Test2",
             Limit = 2000,
             UserId = user2.Id,
         });
         
-        _paymentMethodUser1 = await AddPaymentMethod(new PaymentMethod
+        _paymentMethodUser1 = await AddPaymentMethod(new ExpensePaymentMethod
         {
             Name = "Test1",
             Limit = 1000,
             UserId = user1.Id,
         });
         
-        _paymentMethodUser2 = await AddPaymentMethod(new PaymentMethod
+        _paymentMethodUser2 = await AddPaymentMethod(new ExpensePaymentMethod
         {
             Name = "Test2",
             Limit = 2000,
@@ -55,11 +55,11 @@ public class Expenses(TestFixture fixture) : TestBase(fixture)
         await dbContext.SaveChangesAsync();
     }
 
-    private async Task<CategoryExpenses> AddCategory(CategoryExpenses category)
-        => (await dbContext.Set<CategoryExpenses>().AddAsync(category)).Entity;
+    private async Task<ExpenseCategory> AddCategory(ExpenseCategory category)
+        => (await dbContext.Set<ExpenseCategory>().AddAsync(category)).Entity;
 
-    private async Task<PaymentMethod> AddPaymentMethod(PaymentMethod paymentMethod)
-        => (await dbContext.Set<PaymentMethod>().AddAsync(paymentMethod)).Entity;
+    private async Task<ExpensePaymentMethod> AddPaymentMethod(ExpensePaymentMethod paymentMethod)
+        => (await dbContext.Set<ExpensePaymentMethod>().AddAsync(paymentMethod)).Entity;
 
     [Fact]
     public async Task CreateExpense_WithValidData_ShouldCreateExpenseInDB()

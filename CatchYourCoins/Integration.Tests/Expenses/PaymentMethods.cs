@@ -1,5 +1,5 @@
 ﻿using Application.Expenses.Commands.Create;
-using Domain.Dashboard.Entities;
+using Domain.Dashboard.Entities.Expenses;
 using Domain.Interfaces.Services;
 using Infrastructure.Persistence;
 using MediatR;
@@ -28,7 +28,7 @@ public class PaymentMethods(TestFixture fixture) : TestBase(fixture)
         await _mediator.Send(command);
 
         // Assert
-        PaymentMethod? paymentMethod = await _dbContext.Set<PaymentMethod>().FirstOrDefaultAsync();
+        ExpensePaymentMethod? paymentMethod = await _dbContext.Set<ExpensePaymentMethod>().FirstOrDefaultAsync();
         
         Assert.NotNull(paymentMethod);
         Assert.Equal(paymentMethod.UserId, _testServiceCurrentUser.User.Id);

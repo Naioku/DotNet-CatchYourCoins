@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infrastructure.Persistence.Configurations;
 
-public class ConfigurationExpense : ConfigurationFinancialOperation<Expense, ExpenseCategory>
+public class ConfigurationExpenseCategory : ConfigurationFinancialCategory<ExpenseCategory>
 {
-    public override void Configure(EntityTypeBuilder<Expense> builder)
+    public override void Configure(EntityTypeBuilder<ExpenseCategory> builder)
     {
         base.Configure(builder);
-        builder.ToTable("Expenses");
+        builder.ToTable("ExpenseCategories");
     }
 }

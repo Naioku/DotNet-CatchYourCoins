@@ -3,7 +3,7 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Application.Incomes.Commands.Create;
 using Application.Tests.Factories;
-using Domain.Dashboard.Entities;
+using Domain.Dashboard.Entities.Incomes;
 using Domain.Interfaces.Repositories;
 using Domain.Interfaces.Services;
 using JetBrains.Annotations;

@@ -2,7 +2,7 @@
 using Application.DTOs.Expenses;
 using Application.Expenses.Queries.GetAll;
 using Application.Tests.Factories;
-using Domain.Dashboard.Entities;
+using Domain.Dashboard.Entities.Expenses;
 using Domain.Interfaces.Repositories;
 using JetBrains.Annotations;
 using Xunit;
@@ -13,15 +13,15 @@ namespace Application.Tests.Expenses.Queries.GetAll;
 public class TestHandlerGetAllPaymentMethods
     : TestHandlerGetAll<
         HandlerGetAllPaymentMethods,
-        PaymentMethod,
+        ExpensePaymentMethod,
         PaymentMethodDTO,
         QueryGetAllPaymentMethods,
-        IRepositoryPaymentMethod,
+        IRepositoryExpensePaymentMethod,
         TestFactoryPaymentMethod
     >
 {
     protected override HandlerGetAllPaymentMethods CreateHandler() =>
-        new(GetMock<IRepositoryPaymentMethod>().Object);
+        new(GetMock<IRepositoryExpensePaymentMethod>().Object);
 
     [Fact]
     public async Task GetAll_ValidData_ReturnedAll() =>

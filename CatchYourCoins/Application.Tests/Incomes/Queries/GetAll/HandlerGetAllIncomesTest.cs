@@ -2,7 +2,7 @@
 using Application.DTOs.Incomes;
 using Application.Incomes.Queries.GetAll;
 using Application.Tests.Factories;
-using Domain.Dashboard.Entities;
+using Domain.Dashboard.Entities.Incomes;
 using Domain.Interfaces.Repositories;
 using JetBrains.Annotations;
 using Xunit;

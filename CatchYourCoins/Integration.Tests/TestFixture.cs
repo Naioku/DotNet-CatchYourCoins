@@ -46,10 +46,10 @@ public class TestFixture : IDisposable
 
         services.AddSingleton<TestServiceCurrentUser>();
 
-        services.AddScoped<IRepositoryCategoryExpenses, RepositoryCategoryExpenses>();
-        services.AddScoped<IRepositoryPaymentMethod, RepositoryPaymentMethod>();
+        services.AddScoped<IRepositoryExpenseCategory, RepositoryExpenseCategory>();
+        services.AddScoped<IRepositoryExpensePaymentMethod, RepositoryExpensePaymentMethod>();
         services.AddScoped<IRepositoryExpense, RepositoryExpense>();
-        services.AddScoped<IRepositoryCategoryIncomes, RepositoryCategoryIncomes>();
+        services.AddScoped<IRepositoryIncomeCategory, RepositoryIncomeCategory>();
         services.AddScoped<IRepositoryIncome, RepositoryIncome>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IServiceCurrentUser>(sp => sp.GetRequiredService<TestServiceCurrentUser>());

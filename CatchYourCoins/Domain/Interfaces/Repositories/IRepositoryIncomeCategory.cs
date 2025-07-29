@@ -2,4 +2,4 @@
 
 namespace Domain.Interfaces.Repositories;
 
-public interface IRepositoryIncome : IRepositoryCRUD<Income>;
+public interface IRepositoryIncomeCategory : IRepositoryCRUD<IncomeCategory>;

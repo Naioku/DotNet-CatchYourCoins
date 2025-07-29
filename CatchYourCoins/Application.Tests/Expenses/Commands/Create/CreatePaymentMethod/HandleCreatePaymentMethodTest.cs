@@ -3,7 +3,7 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Application.Expenses.Commands.Create;
 using Application.Tests.Factories;
-using Domain.Dashboard.Entities;
+using Domain.Dashboard.Entities.Expenses;
 using Domain.Interfaces.Repositories;
 using Domain.Interfaces.Services;
 using JetBrains.Annotations;
@@ -15,16 +15,16 @@ namespace Application.Tests.Expenses.Commands.Create.CreatePaymentMethod;
 public class TestHandlerCreatePaymentMethod
     : TestHandlerCreate<
         HandlerCreatePaymentMethod,
-        PaymentMethod,
+        ExpensePaymentMethod,
         CommandCreatePaymentMethod,
-        IRepositoryPaymentMethod,
+        IRepositoryExpensePaymentMethod,
         TestFactoryPaymentMethod
     >
 {
     protected override HandlerCreatePaymentMethod CreateHandler()
     {
         return new HandlerCreatePaymentMethod(
-            GetMock<IRepositoryPaymentMethod>().Object,
+            GetMock<IRepositoryExpensePaymentMethod>().Object,
             GetMock<IServiceCurrentUser>().Object,
             GetMock<IUnitOfWork>().Object
         );
@@ -37,7 +37,7 @@ public class TestHandlerCreatePaymentMethod
             Limit = 1000
         };
 
-    protected override Expression<Func<PaymentMethod, bool>> GetRepositoryMatch(CommandCreatePaymentMethod command) =>
+    protected override Expression<Func<ExpensePaymentMethod, bool>> GetRepositoryMatch(CommandCreatePaymentMethod command) =>
         pm =>
             pm.Name == command.Name &&
             pm.Limit == command.Limit &&

@@ -3,7 +3,7 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Application.Expenses.Commands.Create;
 using Application.Tests.Factories;
-using Domain.Dashboard.Entities;
+using Domain.Dashboard.Entities.Expenses;
 using Domain.Interfaces.Repositories;
 using Domain.Interfaces.Services;
 using JetBrains.Annotations;
@@ -15,16 +15,16 @@ namespace Application.Tests.Expenses.Commands.Create.CreateCategory;
 public class TestHandlerCreateCategory
     : TestHandlerCreate<
         HandlerCreateCategory,
-        CategoryExpenses,
+        ExpenseCategory,
         CommandCreateCategory,
-        IRepositoryCategoryExpenses,
+        IRepositoryExpenseCategory,
         TestFactoryCategoryExpenses
     >
 {
     protected override HandlerCreateCategory CreateHandler()
     {
         return new HandlerCreateCategory(
-            GetMock<IRepositoryCategoryExpenses>().Object,
+            GetMock<IRepositoryExpenseCategory>().Object,
             GetMock<IServiceCurrentUser>().Object,
             GetMock<IUnitOfWork>().Object
         );
@@ -37,7 +37,7 @@ public class TestHandlerCreateCategory
             Limit = 1000
         };
 
-    protected override Expression<Func<CategoryExpenses, bool>> GetRepositoryMatch(CommandCreateCategory command) =>
+    protected override Expression<Func<ExpenseCategory, bool>> GetRepositoryMatch(CommandCreateCategory command) =>
         c =>
             c.Name == command.Name &&
             c.Limit == command.Limit &&

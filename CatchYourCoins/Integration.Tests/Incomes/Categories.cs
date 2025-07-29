@@ -1,5 +1,5 @@
 ﻿using Application.Incomes.Commands.Create;
-using Domain.Dashboard.Entities;
+using Domain.Dashboard.Entities.Incomes;
 using Domain.Interfaces.Services;
 using Infrastructure.Persistence;
 using MediatR;
@@ -28,7 +28,7 @@ public class Categories(TestFixture fixture) : TestBase(fixture)
         await _mediator.Send(command);
 
         // Assert
-        CategoryIncomes? category = await _dbContext.Set<CategoryIncomes>().FirstOrDefaultAsync();
+        IncomeCategory? category = await _dbContext.Set<IncomeCategory>().FirstOrDefaultAsync();
 
         Assert.NotNull(category);
         Assert.Equal(category.UserId, _testServiceCurrentUser.User.Id);

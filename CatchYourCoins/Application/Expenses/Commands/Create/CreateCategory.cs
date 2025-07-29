@@ -1,5 +1,5 @@
 ﻿using Application.Requests.Commands.Create;
-using Domain.Dashboard.Entities;
+using Domain.Dashboard.Entities.Expenses;
 using Domain.Interfaces.Repositories;
 using Domain.Interfaces.Services;
 using FluentValidation;
@@ -24,11 +24,11 @@ public class ValidatorCreateCategory : ValidatorCreateBase<CommandCreateCategory
 }
 
 public class HandlerCreateCategory(
-    IRepositoryCategoryExpenses repository,
+    IRepositoryExpenseCategory repository,
     IServiceCurrentUser serviceCurrentUser,
-    IUnitOfWork unitOfWork) : HandlerCRUDCreate<CategoryExpenses, CommandCreateCategory>(repository, unitOfWork)
+    IUnitOfWork unitOfWork) : HandlerCRUDCreate<ExpenseCategory, CommandCreateCategory>(repository, unitOfWork)
 {
-    protected override CategoryExpenses MapCommandToEntity(CommandCreateCategory request) =>
+    protected override ExpenseCategory MapCommandToEntity(CommandCreateCategory request) =>
         new()
         {
             Name = request.Name,

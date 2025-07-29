@@ -1,11 +1,11 @@
-﻿using Domain.Dashboard.Entities;
+﻿using Domain.Dashboard.Entities.Incomes;
 using Domain.Interfaces.Repositories;
 using Domain.Interfaces.Services;
 using Infrastructure.Persistence;
 
 namespace Infrastructure.Repositories;
 
-public class RepositoryCategoryIncomes(
+public class RepositoryIncomeCategory(
     AppDbContext dbContext,
     IServiceCurrentUser serviceCurrentUser)
-    : RepositoryCRUD<CategoryIncomes>(dbContext, serviceCurrentUser), IRepositoryCategoryIncomes;
+    : RepositoryCRUD<IncomeCategory>(dbContext, serviceCurrentUser), IRepositoryIncomeCategory;

@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infrastructure.Persistence.Configurations;
 
-public class ConfigurationIncome : ConfigurationFinancialOperation<Income, IncomeCategory>
+public class ConfigurationIncomeCategory : ConfigurationFinancialCategory<IncomeCategory>
 {
-    public override void Configure(EntityTypeBuilder<Income> builder)
+    public override void Configure(EntityTypeBuilder<IncomeCategory> builder)
     {
         base.Configure(builder);
-        builder.ToTable("Incomes");
+        builder.ToTable("IncomeCategories");
     }
 }

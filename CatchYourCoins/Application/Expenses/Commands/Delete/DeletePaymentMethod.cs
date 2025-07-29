@@ -1,5 +1,6 @@
 ﻿using Application.Requests.Commands.Delete;
 using Domain.Dashboard.Entities;
+using Domain.Dashboard.Entities.Expenses;
 using Domain.Interfaces.Repositories;
 using JetBrains.Annotations;
 
@@ -11,8 +12,8 @@ public class CommandDeletePaymentMethod : CommandDeleteBase;
 public class ValidatorDeletePaymentMethod : ValidatorDeleteBase<CommandDeletePaymentMethod>;
 
 public class HandlerDeletePaymentMethod(
-    IRepositoryPaymentMethod repository,
-    IUnitOfWork unitOfWork) : HandlerCRUDDelete<PaymentMethod, CommandDeletePaymentMethod>(repository, unitOfWork)
+    IRepositoryExpensePaymentMethod repository,
+    IUnitOfWork unitOfWork) : HandlerCRUDDelete<ExpensePaymentMethod, CommandDeletePaymentMethod>(repository, unitOfWork)
 {
     protected override Dictionary<string, string> GetFailureMessages() =>
         new()

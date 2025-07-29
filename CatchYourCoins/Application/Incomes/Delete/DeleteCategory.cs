@@ -1,5 +1,5 @@
 ﻿using Application.Requests.Commands.Delete;
-using Domain.Dashboard.Entities;
+using Domain.Dashboard.Entities.Incomes;
 using Domain.Interfaces.Repositories;
 using JetBrains.Annotations;
 
@@ -11,8 +11,8 @@ public class CommandDeleteCategory : CommandDeleteBase;
 public class ValidatorDeleteCategory : ValidatorDeleteBase<CommandDeleteCategory>;
 
 public class HandlerDeleteCategory(
-    IRepositoryCategoryIncomes repository,
-    IUnitOfWork unitOfWork) : HandlerCRUDDelete<CategoryIncomes, CommandDeleteCategory>(repository, unitOfWork)
+    IRepositoryIncomeCategory repository,
+    IUnitOfWork unitOfWork) : HandlerCRUDDelete<IncomeCategory, CommandDeleteCategory>(repository, unitOfWork)
 {
     protected override Dictionary<string, string> GetFailureMessages() =>
         new()

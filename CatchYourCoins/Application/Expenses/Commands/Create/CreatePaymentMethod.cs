@@ -1,5 +1,6 @@
 ﻿using Application.Requests.Commands.Create;
 using Domain.Dashboard.Entities;
+using Domain.Dashboard.Entities.Expenses;
 using Domain.Interfaces.Repositories;
 using Domain.Interfaces.Services;
 using FluentValidation;
@@ -24,11 +25,11 @@ public class ValidatorCreatePaymentMethod : ValidatorCreateBase<CommandCreatePay
 }
 
 public class HandlerCreatePaymentMethod(
-    IRepositoryPaymentMethod repositoryCategory,
+    IRepositoryExpensePaymentMethod repository,
     IServiceCurrentUser serviceCurrentUser,
-    IUnitOfWork unitOfWork) : HandlerCRUDCreate<PaymentMethod, CommandCreatePaymentMethod>(repositoryCategory, unitOfWork)
+    IUnitOfWork unitOfWork) : HandlerCRUDCreate<ExpensePaymentMethod, CommandCreatePaymentMethod>(repository, unitOfWork)
 {
-    protected override PaymentMethod MapCommandToEntity(CommandCreatePaymentMethod request) =>
+    protected override ExpensePaymentMethod MapCommandToEntity(CommandCreatePaymentMethod request) =>
         new()
         {
             Name = request.Name,

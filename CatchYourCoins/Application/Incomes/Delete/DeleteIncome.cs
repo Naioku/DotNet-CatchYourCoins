@@ -1,5 +1,6 @@
 ﻿using Application.Requests.Commands.Delete;
 using Domain.Dashboard.Entities;
+using Domain.Dashboard.Entities.Incomes;
 using Domain.Interfaces.Repositories;
 using JetBrains.Annotations;
 

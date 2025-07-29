@@ -1,5 +1,5 @@
 ﻿using Application.Requests.Commands.Create;
-using Domain.Dashboard.Entities;
+using Domain.Dashboard.Entities.Incomes;
 using Domain.Interfaces.Repositories;
 using Domain.Interfaces.Services;
 using FluentValidation;
@@ -24,12 +24,12 @@ public class ValidatorCreateCategory : ValidatorCreateBase<CommandCreateCategory
 }
 
 public class HandlerCreateCategory(
-    IRepositoryCategoryIncomes repository,
+    IRepositoryIncomeCategory repository,
     IServiceCurrentUser serviceCurrentUser,
     IUnitOfWork unitOfWork)
-    : HandlerCRUDCreate<CategoryIncomes, CommandCreateCategory>(repository, unitOfWork)
+    : HandlerCRUDCreate<IncomeCategory, CommandCreateCategory>(repository, unitOfWork)
 {
-    protected override CategoryIncomes MapCommandToEntity(CommandCreateCategory request) =>
+    protected override IncomeCategory MapCommandToEntity(CommandCreateCategory request) =>
         new()
         {
             Name = request.Name,

@@ -1,6 +1,7 @@
 ﻿using Application.DTOs.Incomes;
 using Application.Requests.Queries.GetAll;
 using Domain.Dashboard.Entities;
+using Domain.Dashboard.Entities.Incomes;
 using Domain.Interfaces.Repositories;
 
 namespace Application.Incomes.Queries.GetAll;

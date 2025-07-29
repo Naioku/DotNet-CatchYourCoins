@@ -1,5 +1,6 @@
 ﻿using Application.Requests.Commands.Create;
 using Domain.Dashboard.Entities;
+using Domain.Dashboard.Entities.Expenses;
 using Domain.Interfaces.Repositories;
 using Domain.Interfaces.Services;
 using FluentValidation;

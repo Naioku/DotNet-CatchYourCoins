@@ -2,7 +2,7 @@
 using Application.DTOs.Expenses;
 using Application.Expenses.Queries.GetById;
 using Application.Tests.Factories;
-using Domain.Dashboard.Entities;
+using Domain.Dashboard.Entities.Expenses;
 using Domain.Interfaces.Repositories;
 using JetBrains.Annotations;
 using Xunit;
@@ -13,15 +13,15 @@ namespace Application.Tests.Expenses.Queries.GetById;
 public class TestHandlerGetPaymentMethodById
     : TestHandlerGetById<
         HandlerGetPaymentMethodById,
-        PaymentMethod,
+        ExpensePaymentMethod,
         PaymentMethodDTO,
         QueryGetPaymentMethodById,
-        IRepositoryPaymentMethod,
+        IRepositoryExpensePaymentMethod,
         TestFactoryPaymentMethod
     >
 {
     protected override HandlerGetPaymentMethodById CreateHandler() =>
-        new(GetMock<IRepositoryPaymentMethod>().Object);
+        new(GetMock<IRepositoryExpensePaymentMethod>().Object);
     
     protected override QueryGetPaymentMethodById GetQuery() => new() { Id = 1 };
 

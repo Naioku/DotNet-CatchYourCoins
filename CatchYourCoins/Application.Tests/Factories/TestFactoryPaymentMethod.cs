@@ -1,10 +1,11 @@
 ﻿using Domain.Dashboard.Entities;
+using Domain.Dashboard.Entities.Expenses;
 
 namespace Application.Tests.Factories;
 
-public class TestFactoryPaymentMethod : TestFactoryEntityBase<PaymentMethod>
+public class TestFactoryPaymentMethod : TestFactoryEntityBase<ExpensePaymentMethod>
 {
-    public override PaymentMethod CreateEntity(CurrentUser currentUser, int id = 1) => new()
+    public override ExpensePaymentMethod CreateEntity(CurrentUser currentUser, int id = 1) => new()
     {
         Id = id,
         Limit = 100,

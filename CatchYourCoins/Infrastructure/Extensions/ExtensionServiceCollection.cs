@@ -27,10 +27,10 @@ public static class ExtensionServiceCollection
         services.AddScoped<IServiceIdentity, ServiceIdentity>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IServiceCurrentUser, ServiceCurrentUser>();
-        services.AddScoped<IRepositoryCategoryExpenses, RepositoryCategoryExpenses>();
-        services.AddScoped<IRepositoryPaymentMethod, RepositoryPaymentMethod>();
+        services.AddScoped<IRepositoryExpenseCategory, RepositoryExpenseCategory>();
+        services.AddScoped<IRepositoryExpensePaymentMethod, RepositoryExpensePaymentMethod>();
         services.AddScoped<IRepositoryExpense, RepositoryExpense>();
-        services.AddScoped<IRepositoryCategoryIncomes, RepositoryCategoryIncomes>();
+        services.AddScoped<IRepositoryIncomeCategory, RepositoryIncomeCategory>();
         services.AddScoped<IRepositoryIncome, RepositoryIncome>();
 
         return services;

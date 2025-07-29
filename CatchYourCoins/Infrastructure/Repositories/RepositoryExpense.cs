@@ -1,4 +1,4 @@
-﻿using Domain.Dashboard.Entities;
+﻿using Domain.Dashboard.Entities.Expenses;
 using Domain.Interfaces.Repositories;
 using Domain.Interfaces.Services;
 using Infrastructure.Persistence;

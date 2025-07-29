@@ -1,10 +1,11 @@
 ﻿using Domain.Dashboard.Entities;
+using Domain.Dashboard.Entities.Incomes;
 
 namespace Application.Tests.Factories;
 
-public class TestFactoryCategoryIncomes : TestFactoryEntityBase<CategoryIncomes>
+public class TestFactoryCategoryIncomes : TestFactoryEntityBase<IncomeCategory>
 {
-    public override CategoryIncomes CreateEntity(CurrentUser currentUser, int id = 1) => new()
+    public override IncomeCategory CreateEntity(CurrentUser currentUser, int id = 1) => new()
     {
         Id = id,
         Limit = 100,

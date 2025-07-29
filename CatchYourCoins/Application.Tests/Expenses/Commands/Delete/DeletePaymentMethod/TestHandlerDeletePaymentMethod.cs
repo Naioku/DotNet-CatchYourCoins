@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Application.Expenses.Commands.Delete;
 using Application.Tests.Factories;
-using Domain.Dashboard.Entities;
+using Domain.Dashboard.Entities.Expenses;
 using Domain.Interfaces.Repositories;
 using JetBrains.Annotations;
 using Xunit;
@@ -12,9 +12,9 @@ namespace Application.Tests.Expenses.Commands.Delete.DeletePaymentMethod;
 public class TestHandlerDeletePaymentMethod
     : TestHandlerDelete<
         HandlerDeletePaymentMethod,
-        PaymentMethod,
+        ExpensePaymentMethod,
         CommandDeletePaymentMethod,
-        IRepositoryPaymentMethod,
+        IRepositoryExpensePaymentMethod,
         TestFactoryPaymentMethod,
         IUnitOfWork
     >
@@ -22,7 +22,7 @@ public class TestHandlerDeletePaymentMethod
     protected override HandlerDeletePaymentMethod CreateHandler()
     {
         return new HandlerDeletePaymentMethod(
-            GetMock<IRepositoryPaymentMethod>().Object,
+            GetMock<IRepositoryExpensePaymentMethod>().Object,
             GetMock<IUnitOfWork>().Object
         );
     }

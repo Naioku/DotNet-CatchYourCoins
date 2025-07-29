@@ -1,5 +1,6 @@
 ﻿using System;
 using Domain.Dashboard.Entities;
+using Domain.Dashboard.Entities.Incomes;
 
 namespace Application.Tests.Factories;
 
@@ -13,7 +14,7 @@ public class TestFactoryIncome : TestFactoryEntityBase<Income>
         Description = "Test",
         UserId = currentUser.Id,
         CategoryId = 1,
-        Category = new CategoryIncomes
+        Category = new IncomeCategory
         {
             Name = "Test",
             UserId = currentUser.Id,

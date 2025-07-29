@@ -1,11 +1,11 @@
-﻿using Domain.Dashboard.Entities;
+﻿using Domain.Dashboard.Entities.Expenses;
 using Domain.Interfaces.Repositories;
 using Domain.Interfaces.Services;
 using Infrastructure.Persistence;
 
 namespace Infrastructure.Repositories;
 
-public class RepositoryCategoryExpenses(
+public class RepositoryExpensePaymentMethod(
     AppDbContext dbContext,
     IServiceCurrentUser serviceCurrentUser)
-    : RepositoryCRUD<CategoryExpenses>(dbContext, serviceCurrentUser), IRepositoryCategoryExpenses;
+    : RepositoryCRUD<ExpensePaymentMethod>(dbContext, serviceCurrentUser), IRepositoryExpensePaymentMethod;

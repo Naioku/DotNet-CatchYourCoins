@@ -2,7 +2,7 @@
 using Application.DTOs;
 using Application.Incomes.Queries.GetAll;
 using Application.Tests.Factories;
-using Domain.Dashboard.Entities;
+using Domain.Dashboard.Entities.Incomes;
 using Domain.Interfaces.Repositories;
 using JetBrains.Annotations;
 using Xunit;
@@ -13,15 +13,15 @@ namespace Application.Tests.Incomes.Queries.GetAll;
 public class HandlerGetAllCategoriesTest
     : TestHandlerGetAll<
         HandlerGetAllCategories,
-        CategoryIncomes,
+        IncomeCategory,
         CategoryDTO,
         QueryGetAllCategories,
-        IRepositoryCategoryIncomes,
+        IRepositoryIncomeCategory,
         TestFactoryCategoryIncomes
     >
 {
     protected override HandlerGetAllCategories CreateHandler() =>
-        new(GetMock<IRepositoryCategoryIncomes>().Object);
+        new(GetMock<IRepositoryIncomeCategory>().Object);
     
     [Fact]
     public async Task GetAll_ValidData_ReturnedAll() =>

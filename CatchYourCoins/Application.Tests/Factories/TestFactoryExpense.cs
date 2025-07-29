@@ -1,5 +1,6 @@
 ﻿using System;
 using Domain.Dashboard.Entities;
+using Domain.Dashboard.Entities.Expenses;
 
 namespace Application.Tests.Factories;
 
@@ -13,13 +14,13 @@ public class TestFactoryExpense : TestFactoryEntityBase<Expense>
         Description = "Test",
         UserId = currentUser.Id,
         CategoryId = 1,
-        Category = new CategoryExpenses
+        Category = new ExpenseCategory
         {
             Name = "Test",
             UserId = currentUser.Id,
         },
         PaymentMethodId = 1,
-        PaymentMethod = new PaymentMethod
+        PaymentMethod = new ExpensePaymentMethod
         {
             Name = "Test",
             UserId = currentUser.Id,

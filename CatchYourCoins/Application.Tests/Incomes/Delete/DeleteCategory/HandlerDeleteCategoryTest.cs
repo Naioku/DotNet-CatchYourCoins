@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Application.Incomes.Delete;
 using Application.Tests.Factories;
-using Domain.Dashboard.Entities;
+using Domain.Dashboard.Entities.Incomes;
 using Domain.Interfaces.Repositories;
 using JetBrains.Annotations;
 using Xunit;
@@ -12,9 +12,9 @@ namespace Application.Tests.Incomes.Delete.DeleteCategory;
 public class HandlerDeleteCategoryTest
     : TestHandlerDelete<
         HandlerDeleteCategory,
-        CategoryIncomes,
+        IncomeCategory,
         CommandDeleteCategory,
-        IRepositoryCategoryIncomes,
+        IRepositoryIncomeCategory,
         TestFactoryCategoryIncomes,
         IUnitOfWork
     >
@@ -22,7 +22,7 @@ public class HandlerDeleteCategoryTest
     protected override HandlerDeleteCategory CreateHandler()
     {
         return new HandlerDeleteCategory(
-            GetMock<IRepositoryCategoryIncomes>().Object,
+            GetMock<IRepositoryIncomeCategory>().Object,
             GetMock<IUnitOfWork>().Object
         );
     }

@@ -1,14 +1,14 @@
 ﻿using Application.DTOs;
 using Application.Requests.Queries.GetAll;
-using Domain.Dashboard.Entities;
+using Domain.Dashboard.Entities.Incomes;
 using Domain.Interfaces.Repositories;
 
 namespace Application.Incomes.Queries.GetAll;
 
 public class QueryGetAllCategories : QueryGetAllBase<CategoryDTO>;
 
-public class HandlerGetAllCategories(IRepositoryCategoryIncomes repository)
-    : HandlerCRUDGetAll<CategoryIncomes, QueryGetAllCategories, CategoryDTO>(repository)
+public class HandlerGetAllCategories(IRepositoryIncomeCategory repository)
+    : HandlerCRUDGetAll<IncomeCategory, QueryGetAllCategories, CategoryDTO>(repository)
 {
     protected override Dictionary<string, string> GetFailureMessages() =>
         new()
@@ -16,7 +16,7 @@ public class HandlerGetAllCategories(IRepositoryCategoryIncomes repository)
             { "Categories", "Categories not found" }
         };
 
-    protected override CategoryDTO MapEntityToDTO(CategoryIncomes entity) =>
+    protected override CategoryDTO MapEntityToDTO(IncomeCategory entity) =>
         new()
         {
             Id = entity.Id,

@@ -2,7 +2,7 @@
 using Application.DTOs;
 using Application.Expenses.Queries.GetById;
 using Application.Tests.Factories;
-using Domain.Dashboard.Entities;
+using Domain.Dashboard.Entities.Expenses;
 using Domain.Interfaces.Repositories;
 using JetBrains.Annotations;
 using Xunit;
@@ -13,15 +13,15 @@ namespace Application.Tests.Expenses.Queries.GetById;
 public class TestHandlerGetCategoryById
     : TestHandlerGetById<
         HandlerGetCategoryById,
-        CategoryExpenses,
+        ExpenseCategory,
         CategoryDTO,
         QueryGetCategoryById,
-        IRepositoryCategoryExpenses,
+        IRepositoryExpenseCategory,
         TestFactoryCategoryExpenses
     >
 {
     protected override HandlerGetCategoryById CreateHandler() =>
-        new(GetMock<IRepositoryCategoryExpenses>().Object);
+        new(GetMock<IRepositoryExpenseCategory>().Object);
     
     protected override QueryGetCategoryById GetQuery() => new() { Id = 1 };
 
