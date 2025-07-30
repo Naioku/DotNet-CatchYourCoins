@@ -12,7 +12,7 @@ using Domain.Interfaces.Services;
 using JetBrains.Annotations;
 using Xunit;
 
-namespace Application.Tests.Incomes.Commands.CreateRangeIncomes;
+namespace Application.Tests.Incomes.Commands.CreateRange.CreateRangeIncomes;
 
 [TestSubject(typeof(HandlerCreateRangeIncomes))]
 public class TestHandlerCreateRangeIncomes

@@ -6,29 +6,29 @@ using Domain.Interfaces.Repositories;
 using JetBrains.Annotations;
 using Xunit;
 
-namespace Application.Tests.Incomes.Delete.DeleteCategory;
+namespace Application.Tests.Incomes.Commands.Delete.DeleteIncome;
 
-[TestSubject(typeof(HandlerDeleteCategory))]
-public class HandlerDeleteCategoryTest
+[TestSubject(typeof(HandlerDeleteIncome))]
+public class HandlerDeleteIncomeTest
     : TestHandlerDelete<
-        HandlerDeleteCategory,
-        IncomeCategory,
-        CommandDeleteCategory,
-        IRepositoryIncomeCategory,
-        TestFactoryCategoryIncomes,
+        HandlerDeleteIncome,
+        Income,
+        CommandDeleteIncome,
+        IRepositoryIncome,
+        TestFactoryIncome,
         IUnitOfWork
     >
 {
-    protected override HandlerDeleteCategory CreateHandler()
+    protected override HandlerDeleteIncome CreateHandler()
     {
-        return new HandlerDeleteCategory(
-            GetMock<IRepositoryIncomeCategory>().Object,
+        return new HandlerDeleteIncome(
+            GetMock<IRepositoryIncome>().Object,
             GetMock<IUnitOfWork>().Object
         );
     }
-
-    protected override CommandDeleteCategory GetCommand() => new() { Id = 1 };
-
+    
+    protected override CommandDeleteIncome GetCommand() => new() { Id = 1 };
+    
     [Fact]
     public async Task DeleteOne_ValidData_DeletedEntity() =>
         await DeleteOne_ValidData_DeletedEntity_Base();

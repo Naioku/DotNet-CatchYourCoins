@@ -25,6 +25,7 @@
   <ItemGroup>
     <Folder Include="Expenses\Commands\Create\" />
     <Folder Include="Expenses\Commands\Delete\" />
+    <Folder Include="Incomes\Commands\CreateRange\" />
   </ItemGroup>
   
 </Project>

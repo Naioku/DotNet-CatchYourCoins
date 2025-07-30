@@ -4,7 +4,7 @@ using Application.Incomes.Commands.CreateRange;
 using JetBrains.Annotations;
 using Xunit;
 
-namespace Application.Tests.Incomes.Commands.CreateRangeIncomes;
+namespace Application.Tests.Incomes.Commands.CreateRange.CreateRangeIncomes;
 
 [TestSubject(typeof(ValidatorCreateRangeIncomes))]
 public class TestValidatorCreateRangeIncomes

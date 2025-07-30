@@ -3,7 +3,7 @@ using Application.Incomes.Commands.CreateRange;
 using JetBrains.Annotations;
 using Xunit;
 
-namespace Application.Tests.Incomes.Commands.CreateRangeCategories;
+namespace Application.Tests.Incomes.Commands.CreateRange.CreateRangeCategories;
 
 [TestSubject(typeof(ValidatorCreateRangeCategories))]
 public class TestValidatorCreateRangeCategories
