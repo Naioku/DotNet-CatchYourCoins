@@ -16,7 +16,7 @@ public abstract class TestHandlerGetAll<THandler, TEntity, TDTO, TQuery, TReposi
     where THandler : HandlerCRUDGetAll<TEntity, TQuery, TDTO>
     where TEntity : IEntity
     where TDTO : class
-    where TQuery : QueryGetAllBase<TDTO>, new()
+    where TQuery : QueryCRUDGetAll<TDTO>, new()
     where TRepository : class, IRepositoryCRUD<TEntity>
     where TFactory : TestFactoryEntityBase<TEntity>, new()
 {

@@ -1,15 +1,14 @@
 ﻿using Application.Requests.Commands;
-using Domain.Dashboard.Entities;
 using Domain.Dashboard.Entities.Incomes;
 using Domain.Interfaces.Repositories;
 using JetBrains.Annotations;
 
-namespace Application.Incomes.Delete;
+namespace Application.Incomes.Commands.Delete;
 
-public class CommandDeleteIncome : CommandDeleteBase;
+public class CommandDeleteIncome : CommandCRUDDelete;
 
 [UsedImplicitly]
-public class ValidatorDeleteIncome : ValidatorDeleteBase<CommandDeleteIncome>;
+public class ValidatorDeleteIncome : ValidatorCRUDDelete<CommandDeleteIncome>;
 
 public class HandlerDeleteIncome(
     IRepositoryIncome repository,

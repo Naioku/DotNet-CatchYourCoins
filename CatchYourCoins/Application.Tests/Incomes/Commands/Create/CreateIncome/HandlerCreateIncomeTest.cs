@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Application.DTOs.InputDTOs.Incomes;
 using Application.Incomes.Commands.Create;
 using Application.Tests.Factories;
 using Domain.Dashboard.Entities.Incomes;
@@ -16,6 +17,7 @@ public class HandlerCreateIncomeTest
     : TestHandlerCreate<
         HandlerCreateIncome,
         Income,
+        InputDTOIncome,
         CommandCreateIncome,
         IRepositoryIncome,
         TestFactoryIncome
@@ -33,19 +35,22 @@ public class HandlerCreateIncomeTest
     protected override CommandCreateIncome GetCommand() =>
         new()
         {
-            Amount = 100,
-            Date = DateTime.Now,
-            Description = "Test",
-            CategoryId = 1,
+            Data = new InputDTOIncome
+            {
+                Amount = 100,
+                Date = DateTime.Now,
+                Description = "Test",
+                CategoryId = 1,
+            }
         };
 
     protected override Expression<Func<Income, bool>> GetRepositoryMatch(CommandCreateIncome command) =>
         e =>
-            e.Amount == command.Amount &&
-            e.Date == command.Date &&
+            e.Amount == command.Data.Amount &&
+            e.Date == command.Data.Date &&
             e.UserId == TestFactoryUsers.DefaultUser1Authenticated.Id &&
-            e.Description == command.Description &&
-            e.CategoryId == command.CategoryId;
+            e.Description == command.Data.Description &&
+            e.CategoryId == command.Data.CategoryId;
 
     [Fact]
     public async Task Create_ValidData_EntityCreated() =>

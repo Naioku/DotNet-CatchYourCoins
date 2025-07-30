@@ -1,12 +1,11 @@
 ﻿using Application.DTOs.Incomes;
 using Application.Requests.Queries;
-using Domain.Dashboard.Entities;
 using Domain.Dashboard.Entities.Incomes;
 using Domain.Interfaces.Repositories;
 
 namespace Application.Incomes.Queries.GetAll;
 
-public class QueryGetAllIncomes : QueryGetAllBase<IncomeDTO>;
+public class QueryGetAllIncomes : QueryCRUDGetAll<IncomeDTO>;
 
 public class HandlerGetAllIncomes(IRepositoryIncome repository)
     : HandlerCRUDGetAll<Income, QueryGetAllIncomes, IncomeDTO>(repository)

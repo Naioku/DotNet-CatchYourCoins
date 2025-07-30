@@ -1,4 +1,5 @@
-﻿using Application.Expenses.Commands.Create;
+﻿using Application.DTOs.InputDTOs.Expenses;
+using Application.Expenses.Commands.Create;
 using Domain.Dashboard.Entities.Expenses;
 using Domain.Interfaces.Services;
 using Infrastructure.Persistence;
@@ -20,8 +21,11 @@ public class PaymentMethods(TestFixture fixture) : TestBase(fixture)
         // Arrange
         var command = new CommandCreatePaymentMethod
         {
-            Name = "Test",
-            Limit = 1000
+            Data = new InputDTOExpensePaymentMethod
+            {
+                Name = "Test",
+                Limit = 1000
+            }
         };
 
         // Act
@@ -32,7 +36,7 @@ public class PaymentMethods(TestFixture fixture) : TestBase(fixture)
         
         Assert.NotNull(paymentMethod);
         Assert.Equal(paymentMethod.UserId, _testServiceCurrentUser.User.Id);
-        Assert.Equal(paymentMethod.Name, command.Name);
-        Assert.Equal(paymentMethod.Limit, command.Limit);
+        Assert.Equal(paymentMethod.Name, command.Data.Name);
+        Assert.Equal(paymentMethod.Limit, command.Data.Limit);
     }
 }

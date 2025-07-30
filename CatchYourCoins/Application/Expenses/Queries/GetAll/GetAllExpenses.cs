@@ -1,12 +1,11 @@
 ﻿using Application.DTOs.Expenses;
 using Application.Requests.Queries;
-using Domain.Dashboard.Entities;
 using Domain.Dashboard.Entities.Expenses;
 using Domain.Interfaces.Repositories;
 
 namespace Application.Expenses.Queries.GetAll;
 
-public class QueryGetAllExpenses : QueryGetAllBase<ExpenseDTO>;
+public class QueryGetAllExpenses : QueryCRUDGetAll<ExpenseDTO>;
 
 public class HandlerGetAllExpenses(IRepositoryExpense repository)
     : HandlerCRUDGetAll<Expense, QueryGetAllExpenses, ExpenseDTO>(repository)

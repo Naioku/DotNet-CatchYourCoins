@@ -5,14 +5,14 @@ using MediatR;
 
 namespace Application.Requests.Commands;
 
-public class CommandDeleteBase : IRequest<Result>
+public abstract class CommandCRUDDelete : IRequest<Result>
 {
     public required int Id { get; init; }
 }
 
-public abstract class ValidatorDeleteBase<T> : AbstractValidator<T> where T : CommandDeleteBase
+public abstract class ValidatorCRUDDelete<T> : AbstractValidator<T> where T : CommandCRUDDelete
 {
-    protected ValidatorDeleteBase()
+    protected ValidatorCRUDDelete()
     {
         RuleFor(x => x.Id)
             .GreaterThanOrEqualTo(0);
@@ -22,7 +22,7 @@ public abstract class ValidatorDeleteBase<T> : AbstractValidator<T> where T : Co
 public abstract class HandlerCRUDDelete<TEntity, TCommand>(
     IRepositoryCRUD<TEntity> repository,
     IUnitOfWork unitOfWork) : IRequestHandler<TCommand, Result>
-    where TCommand : CommandDeleteBase
+    where TCommand : CommandCRUDDelete
 {
     protected abstract Dictionary<string, string> GetFailureMessages();
 

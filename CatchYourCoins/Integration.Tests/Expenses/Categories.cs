@@ -1,4 +1,5 @@
-﻿using Application.Expenses.Commands.Create;
+﻿using Application.DTOs.InputDTOs.Expenses;
+using Application.Expenses.Commands.Create;
 using Application.Expenses.Commands.Delete;
 using Domain.Dashboard.Entities.Expenses;
 using Domain.Interfaces.Services;
@@ -21,8 +22,11 @@ public class Categories(TestFixture fixture) : TestBase(fixture)
         // Arrange
         CommandCreateCategory command = new()
         {
-            Name = "Test",
-            Limit = 1000
+            Data = new InputDTOExpenseCategory
+            {
+                Name = "Test1",
+                Limit = 1000
+            },
         };
 
         // Act
@@ -33,8 +37,8 @@ public class Categories(TestFixture fixture) : TestBase(fixture)
         
         Assert.NotNull(category);
         Assert.Equal(category.UserId, _testServiceCurrentUser.User.Id);
-        Assert.Equal(category.Name, command.Name);
-        Assert.Equal(category.Limit, command.Limit);
+        Assert.Equal(category.Name, command.Data.Name);
+        Assert.Equal(category.Limit, command.Data.Limit);
     }
     
     [Fact]

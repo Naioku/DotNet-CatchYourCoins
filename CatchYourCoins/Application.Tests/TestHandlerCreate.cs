@@ -10,11 +10,11 @@ using Moq;
 
 namespace Application.Tests;
 
-public abstract class TestHandlerCreate<THandler, TEntity, TCommand, TRepository, TFactory>
+public abstract class TestHandlerCreate<THandler, TEntity, TDTO, TCommand, TRepository, TFactory>
     : CQRSHandlerTestBase<THandler, TFactory, TEntity>
-    where THandler : HandlerCRUDCreate<TEntity, TCommand>
+    where THandler : HandlerCRUDCreate<TEntity, TCommand, TDTO>
     where TEntity : class, IEntity
-    where TCommand : CommandCreateBase
+    where TCommand : CommandCRUDCreate<TDTO>
     where TRepository : class, IRepositoryCRUD<TEntity>
     where TFactory : TestFactoryEntityBase<TEntity>, new()
 {

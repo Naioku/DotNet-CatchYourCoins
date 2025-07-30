@@ -1,12 +1,11 @@
 ﻿using Application.DTOs.Expenses;
 using Application.Requests.Queries;
-using Domain.Dashboard.Entities;
 using Domain.Dashboard.Entities.Expenses;
 using Domain.Interfaces.Repositories;
 
 namespace Application.Expenses.Queries.GetAll;
 
-public class QueryGetAllPaymentMethods : QueryGetAllBase<PaymentMethodDTO>;
+public class QueryGetAllPaymentMethods : QueryCRUDGetAll<PaymentMethodDTO>;
 
 public class HandlerGetAllPaymentMethods(IRepositoryExpensePaymentMethod repository)
     : HandlerCRUDGetAll<ExpensePaymentMethod, QueryGetAllPaymentMethods, PaymentMethodDTO>(repository)

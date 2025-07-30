@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using Application.Incomes.Delete;
+using Application.Incomes.Commands.Delete;
 using Application.Tests.Factories;
 using Domain.Dashboard.Entities.Incomes;
 using Domain.Interfaces.Repositories;

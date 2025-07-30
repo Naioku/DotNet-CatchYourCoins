@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Application.DTOs.InputDTOs.Expenses;
 using Application.Expenses.Commands.Create;
 using Application.Tests.Factories;
 using Domain.Dashboard.Entities.Expenses;
@@ -16,6 +17,7 @@ public class TestHandlerCreatePaymentMethod
     : TestHandlerCreate<
         HandlerCreatePaymentMethod,
         ExpensePaymentMethod,
+        InputDTOExpensePaymentMethod,
         CommandCreatePaymentMethod,
         IRepositoryExpensePaymentMethod,
         TestFactoryPaymentMethod
@@ -33,14 +35,17 @@ public class TestHandlerCreatePaymentMethod
     protected override CommandCreatePaymentMethod GetCommand() =>
         new()
         {
-            Name = "Test",
-            Limit = 1000
+            Data = new InputDTOExpensePaymentMethod
+            {
+                Name = "Test",
+                Limit = 1000
+            }
         };
 
     protected override Expression<Func<ExpensePaymentMethod, bool>> GetRepositoryMatch(CommandCreatePaymentMethod command) =>
         pm =>
-            pm.Name == command.Name &&
-            pm.Limit == command.Limit &&
+            pm.Name == command.Data.Name &&
+            pm.Limit == command.Data.Limit &&
             pm.UserId == TestFactoryUsers.DefaultUser1Authenticated.Id;
 
     [Fact]

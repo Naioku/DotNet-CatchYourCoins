@@ -14,6 +14,9 @@ public class RepositoryCRUD<TEntity>(
 {
     public async Task CreateAsync(TEntity entity) => await dbContext.Set<TEntity>().AddAsync(entity);
 
+    public async Task CreateRangeAsync(IEnumerable<TEntity> entities) =>
+        await dbContext.Set<TEntity>().AddRangeAsync(entities);
+
     public async Task<TEntity?> GetByIdAsync(int id) =>
         await dbContext.Set<TEntity>()
             .WhereAuthorized(serviceCurrentUser.User.Id)

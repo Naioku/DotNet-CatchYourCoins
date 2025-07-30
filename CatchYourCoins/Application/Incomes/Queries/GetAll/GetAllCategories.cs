@@ -5,7 +5,7 @@ using Domain.Interfaces.Repositories;
 
 namespace Application.Incomes.Queries.GetAll;
 
-public class QueryGetAllCategories : QueryGetAllBase<CategoryDTO>;
+public class QueryGetAllCategories : QueryCRUDGetAll<CategoryDTO>;
 
 public class HandlerGetAllCategories(IRepositoryIncomeCategory repository)
     : HandlerCRUDGetAll<IncomeCategory, QueryGetAllCategories, CategoryDTO>(repository)

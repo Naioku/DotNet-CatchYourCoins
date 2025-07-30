@@ -1,4 +1,4 @@
-﻿using Application.Incomes.Delete;
+﻿using Application.Incomes.Commands.Delete;
 using JetBrains.Annotations;
 using Xunit;
 

@@ -1,15 +1,14 @@
 ﻿using Application.Requests.Commands;
-using Domain.Dashboard.Entities;
 using Domain.Dashboard.Entities.Expenses;
 using Domain.Interfaces.Repositories;
 using JetBrains.Annotations;
 
 namespace Application.Expenses.Commands.Delete;
 
-public class CommandDeleteExpense : CommandDeleteBase;
+public class CommandDeleteExpense : CommandCRUDDelete;
 
 [UsedImplicitly]
-public class ValidatorDeleteExpense : ValidatorDeleteBase<CommandDeleteExpense>;
+public class ValidatorDeleteExpense : ValidatorCRUDDelete<CommandDeleteExpense>;
 
 public class HandlerDeleteExpense(
     IRepositoryExpense repository,

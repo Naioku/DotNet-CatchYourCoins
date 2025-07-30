@@ -1,4 +1,5 @@
 ﻿using System;
+using Application.DTOs.InputDTOs.Expenses;
 using Application.Expenses.Commands.Create;
 using JetBrains.Annotations;
 using Xunit;
@@ -12,26 +13,35 @@ public class TestValidatorCreateExpense : TestValidatorBase<ValidatorCreateExpen
     public void Validate_AllValidData_NoError() =>
         AssertSuccess(new CommandCreateExpense
         {
-            Amount = 100,
-            Date = DateTime.Now,
-            Description = "Test",
-            CategoryId = 1,
-            PaymentMethodId = 1,
+            Data = new InputDTOExpense
+            {
+                Amount = 100,
+                Date = DateTime.Now,
+                Description = "Test",
+                CategoryId = 1,
+                PaymentMethodId = 1,
+            }
         });
 
     [Fact]
     public void Validate_MinimumValidData_NoError() =>
         AssertSuccess(new CommandCreateExpense
         {
-            Amount = 100,
-            Date = DateTime.Now,
+            Data = new InputDTOExpense
+            {
+                Amount = 100,
+                Date = DateTime.Now,
+            }
         });
 
     [Fact]
     public void Validate_InvalidAmount_Error() =>
         AssertFailure(new CommandCreateExpense
         {
-            Amount = -100,
-            Date = DateTime.Now,
+            Data = new InputDTOExpense
+            {
+                Amount = -100,
+                Date = DateTime.Now,
+            }
         });
 }

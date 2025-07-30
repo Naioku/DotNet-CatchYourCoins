@@ -1,4 +1,5 @@
-﻿using Application.Expenses.Commands.Create;
+﻿using Application.DTOs.InputDTOs.Expenses;
+using Application.Expenses.Commands.Create;
 using JetBrains.Annotations;
 using Xunit;
 
@@ -11,15 +12,21 @@ public class TestValidatorCreatePaymentMethod : TestValidatorBase<ValidatorCreat
     public void Validate_AllValidData_NoError() =>
         AssertSuccess(new CommandCreatePaymentMethod
         {
-            Name = "Test",
-            Limit = 1000
+            Data = new InputDTOExpensePaymentMethod
+            {
+                Name = "Test",
+                Limit = 1000
+            }
         });
 
     [Fact]
     public void Validate_MinimalValidData_NoError() =>
         AssertSuccess(new CommandCreatePaymentMethod
         {
-            Name = "Test",
+            Data = new InputDTOExpensePaymentMethod
+            {
+                Name = "Test",
+            }
         });
     
     [Fact]
@@ -27,8 +34,11 @@ public class TestValidatorCreatePaymentMethod : TestValidatorBase<ValidatorCreat
     {
         AssertFailure(new CommandCreatePaymentMethod
         {
-            Name = "",
-            Limit = 1000
+            Data = new InputDTOExpensePaymentMethod
+            {
+                Name = "",
+                Limit = 1000
+            }
         });
     }
 }

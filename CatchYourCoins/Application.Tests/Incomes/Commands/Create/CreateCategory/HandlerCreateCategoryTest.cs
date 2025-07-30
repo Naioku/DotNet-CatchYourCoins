@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Application.DTOs.InputDTOs.Incomes;
 using Application.Incomes.Commands.Create;
 using Application.Tests.Factories;
 using Domain.Dashboard.Entities.Incomes;
@@ -16,6 +17,7 @@ public class HandlerCreateCategoryTest
     : TestHandlerCreate<
         HandlerCreateCategory,
         IncomeCategory,
+        InputDTOIncomeCategory,
         CommandCreateCategory,
         IRepositoryIncomeCategory,
         TestFactoryCategoryIncomes
@@ -33,14 +35,17 @@ public class HandlerCreateCategoryTest
     protected override CommandCreateCategory GetCommand() =>
         new()
         {
-            Name = "Test",
-            Limit = 1000
+            Data = new InputDTOIncomeCategory
+            {
+                Name = "Test",
+                Limit = 1000
+            }
         };
 
     protected override Expression<Func<IncomeCategory, bool>> GetRepositoryMatch(CommandCreateCategory command) =>
         c =>
-            c.Name == command.Name &&
-            c.Limit == command.Limit &&
+            c.Name == command.Data.Name &&
+            c.Limit == command.Data.Limit &&
             c.UserId == TestFactoryUsers.DefaultUser1Authenticated.Id;
 
     [Fact]

@@ -13,7 +13,7 @@ public abstract class TestHandlerDelete<THandler, TEntity, TCommand, TRepository
     : CQRSHandlerTestBase<THandler, TFactory, TEntity>
     where THandler : HandlerCRUDDelete<TEntity, TCommand>
     where TEntity : class, IEntity
-    where TCommand : CommandDeleteBase
+    where TCommand : CommandCRUDDelete
     where TRepository : class, IRepositoryCRUD<TEntity>
     where TFactory : TestFactoryEntityBase<TEntity>, new()
     where TUnitOfWork : class, IUnitOfWork

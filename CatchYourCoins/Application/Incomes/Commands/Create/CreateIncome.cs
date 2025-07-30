@@ -1,52 +1,31 @@
-﻿using Application.Requests.Commands;
-using Domain.Dashboard.Entities;
+﻿using Application.DTOs.InputDTOs.Incomes;
+using Application.Requests.Commands;
 using Domain.Dashboard.Entities.Incomes;
 using Domain.Interfaces.Repositories;
 using Domain.Interfaces.Services;
-using FluentValidation;
 using JetBrains.Annotations;
 
 namespace Application.Incomes.Commands.Create;
 
-public class CommandCreateIncome : CommandCreateBase
-{
-    public required decimal Amount { get; init; }
-    public required DateTime Date { get; init; }
-    public string? Description { get; init; }
-    public int? CategoryId { get; init; }
-}
+public class CommandCreateIncome : CommandCRUDCreate<InputDTOIncome>;
 
 [UsedImplicitly]
-public class ValidatorCreateIncome : ValidatorCreateBase<CommandCreateIncome>
-{
-    public ValidatorCreateIncome()
-    {
-        RuleFor(x => x.Amount)
-            .NotEmpty()
-            .GreaterThanOrEqualTo(0);
-        
-        RuleFor(x => x.Date)
-            .NotEmpty();
-        
-        RuleFor(x => x.Description)
-            .MinimumLength(1)
-            .MaximumLength(8000);
-    }
-}
+public class ValidatorCreateIncome
+    : ValidatorCRUDCreate<CommandCreateIncome, InputDTOIncome, ValidatorInputDTOIncome>;
 
 public class HandlerCreateIncome(
     IRepositoryIncome repository,
     IServiceCurrentUser serviceCurrentUser,
     IUnitOfWork unitOfWork)
-    : HandlerCRUDCreate<Income, CommandCreateIncome>(repository, unitOfWork)
+    : HandlerCRUDCreate<Income, CommandCreateIncome, InputDTOIncome>(repository, unitOfWork)
 {
-    protected override Income MapCommandToEntity(CommandCreateIncome request) =>
+    protected override Income MapDTOToEntity(InputDTOIncome dto) =>
         new()
         {
-            Amount = request.Amount,
-            Date = request.Date,
-            Description = request.Description,
+            Amount = dto.Amount,
+            Date = dto.Date,
+            Description = dto.Description,
             UserId = serviceCurrentUser.User.Id,
-            CategoryId = request.CategoryId,
+            CategoryId = dto.CategoryId,
         };
 }

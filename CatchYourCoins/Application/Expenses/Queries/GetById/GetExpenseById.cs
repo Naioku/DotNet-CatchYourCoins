@@ -1,12 +1,11 @@
 ﻿using Application.DTOs.Expenses;
 using Application.Requests.Queries;
-using Domain.Dashboard.Entities;
 using Domain.Dashboard.Entities.Expenses;
 using Domain.Interfaces.Repositories;
 
 namespace Application.Expenses.Queries.GetById;
 
-public class QueryGetExpenseById : QueryGetByIdBase<ExpenseDTO>;
+public class QueryGetExpenseById : QueryCRUDGetById<ExpenseDTO>;
 
 public class HandlerGetExpenseById(IRepositoryExpense repository)
     : HandlerCRUDGetById<Expense, QueryGetExpenseById, ExpenseDTO>(repository)

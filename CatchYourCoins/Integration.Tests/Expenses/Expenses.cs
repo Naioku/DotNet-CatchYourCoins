@@ -1,4 +1,5 @@
 ﻿using Application.DTOs.Expenses;
+using Application.DTOs.InputDTOs.Expenses;
 using Application.Expenses.Commands.Create;
 using Application.Expenses.Queries.GetById;
 using Domain;
@@ -70,11 +71,14 @@ public class Expenses(TestFixture fixture) : TestBase(fixture)
     
         CommandCreateExpense command = new()
         {
-            Amount = 100,
-            Date = DateTime.Now,
-            Description = "Test",
-            CategoryId = _categoryUser1.Id,
-            PaymentMethodId = _paymentMethodUser1.Id,
+            Data = new InputDTOExpense
+            {
+                Amount = 100,
+                Date = DateTime.Now,
+                Description = "Test",
+                CategoryId = _categoryUser1.Id,
+                PaymentMethodId = _paymentMethodUser1.Id,
+            }
         };
     
         // Act
@@ -87,11 +91,11 @@ public class Expenses(TestFixture fixture) : TestBase(fixture)
         Expense? entity = await dbContext.Set<Expense>().FirstOrDefaultAsync();
     
         Assert.NotNull(entity);
-        Assert.Equal(entity.Amount, command.Amount);
-        Assert.Equal(entity.Date, command.Date);
-        Assert.Equal(entity.Description, command.Description);
-        Assert.Equal(entity.CategoryId, command.CategoryId);
-        Assert.Equal(entity.PaymentMethodId, command.PaymentMethodId);
+        Assert.Equal(entity.Amount, command.Data.Amount);
+        Assert.Equal(entity.Date, command.Data.Date);
+        Assert.Equal(entity.Description, command.Data.Description);
+        Assert.Equal(entity.CategoryId, command.Data.CategoryId);
+        Assert.Equal(entity.PaymentMethodId, command.Data.PaymentMethodId);
     }
     
     [Fact]
@@ -100,11 +104,14 @@ public class Expenses(TestFixture fixture) : TestBase(fixture)
         // Arrange
         CommandCreateExpense command = new()
         {
-            Amount = 100,
-            Date = DateTime.Now,
-            Description = "Test",
-            CategoryId = -1,
-            PaymentMethodId = -1,
+            Data = new InputDTOExpense
+            {
+                Amount = 100,
+                Date = DateTime.Now,
+                Description = "Test",
+                CategoryId = -1,
+                PaymentMethodId = -1,
+            }
         };
     
         // Act
@@ -123,10 +130,13 @@ public class Expenses(TestFixture fixture) : TestBase(fixture)
         
         CommandCreateExpense command = new()
         {
-            Amount = 100,
-            Date = DateTime.Now,
-            Description = "Test",
-            CategoryId = _categoryUser1.Id,
+            Data = new InputDTOExpense
+            {
+                Amount = 100,
+                Date = DateTime.Now,
+                Description = "Test",
+                CategoryId = _categoryUser1.Id,
+            }
         };
     
         // Act
@@ -138,10 +148,10 @@ public class Expenses(TestFixture fixture) : TestBase(fixture)
         
         Expense? entity = await dbContext.Set<Expense>().FirstOrDefaultAsync();
         Assert.NotNull(entity);
-        Assert.Equal(command.Amount, entity.Amount);
-        Assert.Equal(command.Date, entity.Date);
-        Assert.Equal(command.Description, entity.Description);
-        Assert.Equal(command.CategoryId, entity.CategoryId);
+        Assert.Equal(command.Data.Amount, entity.Amount);
+        Assert.Equal(command.Data.Date, entity.Date);
+        Assert.Equal(command.Data.Description, entity.Description);
+        Assert.Equal(command.Data.CategoryId, entity.CategoryId);
         Assert.Null(entity.PaymentMethodId);
     }
     
@@ -153,10 +163,13 @@ public class Expenses(TestFixture fixture) : TestBase(fixture)
         
         CommandCreateExpense command = new()
         {
-            Amount = 100,
-            Date = DateTime.Now,
-            Description = "Test",
-            PaymentMethodId = _paymentMethodUser1.Id,
+            Data = new InputDTOExpense
+            {
+                Amount = 100,
+                Date = DateTime.Now,
+                Description = "Test",
+                PaymentMethodId = _paymentMethodUser1.Id,
+            }
         };
     
         // Act
@@ -168,10 +181,10 @@ public class Expenses(TestFixture fixture) : TestBase(fixture)
         
         Expense? entity = await dbContext.Set<Expense>().FirstOrDefaultAsync();
         Assert.NotNull(entity);
-        Assert.Equal(command.Amount, entity.Amount);
-        Assert.Equal(command.Date, entity.Date);
-        Assert.Equal(command.Description, entity.Description);
-        Assert.Equal(command.PaymentMethodId, entity.PaymentMethodId);
+        Assert.Equal(command.Data.Amount, entity.Amount);
+        Assert.Equal(command.Data.Date, entity.Date);
+        Assert.Equal(command.Data.Description, entity.Description);
+        Assert.Equal(command.Data.PaymentMethodId, entity.PaymentMethodId);
         Assert.Null(entity.CategoryId);
     }
     

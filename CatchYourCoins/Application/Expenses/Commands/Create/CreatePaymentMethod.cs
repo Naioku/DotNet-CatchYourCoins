@@ -1,39 +1,33 @@
-﻿using Application.Requests.Commands;
-using Domain.Dashboard.Entities;
+﻿using Application.DTOs.InputDTOs.Expenses;
+using Application.Requests.Commands;
 using Domain.Dashboard.Entities.Expenses;
 using Domain.Interfaces.Repositories;
 using Domain.Interfaces.Services;
-using FluentValidation;
 using JetBrains.Annotations;
 
 namespace Application.Expenses.Commands.Create;
 
-public class CommandCreatePaymentMethod : CommandCreateBase
-{
-    public required string Name { get; init; }
-    public decimal? Limit { get; init; }
-}
+public class CommandCreatePaymentMethod : CommandCRUDCreate<InputDTOExpensePaymentMethod>;
 
 [UsedImplicitly]
-public class ValidatorCreatePaymentMethod : ValidatorCreateBase<CommandCreatePaymentMethod>
-{
-    public ValidatorCreatePaymentMethod()
-    {
-        RuleFor(x => x.Name)
-            .NotEmpty();
-    }
-}
+public class ValidatorCreatePaymentMethod
+    : ValidatorCRUDCreate<
+        CommandCreatePaymentMethod,
+        InputDTOExpensePaymentMethod,
+        ValidatorInputDTOExpensePaymentMethod
+    >;
 
 public class HandlerCreatePaymentMethod(
     IRepositoryExpensePaymentMethod repository,
     IServiceCurrentUser serviceCurrentUser,
-    IUnitOfWork unitOfWork) : HandlerCRUDCreate<ExpensePaymentMethod, CommandCreatePaymentMethod>(repository, unitOfWork)
+    IUnitOfWork unitOfWork)
+    : HandlerCRUDCreate<ExpensePaymentMethod, CommandCreatePaymentMethod, InputDTOExpensePaymentMethod>(repository, unitOfWork)
 {
-    protected override ExpensePaymentMethod MapCommandToEntity(CommandCreatePaymentMethod request) =>
+    protected override ExpensePaymentMethod MapDTOToEntity(InputDTOExpensePaymentMethod dto) =>
         new()
         {
-            Name = request.Name,
-            Limit = request.Limit,
+            Name = dto.Name,
+            Limit = dto.Limit,
             UserId = serviceCurrentUser.User.Id
         };
 }

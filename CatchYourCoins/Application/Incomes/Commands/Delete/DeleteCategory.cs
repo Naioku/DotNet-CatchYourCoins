@@ -3,12 +3,12 @@ using Domain.Dashboard.Entities.Incomes;
 using Domain.Interfaces.Repositories;
 using JetBrains.Annotations;
 
-namespace Application.Incomes.Delete;
+namespace Application.Incomes.Commands.Delete;
 
-public class CommandDeleteCategory : CommandDeleteBase;
+public class CommandDeleteCategory : CommandCRUDDelete;
 
 [UsedImplicitly]
-public class ValidatorDeleteCategory : ValidatorDeleteBase<CommandDeleteCategory>;
+public class ValidatorDeleteCategory : ValidatorCRUDDelete<CommandDeleteCategory>;
 
 public class HandlerDeleteCategory(
     IRepositoryIncomeCategory repository,

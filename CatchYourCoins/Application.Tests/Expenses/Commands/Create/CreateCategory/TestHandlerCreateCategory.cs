@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Application.DTOs.InputDTOs.Expenses;
 using Application.Expenses.Commands.Create;
 using Application.Tests.Factories;
 using Domain.Dashboard.Entities.Expenses;
@@ -16,6 +17,7 @@ public class TestHandlerCreateCategory
     : TestHandlerCreate<
         HandlerCreateCategory,
         ExpenseCategory,
+        InputDTOExpenseCategory,
         CommandCreateCategory,
         IRepositoryExpenseCategory,
         TestFactoryCategoryExpenses
@@ -33,14 +35,17 @@ public class TestHandlerCreateCategory
     protected override CommandCreateCategory GetCommand() =>
         new()
         {
-            Name = "Test",
-            Limit = 1000
+            Data = new InputDTOExpenseCategory
+            {
+                Name = "Test1",
+                Limit = 1000
+            },
         };
 
     protected override Expression<Func<ExpenseCategory, bool>> GetRepositoryMatch(CommandCreateCategory command) =>
         c =>
-            c.Name == command.Name &&
-            c.Limit == command.Limit &&
+            c.Name == command.Data.Name &&
+            c.Limit == command.Data.Limit &&
             c.UserId == TestFactoryUsers.DefaultUser1Authenticated.Id;
 
     [Fact]

@@ -1,39 +1,29 @@
-﻿using Application.Requests.Commands;
+﻿using Application.DTOs.InputDTOs.Incomes;
+using Application.Requests.Commands;
 using Domain.Dashboard.Entities.Incomes;
 using Domain.Interfaces.Repositories;
 using Domain.Interfaces.Services;
-using FluentValidation;
 using JetBrains.Annotations;
 
 namespace Application.Incomes.Commands.Create;
 
-public class CommandCreateCategory : CommandCreateBase
-{
-    public required string Name { get; init; }
-    public decimal? Limit { get; init; }
-}
+public class CommandCreateCategory : CommandCRUDCreate<InputDTOIncomeCategory>;
 
 [UsedImplicitly]
-public class ValidatorCreateCategory : ValidatorCreateBase<CommandCreateCategory>
-{
-    public ValidatorCreateCategory()
-    {
-        RuleFor(x => x.Name)
-            .NotEmpty();
-    }
-}
+public class ValidatorCreateCategory
+    : ValidatorCRUDCreate<CommandCreateCategory, InputDTOIncomeCategory, ValidatorInputDTOIncomeCategory>;
 
 public class HandlerCreateCategory(
     IRepositoryIncomeCategory repository,
     IServiceCurrentUser serviceCurrentUser,
     IUnitOfWork unitOfWork)
-    : HandlerCRUDCreate<IncomeCategory, CommandCreateCategory>(repository, unitOfWork)
+    : HandlerCRUDCreate<IncomeCategory, CommandCreateCategory, InputDTOIncomeCategory>(repository, unitOfWork)
 {
-    protected override IncomeCategory MapCommandToEntity(CommandCreateCategory request) =>
+    protected override IncomeCategory MapDTOToEntity(InputDTOIncomeCategory dto) =>
         new()
         {
-            Name = request.Name,
-            Limit = request.Limit,
+            Name = dto.Name,
+            Limit = dto.Limit,
             UserId = serviceCurrentUser.User.Id
         };
 }

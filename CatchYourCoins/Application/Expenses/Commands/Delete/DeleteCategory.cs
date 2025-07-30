@@ -5,10 +5,10 @@ using JetBrains.Annotations;
 
 namespace Application.Expenses.Commands.Delete;
 
-public class CommandDeleteCategory : CommandDeleteBase;
+public class CommandDeleteCategory : CommandCRUDDelete;
 
 [UsedImplicitly]
-public class ValidatorDeleteCategory : ValidatorDeleteBase<CommandDeleteCategory>;
+public class ValidatorDeleteCategory : ValidatorCRUDDelete<CommandDeleteCategory>;
 
 public class HandlerDeleteCategory(
     IRepositoryExpenseCategory repository,

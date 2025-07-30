@@ -1,26 +1,33 @@
 ﻿using Domain;
 using Domain.Interfaces.Repositories;
 using FluentValidation;
+using JetBrains.Annotations;
 using MediatR;
 
 namespace Application.Requests.Commands;
 
-public class CommandCreateBase : IRequest<Result>;
+public abstract class CommandCRUDCreateRange<TDTO> : IRequest<Result>
+{
+    public required IList<TDTO> Data { get; init; }
+}
 
-public abstract class ValidatorCreateBase<T> : AbstractValidator<T> where T : CommandCreateBase;
+[UsedImplicitly]
+public abstract class ValidatorCRUDCreateRange<TCommand, TDTO>
+    : AbstractValidator<TCommand> where TCommand : CommandCRUDCreateRange<TDTO>;
 
-public abstract class HandlerCRUDCreate<TEntity, TCommand>(
+public abstract class HandlerCRUDCreateRange<TEntity, TCommand, TDTO>(
     IRepositoryCRUD<TEntity> repository,
     IUnitOfWork unitOfWork) : IRequestHandler<TCommand, Result>
-    where TCommand : CommandCreateBase
+    where TCommand : CommandCRUDCreateRange<TDTO>
 {
-    protected abstract TEntity MapCommandToEntity(TCommand request);
+    protected abstract TEntity MapDTOToEntity(TDTO dto);
 
     public async Task<Result> Handle(TCommand request, CancellationToken cancellationToken)
     {
         try
         {
-            await repository.CreateAsync(MapCommandToEntity(request));
+            IList<TEntity> entities = request.Data.Select(MapDTOToEntity).ToList();
+            await repository.CreateRangeAsync(entities);
             await unitOfWork.SaveChangesAsync(cancellationToken);
             return Result.Success();
         }
@@ -33,4 +40,3 @@ public abstract class HandlerCRUDCreate<TEntity, TCommand>(
         }
     }
 }
-

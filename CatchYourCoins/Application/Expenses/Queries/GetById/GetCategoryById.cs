@@ -5,7 +5,7 @@ using Domain.Interfaces.Repositories;
 
 namespace Application.Expenses.Queries.GetById;
 
-public class QueryGetCategoryById : QueryGetByIdBase<CategoryDTO>;
+public class QueryGetCategoryById : QueryCRUDGetById<CategoryDTO>;
 
 public class HandlerGetCategoryById(IRepositoryExpenseCategory repository)
     : HandlerCRUDGetById<ExpenseCategory, QueryGetCategoryById, CategoryDTO>(repository)

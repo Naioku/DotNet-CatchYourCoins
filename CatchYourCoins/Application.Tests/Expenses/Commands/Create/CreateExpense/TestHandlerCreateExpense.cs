@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Application.DTOs.InputDTOs.Expenses;
 using Application.Expenses.Commands.Create;
 using Application.Tests.Factories;
 using Domain.Dashboard.Entities.Expenses;
@@ -16,6 +17,7 @@ public class TestHandlerCreateExpense
     : TestHandlerCreate<
         HandlerCreateExpense,
         Expense,
+        InputDTOExpense,
         CommandCreateExpense,
         IRepositoryExpense,
         TestFactoryExpense
@@ -33,21 +35,24 @@ public class TestHandlerCreateExpense
     protected override CommandCreateExpense GetCommand() =>
         new()
         {
-            Amount = 100,
-            Date = DateTime.Now,
-            Description = "Test",
-            CategoryId = 1,
-            PaymentMethodId = 1
+            Data = new InputDTOExpense
+            {
+                Amount = 100,
+                Date = DateTime.Now,
+                Description = "Test",
+                CategoryId = 1,
+                PaymentMethodId = 1
+            }
         };
 
     protected override Expression<Func<Expense, bool>> GetRepositoryMatch(CommandCreateExpense command) =>
         e =>
-            e.Amount == command.Amount &&
-            e.Date == command.Date &&
+            e.Amount == command.Data.Amount &&
+            e.Date == command.Data.Date &&
             e.UserId == TestFactoryUsers.DefaultUser1Authenticated.Id &&
-            e.Description == command.Description &&
-            e.CategoryId == command.CategoryId &&
-            e.PaymentMethodId == command.PaymentMethodId;
+            e.Description == command.Data.Description &&
+            e.CategoryId == command.Data.CategoryId &&
+            e.PaymentMethodId == command.Data.PaymentMethodId;
 
     [Fact]
     public async Task Create_ValidData_EntityCreated() =>

@@ -1,12 +1,11 @@
 ﻿using Application.DTOs.Expenses;
 using Application.Requests.Queries;
-using Domain.Dashboard.Entities;
 using Domain.Dashboard.Entities.Expenses;
 using Domain.Interfaces.Repositories;
 
 namespace Application.Expenses.Queries.GetById;
 
-public class QueryGetPaymentMethodById : QueryGetByIdBase<PaymentMethodDTO>;
+public class QueryGetPaymentMethodById : QueryCRUDGetById<PaymentMethodDTO>;
 
 public class HandlerGetPaymentMethodById(IRepositoryExpensePaymentMethod repository)
     : HandlerCRUDGetById<ExpensePaymentMethod, QueryGetPaymentMethodById, PaymentMethodDTO>(repository)

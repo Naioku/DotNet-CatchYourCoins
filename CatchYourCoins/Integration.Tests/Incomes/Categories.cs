@@ -1,5 +1,6 @@
-﻿using Application.Incomes.Commands.Create;
-using Application.Incomes.Delete;
+﻿using Application.DTOs.InputDTOs.Incomes;
+using Application.Incomes.Commands.Create;
+using Application.Incomes.Commands.Delete;
 using Domain.Dashboard.Entities.Incomes;
 using Domain.Interfaces.Services;
 using Infrastructure.Persistence;
@@ -21,8 +22,11 @@ public class Categories(TestFixture fixture) : TestBase(fixture)
         // Arrange
         CommandCreateCategory command = new()
         {
-            Name = "Test",
-            Limit = 1000
+            Data = new InputDTOIncomeCategory
+            {
+                Name = "Test",
+                Limit = 1000
+            }
         };
 
         // Act
@@ -33,8 +37,8 @@ public class Categories(TestFixture fixture) : TestBase(fixture)
 
         Assert.NotNull(category);
         Assert.Equal(category.UserId, _testServiceCurrentUser.User.Id);
-        Assert.Equal(category.Name, command.Name);
-        Assert.Equal(category.Limit, command.Limit);
+        Assert.Equal(category.Name, command.Data.Name);
+        Assert.Equal(category.Limit, command.Data.Limit);
     }
     
     [Fact]

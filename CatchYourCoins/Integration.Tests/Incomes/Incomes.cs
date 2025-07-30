@@ -1,4 +1,5 @@
 ﻿using Application.DTOs.Incomes;
+using Application.DTOs.InputDTOs.Incomes;
 using Application.Incomes.Commands.Create;
 using Application.Incomes.Queries.GetById;
 using Domain;
@@ -50,10 +51,13 @@ public class Incomes(TestFixture fixture) : TestBase(fixture)
     
         CommandCreateIncome command = new()
         {
-            Amount = 100,
-            Date = DateTime.Now,
-            Description = "Test",
-            CategoryId = _categoryUser1.Id,
+            Data = new InputDTOIncome
+            {
+                Amount = 100,
+                Date = DateTime.Now,
+                Description = "Test",
+                CategoryId = _categoryUser1.Id,
+            }
         };
     
         // Act
@@ -66,10 +70,10 @@ public class Incomes(TestFixture fixture) : TestBase(fixture)
         Income? entity = await dbContext.Set<Income>().FirstOrDefaultAsync();
     
         Assert.NotNull(entity);
-        Assert.Equal(entity.Amount, command.Amount);
-        Assert.Equal(entity.Date, command.Date);
-        Assert.Equal(entity.Description, command.Description);
-        Assert.Equal(entity.CategoryId, command.CategoryId);
+        Assert.Equal(entity.Amount, command.Data.Amount);
+        Assert.Equal(entity.Date, command.Data.Date);
+        Assert.Equal(entity.Description, command.Data.Description);
+        Assert.Equal(entity.CategoryId, command.Data.CategoryId);
     }
 
     [Fact]
@@ -80,9 +84,12 @@ public class Incomes(TestFixture fixture) : TestBase(fixture)
         
         CommandCreateIncome command = new()
         {
-            Amount = 100,
-            Date = DateTime.Now,
-            Description = "Test",
+            Data = new InputDTOIncome
+            {
+                Amount = 100,
+                Date = DateTime.Now,
+                Description = "Test",
+            }
         };
     
         // Act
@@ -94,10 +101,10 @@ public class Incomes(TestFixture fixture) : TestBase(fixture)
         
         Income? entity = await dbContext.Set<Income>().FirstOrDefaultAsync();
         Assert.NotNull(entity);
-        Assert.Equal(command.Amount, entity.Amount);
-        Assert.Equal(command.Date, entity.Date);
-        Assert.Equal(command.Description, entity.Description);
-        Assert.Equal(command.CategoryId, entity.CategoryId);
+        Assert.Equal(command.Data.Amount, entity.Amount);
+        Assert.Equal(command.Data.Date, entity.Date);
+        Assert.Equal(command.Data.Description, entity.Description);
+        Assert.Equal(command.Data.CategoryId, entity.CategoryId);
     }
 
     [Fact]
@@ -106,10 +113,13 @@ public class Incomes(TestFixture fixture) : TestBase(fixture)
         // Arrange
         CommandCreateIncome command = new()
         {
-            Amount = 100,
-            Date = DateTime.Now,
-            Description = "Test",
-            CategoryId = -1,
+            Data = new InputDTOIncome
+            {
+                Amount = 100,
+                Date = DateTime.Now,
+                Description = "Test",
+                CategoryId = -1,
+            }
         };
     
         // Act

@@ -4,11 +4,11 @@ using MediatR;
 
 namespace Application.Requests.Queries;
 
-public class QueryGetAllBase<TDTO> : IRequest<Result<IReadOnlyList<TDTO>>>;
+public abstract class QueryCRUDGetAll<TDTO> : IRequest<Result<IReadOnlyList<TDTO>>>;
 
 public abstract class HandlerCRUDGetAll<TEntity, TQuery, TDTO>(IRepositoryCRUD<TEntity> repository)
     : IRequestHandler<TQuery, Result<IReadOnlyList<TDTO>>>
-    where TQuery : QueryGetAllBase<TDTO>
+    where TQuery : QueryCRUDGetAll<TDTO>
 {
     protected abstract Dictionary<string, string> GetFailureMessages();
     protected abstract TDTO MapEntityToDTO(TEntity entity);
