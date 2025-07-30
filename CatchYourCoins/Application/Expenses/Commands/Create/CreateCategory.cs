@@ -23,11 +23,11 @@ public class HandlerCreateCategory(
     IUnitOfWork unitOfWork)
     : HandlerCRUDCreate<ExpenseCategory, CommandCreateCategory, InputDTOExpenseCategory>(repository, unitOfWork)
 {
-    protected override ExpenseCategory MapDTOToEntity(InputDTOExpenseCategory request) =>
+    protected override ExpenseCategory MapDTOToEntity(InputDTOExpenseCategory dto) =>
         new()
         {
-            Name = request.Name,
-            Limit = request.Limit,
+            Name = dto.Name,
+            Limit = dto.Limit,
             UserId = serviceCurrentUser.User.Id
         };
 }

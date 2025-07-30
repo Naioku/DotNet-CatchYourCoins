@@ -22,14 +22,14 @@ public class HandlerCreateExpense(
     IServiceCurrentUser serviceCurrentUser,
     IUnitOfWork unitOfWork) : HandlerCRUDCreate<Expense, CommandCreateExpense, InputDTOExpense>(repository, unitOfWork)
 {
-    protected override Expense MapDTOToEntity(InputDTOExpense request) =>
+    protected override Expense MapDTOToEntity(InputDTOExpense dto) =>
         new()
         {
-            Amount = request.Amount,
-            Date = request.Date,
-            Description = request.Description,
+            Amount = dto.Amount,
+            Date = dto.Date,
+            Description = dto.Description,
             UserId = serviceCurrentUser.User.Id,
-            CategoryId = request.CategoryId,
-            PaymentMethodId = request.PaymentMethodId,
+            CategoryId = dto.CategoryId,
+            PaymentMethodId = dto.PaymentMethodId,
         };
 }
