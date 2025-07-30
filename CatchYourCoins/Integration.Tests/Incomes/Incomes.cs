@@ -67,7 +67,7 @@ public class Incomes(TestFixture fixture) : TestBase(fixture)
         Assert.True(result.IsSuccess);
         Assert.Empty(result.Errors);
         
-        Domain.Dashboard.Entities.Incomes.Income? entity = await dbContext.Set<Domain.Dashboard.Entities.Incomes.Income>().FirstOrDefaultAsync();
+        Income? entity = await dbContext.Set<Income>().FirstOrDefaultAsync();
     
         Assert.NotNull(entity);
         Assert.Equal(entity.Amount, command.Data.Amount);
@@ -99,7 +99,7 @@ public class Incomes(TestFixture fixture) : TestBase(fixture)
         Assert.True(result.IsSuccess);
         Assert.Empty(result.Errors);
         
-        Domain.Dashboard.Entities.Incomes.Income? entity = await dbContext.Set<Domain.Dashboard.Entities.Incomes.Income>().FirstOrDefaultAsync();
+        Income? entity = await dbContext.Set<Income>().FirstOrDefaultAsync();
         Assert.NotNull(entity);
         Assert.Equal(command.Data.Amount, entity.Amount);
         Assert.Equal(command.Data.Date, entity.Date);
@@ -136,7 +136,7 @@ public class Incomes(TestFixture fixture) : TestBase(fixture)
         // Arrange
         Assert.NotNull(_categoryUser1);
 
-        Domain.Dashboard.Entities.Incomes.Income income = new Domain.Dashboard.Entities.Incomes.Income
+        Income income = new Income
         {
             Amount = 100,
             Date = DateTime.Now,
@@ -144,7 +144,7 @@ public class Incomes(TestFixture fixture) : TestBase(fixture)
             UserId = _testServiceCurrentUser.User.Id,
             CategoryId = _categoryUser1.Id,
         };
-        await dbContext.Set<Domain.Dashboard.Entities.Incomes.Income>().AddAsync(income);
+        await dbContext.Set<Income>().AddAsync(income);
         
         await dbContext.SaveChangesAsync();
     
@@ -173,7 +173,7 @@ public class Incomes(TestFixture fixture) : TestBase(fixture)
         // Arrange
         Assert.NotNull(_categoryUser2);
 
-        Domain.Dashboard.Entities.Incomes.Income income = new Domain.Dashboard.Entities.Incomes.Income
+        Income income = new Income
         {
             Amount = 100,
             Date = DateTime.Now,
@@ -181,7 +181,7 @@ public class Incomes(TestFixture fixture) : TestBase(fixture)
             UserId = user2.Id,
             CategoryId = _categoryUser2.Id,
         };
-        await dbContext.Set<Domain.Dashboard.Entities.Incomes.Income>().AddAsync(income);
+        await dbContext.Set<Income>().AddAsync(income);
         await dbContext.SaveChangesAsync();
     
         var query = new QueryGetIncomeById { Id = income.Id };

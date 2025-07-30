@@ -8,7 +8,7 @@ namespace Application.Incomes.Queries.GetById;
 public class QueryGetIncomeById : QueryCRUDGetById<OutputDTOIncome>;
 
 public class HandlerGetIncomeById(IRepositoryIncome repository)
-    : HandlerCRUDGetById<Domain.Dashboard.Entities.Incomes.Income, QueryGetIncomeById, OutputDTOIncome>(repository)
+    : HandlerCRUDGetById<Income, QueryGetIncomeById, OutputDTOIncome>(repository)
 {
     protected override Dictionary<string, string> GetFailureMessages() =>
         new()
@@ -16,7 +16,7 @@ public class HandlerGetIncomeById(IRepositoryIncome repository)
             { "Income", "Income not found" }
         };
 
-    protected override OutputDTOIncome MapEntityToDTO(Domain.Dashboard.Entities.Incomes.Income entity) =>
+    protected override OutputDTOIncome MapEntityToDTO(Income entity) =>
         new()
         {
             Id = entity.Id,

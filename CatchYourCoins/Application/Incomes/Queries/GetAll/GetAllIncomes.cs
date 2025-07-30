@@ -8,7 +8,7 @@ namespace Application.Incomes.Queries.GetAll;
 public class QueryGetAllIncomes : QueryCRUDGetAll<OutputDTOIncome>;
 
 public class HandlerGetAllIncomes(IRepositoryIncome repository)
-    : HandlerCRUDGetAll<Domain.Dashboard.Entities.Incomes.Income, QueryGetAllIncomes, OutputDTOIncome>(repository)
+    : HandlerCRUDGetAll<Income, QueryGetAllIncomes, OutputDTOIncome>(repository)
 {
     protected override Dictionary<string, string> GetFailureMessages() =>
         new()
@@ -16,7 +16,7 @@ public class HandlerGetAllIncomes(IRepositoryIncome repository)
             { "Incomes", "Incomes not found" }
         };
 
-    protected override OutputDTOIncome MapEntityToDTO(Domain.Dashboard.Entities.Incomes.Income entity) =>
+    protected override OutputDTOIncome MapEntityToDTO(Income entity) =>
         new()
         {
             Id = entity.Id,

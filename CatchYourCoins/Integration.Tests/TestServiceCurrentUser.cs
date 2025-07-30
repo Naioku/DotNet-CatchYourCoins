@@ -4,7 +4,7 @@ using Domain.Interfaces.Services;
 
 namespace Integration;
 
-public class TestServiceCurrentUser() : IServiceCurrentUser
+public class TestServiceCurrentUser : IServiceCurrentUser
 {
     private AppUser? _appUser;
 

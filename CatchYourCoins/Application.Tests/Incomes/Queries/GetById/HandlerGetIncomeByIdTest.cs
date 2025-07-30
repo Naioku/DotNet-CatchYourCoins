@@ -13,7 +13,7 @@ namespace Application.Tests.Incomes.Queries.GetById;
 public class HandlerGetIncomeByIdTest
     : TestHandlerGetById<
         HandlerGetIncomeById,
-        Domain.Dashboard.Entities.Incomes.Income,
+        Income,
         OutputDTOIncome,
         QueryGetIncomeById,
         IRepositoryIncome,

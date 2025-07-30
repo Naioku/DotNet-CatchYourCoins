@@ -13,7 +13,7 @@ namespace Application.Tests.Expenses.Queries.GetById;
 public class TestHandlerGetExpenseById
     : TestHandlerGetById<
         HandlerGetExpenseById,
-        Domain.Dashboard.Entities.Expenses.Expense,
+        Expense,
         OutputDTOExpense,
         QueryGetExpenseById,
         IRepositoryExpense,

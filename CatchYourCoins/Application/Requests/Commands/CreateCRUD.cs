@@ -39,7 +39,7 @@ public abstract class HandlerCRUDCreate<TEntity, TCommand, TDTO>(
         }
         catch (Exception)
         {
-            return Result.Failure(new Dictionary<string, string>()
+            return Result.Failure(new Dictionary<string, string>
             {
                 {"Create", "Could not create entity"}
             });

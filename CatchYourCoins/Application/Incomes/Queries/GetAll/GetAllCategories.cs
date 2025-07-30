@@ -1,6 +1,4 @@
-﻿using Application.DTOs;
-using Application.DTOs.OutputDTOs;
-using Application.DTOs.OutputDTOs.Incomes;
+﻿using Application.DTOs.OutputDTOs.Incomes;
 using Application.Requests.Queries;
 using Domain.Dashboard.Entities.Incomes;
 using Domain.Interfaces.Repositories;

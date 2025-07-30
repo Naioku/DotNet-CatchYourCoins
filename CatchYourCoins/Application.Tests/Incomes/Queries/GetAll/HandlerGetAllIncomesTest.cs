@@ -13,7 +13,7 @@ namespace Application.Tests.Incomes.Queries.GetAll;
 public class HandlerGetAllIncomesTest
     : TestHandlerGetAll<
         HandlerGetAllIncomes,
-        Domain.Dashboard.Entities.Incomes.Income,
+        Income,
         OutputDTOIncome,
         QueryGetAllIncomes,
         IRepositoryIncome,

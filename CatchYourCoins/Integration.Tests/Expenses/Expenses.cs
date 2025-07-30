@@ -88,7 +88,7 @@ public class Expenses(TestFixture fixture) : TestBase(fixture)
         Assert.True(result.IsSuccess);
         Assert.Empty(result.Errors);
         
-        Domain.Dashboard.Entities.Expenses.Expense? entity = await dbContext.Set<Domain.Dashboard.Entities.Expenses.Expense>().FirstOrDefaultAsync();
+        Expense? entity = await dbContext.Set<Expense>().FirstOrDefaultAsync();
     
         Assert.NotNull(entity);
         Assert.Equal(entity.Amount, command.Data.Amount);
@@ -146,7 +146,7 @@ public class Expenses(TestFixture fixture) : TestBase(fixture)
         Assert.True(result.IsSuccess);
         Assert.Empty(result.Errors);
         
-        Domain.Dashboard.Entities.Expenses.Expense? entity = await dbContext.Set<Domain.Dashboard.Entities.Expenses.Expense>().FirstOrDefaultAsync();
+        Expense? entity = await dbContext.Set<Expense>().FirstOrDefaultAsync();
         Assert.NotNull(entity);
         Assert.Equal(command.Data.Amount, entity.Amount);
         Assert.Equal(command.Data.Date, entity.Date);
@@ -179,7 +179,7 @@ public class Expenses(TestFixture fixture) : TestBase(fixture)
         Assert.True(result.IsSuccess);
         Assert.Empty(result.Errors);
         
-        Domain.Dashboard.Entities.Expenses.Expense? entity = await dbContext.Set<Domain.Dashboard.Entities.Expenses.Expense>().FirstOrDefaultAsync();
+        Expense? entity = await dbContext.Set<Expense>().FirstOrDefaultAsync();
         Assert.NotNull(entity);
         Assert.Equal(command.Data.Amount, entity.Amount);
         Assert.Equal(command.Data.Date, entity.Date);
@@ -195,7 +195,7 @@ public class Expenses(TestFixture fixture) : TestBase(fixture)
         Assert.NotNull(_categoryUser1);
         Assert.NotNull(_paymentMethodUser1);
 
-        Domain.Dashboard.Entities.Expenses.Expense expense = new()
+        Expense expense = new()
         {
             Amount = 100,
             Date = DateTime.Now,
@@ -204,7 +204,7 @@ public class Expenses(TestFixture fixture) : TestBase(fixture)
             CategoryId = _categoryUser1.Id,
             PaymentMethodId = _paymentMethodUser1.Id,
         };
-        await dbContext.Set<Domain.Dashboard.Entities.Expenses.Expense>().AddAsync(expense);
+        await dbContext.Set<Expense>().AddAsync(expense);
         await dbContext.SaveChangesAsync();
     
         var query = new QueryGetExpenseById { Id = expense.Id };
@@ -234,7 +234,7 @@ public class Expenses(TestFixture fixture) : TestBase(fixture)
         Assert.NotNull(_categoryUser2);
         Assert.NotNull(_paymentMethodUser2);
 
-        Domain.Dashboard.Entities.Expenses.Expense expense = new()
+        Expense expense = new()
         {
             Amount = 100,
             Date = DateTime.Now,
@@ -243,7 +243,7 @@ public class Expenses(TestFixture fixture) : TestBase(fixture)
             CategoryId = _categoryUser2.Id,
             PaymentMethodId = _paymentMethodUser2.Id,
         };
-        await dbContext.Set<Domain.Dashboard.Entities.Expenses.Expense>().AddAsync(expense);
+        await dbContext.Set<Expense>().AddAsync(expense);
         await dbContext.SaveChangesAsync();
     
         var query = new QueryGetExpenseById { Id = expense.Id };

@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using Application.DTOs.OutputDTOs;
 using Application.DTOs.OutputDTOs.Expenses;
 using Application.Expenses.Queries.GetAll;
 using Application.Tests.Factories;

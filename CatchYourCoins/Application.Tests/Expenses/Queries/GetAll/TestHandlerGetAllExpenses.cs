@@ -13,7 +13,7 @@ namespace Application.Tests.Expenses.Queries.GetAll;
 public class TestHandlerGetAllExpenses
     : TestHandlerGetAll<
         HandlerGetAllExpenses,
-        Domain.Dashboard.Entities.Expenses.Expense,
+        Expense,
         OutputDTOExpense,
         QueryGetAllExpenses,
         IRepositoryExpense,
