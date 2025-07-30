@@ -1,6 +1,6 @@
-﻿namespace Application.DTOs;
+﻿namespace Application.DTOs.OutputDTOs;
 
-public class CategoryDTO
+public abstract class OutputDTOFinancialCategory
 {
     public required int Id { get; init; }
     public required string Name { get; init; }

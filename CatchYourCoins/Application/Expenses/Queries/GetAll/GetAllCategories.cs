@@ -1,14 +1,15 @@
-﻿using Application.DTOs;
+﻿using Application.DTOs.OutputDTOs;
+using Application.DTOs.OutputDTOs.Expenses;
 using Application.Requests.Queries;
 using Domain.Dashboard.Entities.Expenses;
 using Domain.Interfaces.Repositories;
 
 namespace Application.Expenses.Queries.GetAll;
 
-public class QueryGetAllCategories : QueryCRUDGetAll<CategoryDTO>;
+public class QueryGetAllCategories : QueryCRUDGetAll<OutputDTOExpenseCategory>;
 
 public class HandlerGetAllCategories(IRepositoryExpenseCategory repository)
-    : HandlerCRUDGetAll<ExpenseCategory, QueryGetAllCategories, CategoryDTO>(repository)
+    : HandlerCRUDGetAll<ExpenseCategory, QueryGetAllCategories, OutputDTOExpenseCategory>(repository)
 {
     protected override Dictionary<string, string> GetFailureMessages() =>
         new()
@@ -16,7 +17,7 @@ public class HandlerGetAllCategories(IRepositoryExpenseCategory repository)
             { "Categories", "Categories not found" }
         };
 
-    protected override CategoryDTO MapEntityToDTO(ExpenseCategory entity) =>
+    protected override OutputDTOExpenseCategory MapEntityToDTO(ExpenseCategory entity) =>
         new()
         {
             Id = entity.Id,

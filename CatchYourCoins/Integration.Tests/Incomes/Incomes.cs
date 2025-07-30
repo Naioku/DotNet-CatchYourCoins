@@ -1,5 +1,5 @@
-﻿using Application.DTOs.Incomes;
-using Application.DTOs.InputDTOs.Incomes;
+﻿using Application.DTOs.InputDTOs.Incomes;
+using Application.DTOs.OutputDTOs.Incomes;
 using Application.Incomes.Commands.Create;
 using Application.Incomes.Queries.GetById;
 using Domain;
@@ -67,7 +67,7 @@ public class Incomes(TestFixture fixture) : TestBase(fixture)
         Assert.True(result.IsSuccess);
         Assert.Empty(result.Errors);
         
-        Income? entity = await dbContext.Set<Income>().FirstOrDefaultAsync();
+        Domain.Dashboard.Entities.Incomes.Income? entity = await dbContext.Set<Domain.Dashboard.Entities.Incomes.Income>().FirstOrDefaultAsync();
     
         Assert.NotNull(entity);
         Assert.Equal(entity.Amount, command.Data.Amount);
@@ -99,7 +99,7 @@ public class Incomes(TestFixture fixture) : TestBase(fixture)
         Assert.True(result.IsSuccess);
         Assert.Empty(result.Errors);
         
-        Income? entity = await dbContext.Set<Income>().FirstOrDefaultAsync();
+        Domain.Dashboard.Entities.Incomes.Income? entity = await dbContext.Set<Domain.Dashboard.Entities.Incomes.Income>().FirstOrDefaultAsync();
         Assert.NotNull(entity);
         Assert.Equal(command.Data.Amount, entity.Amount);
         Assert.Equal(command.Data.Date, entity.Date);
@@ -136,7 +136,7 @@ public class Incomes(TestFixture fixture) : TestBase(fixture)
         // Arrange
         Assert.NotNull(_categoryUser1);
 
-        Income income = new Income
+        Domain.Dashboard.Entities.Incomes.Income income = new Domain.Dashboard.Entities.Incomes.Income
         {
             Amount = 100,
             Date = DateTime.Now,
@@ -144,21 +144,21 @@ public class Incomes(TestFixture fixture) : TestBase(fixture)
             UserId = _testServiceCurrentUser.User.Id,
             CategoryId = _categoryUser1.Id,
         };
-        await dbContext.Set<Income>().AddAsync(income);
+        await dbContext.Set<Domain.Dashboard.Entities.Incomes.Income>().AddAsync(income);
         
         await dbContext.SaveChangesAsync();
     
         var query = new QueryGetIncomeById { Id = income.Id };
     
         // Act
-        Result<IncomeDTO> result = await _mediator.Send(query);
+        Result<OutputDTOIncome> result = await _mediator.Send(query);
     
         // Assert
         Assert.True(result.IsSuccess);
         Assert.Empty(result.Errors);
         Assert.NotNull(result.Value);
     
-        IncomeDTO dto = result.Value;
+        OutputDTOIncome dto = result.Value;
         Assert.NotNull(dto);
         Assert.Equal(query.Id, dto.Id);
         Assert.Equal(dto.Amount, dto.Amount);
@@ -173,7 +173,7 @@ public class Incomes(TestFixture fixture) : TestBase(fixture)
         // Arrange
         Assert.NotNull(_categoryUser2);
 
-        Income income = new Income
+        Domain.Dashboard.Entities.Incomes.Income income = new Domain.Dashboard.Entities.Incomes.Income
         {
             Amount = 100,
             Date = DateTime.Now,
@@ -181,13 +181,13 @@ public class Incomes(TestFixture fixture) : TestBase(fixture)
             UserId = user2.Id,
             CategoryId = _categoryUser2.Id,
         };
-        await dbContext.Set<Income>().AddAsync(income);
+        await dbContext.Set<Domain.Dashboard.Entities.Incomes.Income>().AddAsync(income);
         await dbContext.SaveChangesAsync();
     
         var query = new QueryGetIncomeById { Id = income.Id };
     
         // Act
-        Result<IncomeDTO> result = await _mediator.Send(query);
+        Result<OutputDTOIncome> result = await _mediator.Send(query);
     
         // Assert
         Assert.False(result.IsSuccess);

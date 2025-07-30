@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using Application.DTOs.Expenses;
+using Application.DTOs.OutputDTOs.Expenses;
 using Application.Expenses.Queries.GetAll;
 using Application.Tests.Factories;
 using Domain.Dashboard.Entities.Expenses;
@@ -14,7 +14,7 @@ public class TestHandlerGetAllPaymentMethods
     : TestHandlerGetAll<
         HandlerGetAllPaymentMethods,
         ExpensePaymentMethod,
-        PaymentMethodDTO,
+        OutputDTOPaymentMethod,
         QueryGetAllPaymentMethods,
         IRepositoryExpensePaymentMethod,
         TestFactoryPaymentMethod

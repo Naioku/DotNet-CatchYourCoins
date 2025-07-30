@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
-using Application.DTOs;
+using Application.DTOs.OutputDTOs;
+using Application.DTOs.OutputDTOs.Incomes;
 using Application.Incomes.Queries.GetAll;
 using Application.Tests.Factories;
 using Domain.Dashboard.Entities.Incomes;
@@ -14,7 +15,7 @@ public class HandlerGetAllCategoriesTest
     : TestHandlerGetAll<
         HandlerGetAllCategories,
         IncomeCategory,
-        CategoryDTO,
+        OutputDTOIncomeCategory,
         QueryGetAllCategories,
         IRepositoryIncomeCategory,
         TestFactoryCategoryIncomes

@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using Application.DTOs.Expenses;
+using Application.DTOs.OutputDTOs.Expenses;
 using Application.Expenses.Queries.GetById;
 using Application.Tests.Factories;
 using Domain.Dashboard.Entities.Expenses;
@@ -13,8 +13,8 @@ namespace Application.Tests.Expenses.Queries.GetById;
 public class TestHandlerGetExpenseById
     : TestHandlerGetById<
         HandlerGetExpenseById,
-        Expense,
-        ExpenseDTO,
+        Domain.Dashboard.Entities.Expenses.Expense,
+        OutputDTOExpense,
         QueryGetExpenseById,
         IRepositoryExpense,
         TestFactoryExpense

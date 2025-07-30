@@ -1,6 +1,6 @@
-﻿namespace Application.DTOs;
+﻿namespace Application.DTOs.OutputDTOs;
 
-public class FinancialOperationDTO
+public abstract class OutputDTOFinancialOperation
 {
     public required int Id { get; init; }
     public required decimal Amount { get; init; }

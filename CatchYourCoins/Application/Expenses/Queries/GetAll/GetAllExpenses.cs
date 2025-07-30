@@ -1,14 +1,14 @@
-﻿using Application.DTOs.Expenses;
+﻿using Application.DTOs.OutputDTOs.Expenses;
 using Application.Requests.Queries;
 using Domain.Dashboard.Entities.Expenses;
 using Domain.Interfaces.Repositories;
 
 namespace Application.Expenses.Queries.GetAll;
 
-public class QueryGetAllExpenses : QueryCRUDGetAll<ExpenseDTO>;
+public class QueryGetAllExpenses : QueryCRUDGetAll<OutputDTOExpense>;
 
 public class HandlerGetAllExpenses(IRepositoryExpense repository)
-    : HandlerCRUDGetAll<Expense, QueryGetAllExpenses, ExpenseDTO>(repository)
+    : HandlerCRUDGetAll<Domain.Dashboard.Entities.Expenses.Expense, QueryGetAllExpenses, OutputDTOExpense>(repository)
 {
     protected override Dictionary<string, string> GetFailureMessages() =>
         new()
@@ -16,7 +16,7 @@ public class HandlerGetAllExpenses(IRepositoryExpense repository)
             { "Expenses", "Expenses not found" }
         };
 
-    protected override ExpenseDTO MapEntityToDTO(Expense entity) =>
+    protected override OutputDTOExpense MapEntityToDTO(Domain.Dashboard.Entities.Expenses.Expense entity) =>
         new()
         {
             Id = entity.Id,

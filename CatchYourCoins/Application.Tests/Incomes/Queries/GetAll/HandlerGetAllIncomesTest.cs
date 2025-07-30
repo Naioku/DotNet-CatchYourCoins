@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using Application.DTOs.Incomes;
+using Application.DTOs.OutputDTOs.Incomes;
 using Application.Incomes.Queries.GetAll;
 using Application.Tests.Factories;
 using Domain.Dashboard.Entities.Incomes;
@@ -13,8 +13,8 @@ namespace Application.Tests.Incomes.Queries.GetAll;
 public class HandlerGetAllIncomesTest
     : TestHandlerGetAll<
         HandlerGetAllIncomes,
-        Income,
-        IncomeDTO,
+        Domain.Dashboard.Entities.Incomes.Income,
+        OutputDTOIncome,
         QueryGetAllIncomes,
         IRepositoryIncome,
         TestFactoryIncome

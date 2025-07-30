@@ -1,5 +1,5 @@
-﻿using Application.DTOs.Expenses;
-using Application.DTOs.InputDTOs.Expenses;
+﻿using Application.DTOs.InputDTOs.Expenses;
+using Application.DTOs.OutputDTOs.Expenses;
 using Application.Expenses.Commands.Create;
 using Application.Expenses.Queries.GetById;
 using Domain;
@@ -88,7 +88,7 @@ public class Expenses(TestFixture fixture) : TestBase(fixture)
         Assert.True(result.IsSuccess);
         Assert.Empty(result.Errors);
         
-        Expense? entity = await dbContext.Set<Expense>().FirstOrDefaultAsync();
+        Domain.Dashboard.Entities.Expenses.Expense? entity = await dbContext.Set<Domain.Dashboard.Entities.Expenses.Expense>().FirstOrDefaultAsync();
     
         Assert.NotNull(entity);
         Assert.Equal(entity.Amount, command.Data.Amount);
@@ -146,7 +146,7 @@ public class Expenses(TestFixture fixture) : TestBase(fixture)
         Assert.True(result.IsSuccess);
         Assert.Empty(result.Errors);
         
-        Expense? entity = await dbContext.Set<Expense>().FirstOrDefaultAsync();
+        Domain.Dashboard.Entities.Expenses.Expense? entity = await dbContext.Set<Domain.Dashboard.Entities.Expenses.Expense>().FirstOrDefaultAsync();
         Assert.NotNull(entity);
         Assert.Equal(command.Data.Amount, entity.Amount);
         Assert.Equal(command.Data.Date, entity.Date);
@@ -179,7 +179,7 @@ public class Expenses(TestFixture fixture) : TestBase(fixture)
         Assert.True(result.IsSuccess);
         Assert.Empty(result.Errors);
         
-        Expense? entity = await dbContext.Set<Expense>().FirstOrDefaultAsync();
+        Domain.Dashboard.Entities.Expenses.Expense? entity = await dbContext.Set<Domain.Dashboard.Entities.Expenses.Expense>().FirstOrDefaultAsync();
         Assert.NotNull(entity);
         Assert.Equal(command.Data.Amount, entity.Amount);
         Assert.Equal(command.Data.Date, entity.Date);
@@ -195,7 +195,7 @@ public class Expenses(TestFixture fixture) : TestBase(fixture)
         Assert.NotNull(_categoryUser1);
         Assert.NotNull(_paymentMethodUser1);
 
-        Expense expense = new()
+        Domain.Dashboard.Entities.Expenses.Expense expense = new()
         {
             Amount = 100,
             Date = DateTime.Now,
@@ -204,20 +204,20 @@ public class Expenses(TestFixture fixture) : TestBase(fixture)
             CategoryId = _categoryUser1.Id,
             PaymentMethodId = _paymentMethodUser1.Id,
         };
-        await dbContext.Set<Expense>().AddAsync(expense);
+        await dbContext.Set<Domain.Dashboard.Entities.Expenses.Expense>().AddAsync(expense);
         await dbContext.SaveChangesAsync();
     
         var query = new QueryGetExpenseById { Id = expense.Id };
     
         // Act
-        Result<ExpenseDTO> result = await _mediator.Send(query);
+        Result<OutputDTOExpense> result = await _mediator.Send(query);
     
         // Assert
         Assert.True(result.IsSuccess);
         Assert.Empty(result.Errors);
         Assert.NotNull(result.Value);
     
-        ExpenseDTO dto = result.Value;
+        OutputDTOExpense dto = result.Value;
         Assert.NotNull(dto);
         Assert.Equal(query.Id, dto.Id);
         Assert.Equal(dto.Amount, dto.Amount);
@@ -234,7 +234,7 @@ public class Expenses(TestFixture fixture) : TestBase(fixture)
         Assert.NotNull(_categoryUser2);
         Assert.NotNull(_paymentMethodUser2);
 
-        Expense expense = new()
+        Domain.Dashboard.Entities.Expenses.Expense expense = new()
         {
             Amount = 100,
             Date = DateTime.Now,
@@ -243,13 +243,13 @@ public class Expenses(TestFixture fixture) : TestBase(fixture)
             CategoryId = _categoryUser2.Id,
             PaymentMethodId = _paymentMethodUser2.Id,
         };
-        await dbContext.Set<Expense>().AddAsync(expense);
+        await dbContext.Set<Domain.Dashboard.Entities.Expenses.Expense>().AddAsync(expense);
         await dbContext.SaveChangesAsync();
     
         var query = new QueryGetExpenseById { Id = expense.Id };
     
         // Act
-        Result<ExpenseDTO> result = await _mediator.Send(query);
+        Result<OutputDTOExpense> result = await _mediator.Send(query);
     
         // Assert
         Assert.False(result.IsSuccess);

@@ -1,14 +1,16 @@
 ﻿using Application.DTOs;
+using Application.DTOs.OutputDTOs;
+using Application.DTOs.OutputDTOs.Incomes;
 using Application.Requests.Queries;
 using Domain.Dashboard.Entities.Incomes;
 using Domain.Interfaces.Repositories;
 
 namespace Application.Incomes.Queries.GetById;
 
-public class QueryGetCategoryById : QueryCRUDGetById<CategoryDTO>;
+public class QueryGetCategoryById : QueryCRUDGetById<OutputDTOIncomeCategory>;
 
 public class HandlerGetCategoryById(IRepositoryIncomeCategory repository)
-    : HandlerCRUDGetById<IncomeCategory, QueryGetCategoryById, CategoryDTO>(repository)
+    : HandlerCRUDGetById<IncomeCategory, QueryGetCategoryById, OutputDTOIncomeCategory>(repository)
 {
     protected override Dictionary<string, string> GetFailureMessages() =>
         new()
@@ -16,7 +18,7 @@ public class HandlerGetCategoryById(IRepositoryIncomeCategory repository)
             { "Category", "Category not found" }
         };
 
-    protected override CategoryDTO MapEntityToDTO(IncomeCategory entity) =>
+    protected override OutputDTOIncomeCategory MapEntityToDTO(IncomeCategory entity) =>
         new()
         {
             Id = entity.Id,

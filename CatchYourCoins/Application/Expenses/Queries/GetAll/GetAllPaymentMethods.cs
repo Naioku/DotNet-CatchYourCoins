@@ -1,14 +1,14 @@
-﻿using Application.DTOs.Expenses;
+﻿using Application.DTOs.OutputDTOs.Expenses;
 using Application.Requests.Queries;
 using Domain.Dashboard.Entities.Expenses;
 using Domain.Interfaces.Repositories;
 
 namespace Application.Expenses.Queries.GetAll;
 
-public class QueryGetAllPaymentMethods : QueryCRUDGetAll<PaymentMethodDTO>;
+public class QueryGetAllPaymentMethods : QueryCRUDGetAll<OutputDTOPaymentMethod>;
 
 public class HandlerGetAllPaymentMethods(IRepositoryExpensePaymentMethod repository)
-    : HandlerCRUDGetAll<ExpensePaymentMethod, QueryGetAllPaymentMethods, PaymentMethodDTO>(repository)
+    : HandlerCRUDGetAll<ExpensePaymentMethod, QueryGetAllPaymentMethods, OutputDTOPaymentMethod>(repository)
 {
     protected override Dictionary<string, string> GetFailureMessages() =>
         new()
@@ -16,7 +16,7 @@ public class HandlerGetAllPaymentMethods(IRepositoryExpensePaymentMethod reposit
             { "PaymentMethods", "Payment methods not found" }
         };
 
-    protected override PaymentMethodDTO MapEntityToDTO(ExpensePaymentMethod entity) =>
+    protected override OutputDTOPaymentMethod MapEntityToDTO(ExpensePaymentMethod entity) =>
         new()
         {
             Id = entity.Id,
