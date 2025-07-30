@@ -12,8 +12,20 @@ public abstract class CommandCRUDCreateRange<TDTO> : IRequest<Result>
 }
 
 [UsedImplicitly]
-public abstract class ValidatorCRUDCreateRange<TCommand, TDTO>
-    : AbstractValidator<TCommand> where TCommand : CommandCRUDCreateRange<TDTO>;
+public abstract class ValidatorCRUDCreateRange<TCommand, TDTO, TDTOValidator>
+    : AbstractValidator<TCommand>
+    where TCommand : CommandCRUDCreateRange<TDTO>
+    where TDTOValidator : AbstractValidator<TDTO>, new()
+{
+    protected ValidatorCRUDCreateRange()
+    {
+        RuleFor(c => c.Data)
+            .NotEmpty();
+        
+        RuleForEach(x => x.Data)
+            .SetValidator(new TDTOValidator());
+    }
+}
 
 public abstract class HandlerCRUDCreateRange<TEntity, TCommand, TDTO>(
     IRepositoryCRUD<TEntity> repository,

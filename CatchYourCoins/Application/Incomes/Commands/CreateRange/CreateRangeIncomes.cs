@@ -3,7 +3,6 @@ using Application.Requests.Commands;
 using Domain.Dashboard.Entities.Incomes;
 using Domain.Interfaces.Repositories;
 using Domain.Interfaces.Services;
-using FluentValidation;
 using JetBrains.Annotations;
 
 namespace Application.Incomes.Commands.CreateRange;
@@ -11,17 +10,12 @@ namespace Application.Incomes.Commands.CreateRange;
 public class CommandCreateRangeIncomes : CommandCRUDCreateRange<InputDTOIncome>;
 
 [UsedImplicitly]
-public class ValidatorCreateRangeIncomes : ValidatorCRUDCreateRange<CommandCreateRangeIncomes, InputDTOIncome>
-{
-    public ValidatorCreateRangeIncomes()
-    {
-        RuleFor(c => c.Data)
-            .NotEmpty();
-        
-        RuleForEach(x => x.Data)
-            .SetValidator(new ValidatorInputDTOIncome());
-    }
-}
+public class ValidatorCreateRangeIncomes
+    : ValidatorCRUDCreateRange<
+        CommandCreateRangeIncomes,
+        InputDTOIncome,
+        ValidatorInputDTOIncome
+    >;
 
 public class HandlerCreateRangeIncomes(
     IRepositoryIncome repository,

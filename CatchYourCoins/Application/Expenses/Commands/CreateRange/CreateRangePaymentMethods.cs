@@ -3,7 +3,6 @@ using Application.Requests.Commands;
 using Domain.Dashboard.Entities.Expenses;
 using Domain.Interfaces.Repositories;
 using Domain.Interfaces.Services;
-using FluentValidation;
 using JetBrains.Annotations;
 
 namespace Application.Expenses.Commands.CreateRange;
@@ -11,17 +10,12 @@ namespace Application.Expenses.Commands.CreateRange;
 public class CommandCreateRangePaymentMethods : CommandCRUDCreateRange<InputDTOExpensePaymentMethod>;
 
 [UsedImplicitly]
-public class ValidatorCreateRangePaymentMethods : ValidatorCRUDCreateRange<CommandCreateRangePaymentMethods, InputDTOExpensePaymentMethod>
-{
-    public ValidatorCreateRangePaymentMethods()
-    {
-        RuleFor(c => c.Data)
-            .NotEmpty();
-        
-        RuleForEach(x => x.Data)
-            .SetValidator(new ValidatorInputDTOExpensePaymentMethod());
-    }
-}
+public class ValidatorCreateRangePaymentMethods
+    : ValidatorCRUDCreateRange<
+        CommandCreateRangePaymentMethods,
+        InputDTOExpensePaymentMethod,
+        ValidatorInputDTOExpensePaymentMethod
+    >;
 
 public class HandlerCreateRangePaymentMethods(
     IRepositoryExpensePaymentMethod repository,
