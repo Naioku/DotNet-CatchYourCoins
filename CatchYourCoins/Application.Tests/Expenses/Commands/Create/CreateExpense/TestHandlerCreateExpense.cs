@@ -49,10 +49,10 @@ public class TestHandlerCreateExpense
         e =>
             e.Amount == command.Data.Amount &&
             e.Date == command.Data.Date &&
-            e.UserId == TestFactoryUsers.DefaultUser1Authenticated.Id &&
             e.Description == command.Data.Description &&
             e.CategoryId == command.Data.CategoryId &&
-            e.PaymentMethodId == command.Data.PaymentMethodId;
+            e.PaymentMethodId == command.Data.PaymentMethodId &&
+            e.UserId == TestFactoryUsers.DefaultUser1Authenticated.Id;
 
     [Fact]
     public async Task Create_ValidData_EntityCreated() =>
