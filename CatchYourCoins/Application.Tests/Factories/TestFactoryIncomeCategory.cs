@@ -3,7 +3,7 @@ using Domain.Dashboard.Entities.Incomes;
 
 namespace Application.Tests.Factories;
 
-public class TestFactoryCategoryIncomes : TestFactoryEntityBase<IncomeCategory>
+public class TestFactoryIncomeCategory : TestFactoryEntityBase<IncomeCategory>
 {
     public override IncomeCategory CreateEntity(CurrentUser currentUser, int id = 1) => new()
     {

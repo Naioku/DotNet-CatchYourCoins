@@ -22,7 +22,7 @@ public class TestHandlerCreateRangeCategories
         InputDTOIncomeCategory,
         CommandCreateRangeCategories,
         IRepositoryIncomeCategory,
-        TestFactoryCategoryIncomes
+        TestFactoryIncomeCategory
     >
 {
     protected override HandlerCreateRangeCategories CreateHandler()

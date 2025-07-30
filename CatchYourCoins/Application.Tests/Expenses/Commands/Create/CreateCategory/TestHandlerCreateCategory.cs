@@ -20,7 +20,7 @@ public class TestHandlerCreateCategory
         InputDTOExpenseCategory,
         CommandCreateCategory,
         IRepositoryExpenseCategory,
-        TestFactoryCategoryExpenses
+        TestFactoryExpenseCategory
     >
 {
     protected override HandlerCreateCategory CreateHandler()

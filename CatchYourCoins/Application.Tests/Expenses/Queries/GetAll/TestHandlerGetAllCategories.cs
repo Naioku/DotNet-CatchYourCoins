@@ -18,7 +18,7 @@ public class TestHandlerGetAllCategories
         OutputDTOExpenseCategory,
         QueryGetAllCategories,
         IRepositoryExpenseCategory,
-        TestFactoryCategoryExpenses
+        TestFactoryExpenseCategory
     >
 {
     protected override HandlerGetAllCategories CreateHandler() =>

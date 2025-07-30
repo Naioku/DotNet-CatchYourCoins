@@ -15,7 +15,7 @@ public class HandlerDeleteCategoryTest
         IncomeCategory,
         CommandDeleteCategory,
         IRepositoryIncomeCategory,
-        TestFactoryCategoryIncomes,
+        TestFactoryIncomeCategory,
         IUnitOfWork
     >
 {

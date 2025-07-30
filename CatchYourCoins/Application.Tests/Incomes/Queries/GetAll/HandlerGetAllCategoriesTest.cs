@@ -18,7 +18,7 @@ public class HandlerGetAllCategoriesTest
         OutputDTOIncomeCategory,
         QueryGetAllCategories,
         IRepositoryIncomeCategory,
-        TestFactoryCategoryIncomes
+        TestFactoryIncomeCategory
     >
 {
     protected override HandlerGetAllCategories CreateHandler() =>

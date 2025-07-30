@@ -22,7 +22,7 @@ public class TestHandlerCreateRangeCategories
         InputDTOExpenseCategory,
         CommandCreateRangeCategories,
         IRepositoryExpenseCategory,
-        TestFactoryCategoryExpenses
+        TestFactoryExpenseCategory
     >
 {
     protected override HandlerCreateRangeCategories CreateHandler()

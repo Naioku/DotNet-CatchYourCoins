@@ -22,7 +22,7 @@ public class TestHandlerCreateRangePaymentMethods
         InputDTOExpensePaymentMethod,
         CommandCreateRangePaymentMethods,
         IRepositoryExpensePaymentMethod,
-        TestFactoryPaymentMethod
+        TestFactoryExpensePaymentMethod
     >
 {
     protected override HandlerCreateRangePaymentMethods CreateHandler()

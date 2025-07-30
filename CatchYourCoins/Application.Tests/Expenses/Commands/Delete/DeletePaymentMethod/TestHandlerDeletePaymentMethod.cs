@@ -15,7 +15,7 @@ public class TestHandlerDeletePaymentMethod
         ExpensePaymentMethod,
         CommandDeletePaymentMethod,
         IRepositoryExpensePaymentMethod,
-        TestFactoryPaymentMethod,
+        TestFactoryExpensePaymentMethod,
         IUnitOfWork
     >
 {

@@ -15,7 +15,7 @@ public class TestHandlerDeleteCategory
         ExpenseCategory,
         CommandDeleteCategory,
         IRepositoryExpenseCategory,
-        TestFactoryCategoryExpenses,
+        TestFactoryExpenseCategory,
         IUnitOfWork
     >
 {

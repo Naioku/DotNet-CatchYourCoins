@@ -20,7 +20,7 @@ public class HandlerCreateCategoryTest
         InputDTOIncomeCategory,
         CommandCreateCategory,
         IRepositoryIncomeCategory,
-        TestFactoryCategoryIncomes
+        TestFactoryIncomeCategory
     >
 {
     protected override HandlerCreateCategory CreateHandler()

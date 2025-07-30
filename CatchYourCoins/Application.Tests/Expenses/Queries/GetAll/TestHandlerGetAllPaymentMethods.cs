@@ -17,7 +17,7 @@ public class TestHandlerGetAllPaymentMethods
         OutputDTOPaymentMethod,
         QueryGetAllPaymentMethods,
         IRepositoryExpensePaymentMethod,
-        TestFactoryPaymentMethod
+        TestFactoryExpensePaymentMethod
     >
 {
     protected override HandlerGetAllPaymentMethods CreateHandler() =>
