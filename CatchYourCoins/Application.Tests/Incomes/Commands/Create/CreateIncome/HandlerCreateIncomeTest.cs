@@ -1,9 +1,9 @@
 ﻿using System;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Application.DTOs.InputDTOs.Incomes;
 using Application.Incomes.Commands.Create;
 using Application.Tests.Factories;
+using AutoMapper;
 using Domain.Dashboard.Entities.Incomes;
 using Domain.Interfaces.Repositories;
 using Domain.Interfaces.Services;
@@ -23,34 +23,35 @@ public class HandlerCreateIncomeTest
         TestFactoryIncome
     >
 {
+    private readonly InputDTOIncome _dto = new()
+    {
+        Amount = 100,
+        Date = DateTime.Now,
+        Description = "Test",
+        CategoryId = 1,
+    };
+
     protected override HandlerCreateIncome CreateHandler()
     {
         return new HandlerCreateIncome(
             GetMock<IRepositoryIncome>().Object,
             GetMock<IServiceCurrentUser>().Object,
-            GetMock<IUnitOfWork>().Object
+            GetMock<IUnitOfWork>().Object,
+            GetMock<IMapper>().Object
         );
     }
-    
-    protected override CommandCreateIncome GetCommand() =>
-        new()
-        {
-            Data = new InputDTOIncome
-            {
-                Amount = 100,
-                Date = DateTime.Now,
-                Description = "Test",
-                CategoryId = 1,
-            }
-        };
 
-    protected override Expression<Func<Income, bool>> GetRepositoryMatch(CommandCreateIncome command) =>
-        e =>
-            e.Amount == command.Data.Amount &&
-            e.Date == command.Data.Date &&
-            e.UserId == TestFactoryUsers.DefaultUser1Authenticated.Id &&
-            e.Description == command.Data.Description &&
-            e.CategoryId == command.Data.CategoryId;
+    protected override InputDTOIncome GetInputDTO() => _dto;
+    protected override CommandCreateIncome GetCommand() => new() { Data = _dto };
+
+    protected override Income GetMappedEntity() => new()
+    {
+        Amount = _dto.Amount,
+        Date = _dto.Date,
+        Description = _dto.Description,
+        CategoryId = _dto.CategoryId,
+        UserId = TestFactoryUsers.DefaultUser1Authenticated.Id,
+    };
 
     [Fact]
     public async Task Create_ValidData_EntityCreated() =>

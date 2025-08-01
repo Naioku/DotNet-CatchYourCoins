@@ -4,6 +4,7 @@ using Domain.Interfaces.Repositories;
 namespace Domain.Dashboard.Entities;
 
 public class FinancialOperation<TCategory> : IAutorizable, IEntity
+    where TCategory : FinancialCategory
 {
     public int Id { get; init; }
     public required decimal Amount { get; init; }

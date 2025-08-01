@@ -1,31 +1,39 @@
 ﻿using System;
-using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Requests.Commands;
 using Application.Tests.Factories;
+using AutoMapper;
 using Domain;
 using Domain.Interfaces.Repositories;
+using FluentAssertions;
 using Moq;
 
 namespace Application.Tests;
 
 public abstract class TestHandlerCreate<THandler, TEntity, TDTO, TCommand, TRepository, TFactory>
-    : CQRSHandlerTestBase<THandler, TFactory, TEntity>
+    : TestCQRSHandlerBase<THandler, TFactory, TEntity>
     where THandler : HandlerCRUDCreate<TEntity, TCommand, TDTO>
-    where TEntity : class, IEntity
+    where TEntity : class, IEntity, IAutorizable
     where TCommand : CommandCRUDCreate<TDTO>
     where TRepository : class, IRepositoryCRUD<TEntity>
     where TFactory : TestFactoryEntityBase<TEntity>, new()
 {
+    protected abstract TDTO GetInputDTO();
     protected abstract TCommand GetCommand();
-    protected abstract Expression<Func<TEntity, bool>> GetRepositoryMatch(TCommand command);
+    protected abstract TEntity GetMappedEntity();
 
-    public override Task InitializeAsync()
+    protected override void SetUpMocks()
     {
         RegisterMock<TRepository>();
         RegisterMock<IUnitOfWork>();
-        return base.InitializeAsync();
+        
+        Mock<IMapper> mockMapper = new();
+        mockMapper
+            .Setup(m => m.Map<TEntity>(It.Is<TDTO>(dto => CheckDTOContent(dto))))
+            .Returns(GetMappedEntity());
+        RegisterMock<IMapper, Mock<IMapper>>(mockMapper);
+        base.SetUpMocks();
     }
 
     protected async Task Create_ValidData_EntityCreated_Base()
@@ -38,12 +46,37 @@ public abstract class TestHandlerCreate<THandler, TEntity, TDTO, TCommand, TRepo
 
         // Assert
         GetMock<TRepository>().Verify(
-            m => m.CreateAsync(It.Is(GetRepositoryMatch(command))),
+            m => m.CreateAsync(It.Is<TEntity>(entity => CheckEntity(entity))),
             Times.Once
         );
         GetMock<IUnitOfWork>().Verify(
             m => m.SaveChangesAsync(It.IsAny<CancellationToken>()),
             Times.Once
         );
+    }
+
+    private bool CheckEntity(TEntity entity) =>
+        CheckFluentAssertions(() =>
+        {
+            entity.Should().BeEquivalentTo(GetMappedEntity(), options => options.ExcludingMissingMembers());
+            entity.UserId.Should().Be(TestFactoryUsers.DefaultUser1Authenticated.Id);
+        });
+
+    private bool CheckDTOContent(TDTO dto) => CheckFluentAssertions(() =>
+    {
+        dto.Should().BeEquivalentTo(GetInputDTO(), options => options.ExcludingMissingMembers());
+    });
+
+    private static bool CheckFluentAssertions(Action assertions)
+    {
+        try
+        {
+            assertions();
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
     }
 }

@@ -10,7 +10,7 @@ using Xunit;
 namespace Application.Tests;
 
 public abstract class TestHandlerDelete<THandler, TEntity, TCommand, TRepository, TFactory, TUnitOfWork>
-    : CQRSHandlerTestBase<THandler, TFactory, TEntity>
+    : TestCQRSHandlerBase<THandler, TFactory, TEntity>
     where THandler : HandlerCRUDDelete<TEntity, TCommand>
     where TEntity : class, IEntity
     where TCommand : CommandCRUDDelete
@@ -18,11 +18,11 @@ public abstract class TestHandlerDelete<THandler, TEntity, TCommand, TRepository
     where TFactory : TestFactoryEntityBase<TEntity>, new()
     where TUnitOfWork : class, IUnitOfWork
 {
-    public override Task InitializeAsync()
+    protected override void SetUpMocks()
     {
         RegisterMock<TRepository>();
         RegisterMock<IUnitOfWork>();
-        return base.InitializeAsync();
+        base.SetUpMocks();
     }
     
     protected abstract TCommand GetCommand();

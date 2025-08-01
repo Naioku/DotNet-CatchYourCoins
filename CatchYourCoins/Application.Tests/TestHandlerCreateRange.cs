@@ -12,7 +12,7 @@ using Moq;
 namespace Application.Tests;
 
 public abstract class TestHandlerCreateRange<THandler, TEntity, TDTO, TCommand, TRepository, TFactory>
-    : CQRSHandlerTestBase<THandler, TFactory, TEntity>
+    : TestCQRSHandlerBase<THandler, TFactory, TEntity>
     where THandler : HandlerCRUDCreateRange<TEntity, TCommand, TDTO>
     where TEntity : class, IEntity
     where TCommand : CommandCRUDCreateRange<TDTO>
@@ -22,11 +22,11 @@ public abstract class TestHandlerCreateRange<THandler, TEntity, TDTO, TCommand, 
     protected abstract TCommand GetCommand();
     protected abstract Expression<Func<IList<TEntity>, bool>> GetRepositoryMatch(TCommand command);
 
-    public override Task InitializeAsync()
+    protected override void SetUpMocks()
     {
         RegisterMock<TRepository>();
         RegisterMock<IUnitOfWork>();
-        return base.InitializeAsync();
+        base.SetUpMocks();
     }
 
     protected async Task Create_ValidData_EntityCreated_Base()

@@ -5,10 +5,10 @@ using Domain.Interfaces.Repositories;
 
 namespace Application.Expenses.Queries.GetAll;
 
-public class QueryGetAllPaymentMethods : QueryCRUDGetAll<OutputDTOPaymentMethod>;
+public class QueryGetAllPaymentMethods : QueryCRUDGetAll<OutputDTOExpensePaymentMethod>;
 
 public class HandlerGetAllPaymentMethods(IRepositoryExpensePaymentMethod repository)
-    : HandlerCRUDGetAll<ExpensePaymentMethod, QueryGetAllPaymentMethods, OutputDTOPaymentMethod>(repository)
+    : HandlerCRUDGetAll<ExpensePaymentMethod, QueryGetAllPaymentMethods, OutputDTOExpensePaymentMethod>(repository)
 {
     protected override Dictionary<string, string> GetFailureMessages() =>
         new()
@@ -16,7 +16,7 @@ public class HandlerGetAllPaymentMethods(IRepositoryExpensePaymentMethod reposit
             { "PaymentMethods", "Payment methods not found" }
         };
 
-    protected override OutputDTOPaymentMethod MapEntityToDTO(ExpensePaymentMethod entity) =>
+    protected override OutputDTOExpensePaymentMethod MapEntityToDTO(ExpensePaymentMethod entity) =>
         new()
         {
             Id = entity.Id,

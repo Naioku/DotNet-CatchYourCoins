@@ -12,7 +12,7 @@ using Xunit;
 namespace Application.Tests;
 
 public abstract class TestHandlerGetAll<THandler, TEntity, TDTO, TQuery, TRepository, TFactory>
-    : CQRSHandlerTestBase<THandler, TFactory, TEntity>
+    : TestCQRSHandlerBase<THandler, TFactory, TEntity>
     where THandler : HandlerCRUDGetAll<TEntity, TQuery, TDTO>
     where TEntity : IEntity
     where TDTO : class
@@ -20,10 +20,10 @@ public abstract class TestHandlerGetAll<THandler, TEntity, TDTO, TQuery, TReposi
     where TRepository : class, IRepositoryCRUD<TEntity>
     where TFactory : TestFactoryEntityBase<TEntity>, new()
 {
-    public override Task InitializeAsync()
+    protected override void SetUpMocks()
     {
         RegisterMock<TRepository>();
-        return base.InitializeAsync();
+        base.SetUpMocks();
     }
     
     protected async Task GetAll_ValidData_ReturnedAll_Base(Action<TEntity, TDTO> assertions)

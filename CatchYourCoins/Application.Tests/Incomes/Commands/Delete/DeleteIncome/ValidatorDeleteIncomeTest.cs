@@ -2,7 +2,7 @@
 using JetBrains.Annotations;
 using Xunit;
 
-namespace Application.Tests.Incomes.Delete.DeleteIncome;
+namespace Application.Tests.Incomes.Commands.Delete.DeleteIncome;
 
 [TestSubject(typeof(ValidatorDeleteIncome))]
 public class ValidatorDeleteIncomeTest : TestValidatorBase<ValidatorDeleteIncome, CommandDeleteIncome>

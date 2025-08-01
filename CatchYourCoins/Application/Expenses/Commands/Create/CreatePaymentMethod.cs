@@ -1,5 +1,6 @@
 ﻿using Application.DTOs.InputDTOs.Expenses;
 using Application.Requests.Commands;
+using AutoMapper;
 using Domain.Dashboard.Entities.Expenses;
 using Domain.Interfaces.Repositories;
 using Domain.Interfaces.Services;
@@ -20,14 +21,10 @@ public class ValidatorCreatePaymentMethod
 public class HandlerCreatePaymentMethod(
     IRepositoryExpensePaymentMethod repository,
     IServiceCurrentUser serviceCurrentUser,
-    IUnitOfWork unitOfWork)
-    : HandlerCRUDCreate<ExpensePaymentMethod, CommandCreatePaymentMethod, InputDTOExpensePaymentMethod>(repository, unitOfWork)
-{
-    protected override ExpensePaymentMethod MapDTOToEntity(InputDTOExpensePaymentMethod dto) =>
-        new()
-        {
-            Name = dto.Name,
-            Limit = dto.Limit,
-            UserId = serviceCurrentUser.User.Id
-        };
-}
+    IUnitOfWork unitOfWork,
+    IMapper mapper)
+    : HandlerCRUDCreate<
+        ExpensePaymentMethod,
+        CommandCreatePaymentMethod,
+        InputDTOExpensePaymentMethod
+    >(repository, unitOfWork, mapper);

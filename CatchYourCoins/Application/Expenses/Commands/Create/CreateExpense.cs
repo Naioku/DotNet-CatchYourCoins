@@ -1,5 +1,6 @@
 ﻿using Application.DTOs.InputDTOs.Expenses;
 using Application.Requests.Commands;
+using AutoMapper;
 using Domain.Dashboard.Entities.Expenses;
 using Domain.Interfaces.Repositories;
 using Domain.Interfaces.Services;
@@ -20,16 +21,10 @@ public class ValidatorCreateExpense
 public class HandlerCreateExpense(
     IRepositoryExpense repository,
     IServiceCurrentUser serviceCurrentUser,
-    IUnitOfWork unitOfWork) : HandlerCRUDCreate<Expense, CommandCreateExpense, InputDTOExpense>(repository, unitOfWork)
-{
-    protected override Expense MapDTOToEntity(InputDTOExpense dto) =>
-        new()
-        {
-            Amount = dto.Amount,
-            Date = dto.Date,
-            Description = dto.Description,
-            UserId = serviceCurrentUser.User.Id,
-            CategoryId = dto.CategoryId,
-            PaymentMethodId = dto.PaymentMethodId,
-        };
-}
+    IUnitOfWork unitOfWork,
+    IMapper mapper)
+    : HandlerCRUDCreate<
+        Expense,
+        CommandCreateExpense,
+        InputDTOExpense
+    >(repository, unitOfWork, mapper);

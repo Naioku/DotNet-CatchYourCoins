@@ -11,7 +11,7 @@ using Xunit;
 namespace Application.Tests;
 
 public abstract class TestHandlerGetById<THandler, TEntity, TDTO, TQuery, TRepository, TFactory>
-    : CQRSHandlerTestBase<THandler, TFactory, TEntity>
+    : TestCQRSHandlerBase<THandler, TFactory, TEntity>
     where THandler : HandlerCRUDGetById<TEntity, TQuery, TDTO>
     where TEntity : class, IEntity
     where TDTO : class
@@ -19,10 +19,10 @@ public abstract class TestHandlerGetById<THandler, TEntity, TDTO, TQuery, TRepos
     where TRepository : class, IRepositoryCRUD<TEntity>
     where TFactory : TestFactoryEntityBase<TEntity>, new()
 {
-    public override Task InitializeAsync()
+    protected override void SetUpMocks()
     {
         RegisterMock<TRepository>();
-        return base.InitializeAsync();
+        base.SetUpMocks();
     }
     
     protected abstract TQuery GetQuery();

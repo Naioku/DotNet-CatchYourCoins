@@ -14,7 +14,7 @@ public class TestHandlerGetAllPaymentMethods
     : TestHandlerGetAll<
         HandlerGetAllPaymentMethods,
         ExpensePaymentMethod,
-        OutputDTOPaymentMethod,
+        OutputDTOExpensePaymentMethod,
         QueryGetAllPaymentMethods,
         IRepositoryExpensePaymentMethod,
         TestFactoryExpensePaymentMethod

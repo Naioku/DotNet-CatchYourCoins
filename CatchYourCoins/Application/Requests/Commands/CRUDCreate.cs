@@ -1,4 +1,5 @@
-﻿using Domain;
+﻿using AutoMapper;
+using Domain;
 using Domain.Interfaces.Repositories;
 using FluentValidation;
 using MediatR;
@@ -24,16 +25,15 @@ public abstract class ValidatorCRUDCreate<TCommand, TDTO, TDTOValidator> : Abstr
 
 public abstract class HandlerCRUDCreate<TEntity, TCommand, TDTO>(
     IRepositoryCRUD<TEntity> repository,
-    IUnitOfWork unitOfWork) : IRequestHandler<TCommand, Result>
+    IUnitOfWork unitOfWork,
+    IMapper mapper) : IRequestHandler<TCommand, Result>
     where TCommand : CommandCRUDCreate<TDTO>
 {
-    protected abstract TEntity MapDTOToEntity(TDTO dto);
-
     public async Task<Result> Handle(TCommand request, CancellationToken cancellationToken)
     {
         try
         {
-            await repository.CreateAsync(MapDTOToEntity(request.Data));
+            await repository.CreateAsync(mapper.Map<TEntity>(request.Data));
             await unitOfWork.SaveChangesAsync(cancellationToken);
             return Result.Success();
         }
