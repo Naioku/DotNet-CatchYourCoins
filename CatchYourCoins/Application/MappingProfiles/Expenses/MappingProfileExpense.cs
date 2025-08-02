@@ -16,6 +16,12 @@ public class MappingProfileExpense : Profile
             .IncludeBase<InputDTOFinancialOperation, FinancialOperation<ExpenseCategory>>();
         
         CreateMap<Expense, OutputDTOExpense>()
-            .IncludeBase<FinancialOperation<ExpenseCategory>, OutputDTOFinancialOperation>();
+            .IncludeBase<FinancialOperation<ExpenseCategory>, OutputDTOFinancialOperation>()
+            .ForMember(
+                m => m.PaymentMethod,
+                opt => opt.MapFrom(src => src.PaymentMethod != null
+                    ? src.PaymentMethod.Name
+                    : null)
+            );
     }
 }

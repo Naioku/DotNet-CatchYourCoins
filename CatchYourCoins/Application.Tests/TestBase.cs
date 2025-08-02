@@ -23,18 +23,21 @@ public abstract class TestBase : IAsyncLifetime
         where TMock : Mock<T>
         => _mocks[typeof(T)] = mock;
 
+    protected virtual void InitializeFields() {}
     protected virtual void SetUpMocks() {}
     protected virtual void SetUpTestedObjects() {}
     protected virtual void CleanUp() {}
-    
+
+
     public Task InitializeAsync()
     {
+        InitializeFields();
         MockServiceCurrentUser();
         SetUpMocks();
         SetUpTestedObjects();
         return Task.CompletedTask;
     }
-    
+
     public Task DisposeAsync()
     {
         _mocks.Clear();

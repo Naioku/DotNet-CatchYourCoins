@@ -2,6 +2,7 @@
 using Application.DTOs.OutputDTOs.Expenses;
 using Application.Expenses.Queries.GetById;
 using Application.Tests.Factories;
+using AutoMapper;
 using Domain.Dashboard.Entities.Expenses;
 using Domain.Interfaces.Repositories;
 using JetBrains.Annotations;
@@ -21,19 +22,24 @@ public class TestHandlerGetCategoryById
     >
 {
     protected override HandlerGetCategoryById CreateHandler() =>
-        new(GetMock<IRepositoryExpenseCategory>().Object);
-    
+        new(
+            GetMock<IRepositoryExpenseCategory>().Object,
+            GetMock<IMapper>().Object
+        );
+
     protected override QueryGetCategoryById GetQuery() => new() { Id = 1 };
+    protected override OutputDTOExpenseCategory GetMappedDTO(ExpenseCategory entity) =>
+        new()
+        {
+            Id = entity.Id,
+            Name = entity.Name,
+            Limit = entity.Limit,
+        };
 
     [Fact]
     public async Task GetOne_ValidData_ReturnedOne()
     {
-        await GetOne_ValidData_ReturnedOne_Base((inputEntity, resultDTO) =>
-        {
-            Assert.Equal(inputEntity.Id, resultDTO.Id);
-            Assert.Equal(inputEntity.Name, resultDTO.Name);
-            Assert.Equal(inputEntity.Limit, resultDTO.Limit);
-        });
+        await GetOne_ValidData_ReturnedOne_Base();
     }
 
     [Fact]

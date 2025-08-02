@@ -15,7 +15,11 @@ public class MappingProfileFinancialOperation : Profile
                 "UserId",
                 opt => opt.MapFrom(_ => serviceCurrentUser.User.Id)
             );
-        
-        CreateMap(typeof(FinancialOperation<>), typeof(OutputDTOFinancialOperation));
+
+        CreateMap(typeof(FinancialOperation<>), typeof(OutputDTOFinancialOperation))
+            .ForMember(
+                "Category",
+                opt => opt.MapFrom("Category.Name")
+            );
     }
 }

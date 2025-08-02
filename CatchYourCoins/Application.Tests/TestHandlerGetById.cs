@@ -3,8 +3,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using Application.Requests.Queries;
 using Application.Tests.Factories;
+using AutoMapper;
 using Domain;
 using Domain.Interfaces.Repositories;
+using FluentAssertions;
 using Moq;
 using Xunit;
 
@@ -13,43 +15,57 @@ namespace Application.Tests;
 public abstract class TestHandlerGetById<THandler, TEntity, TDTO, TQuery, TRepository, TFactory>
     : TestCQRSHandlerBase<THandler, TFactory, TEntity>
     where THandler : HandlerCRUDGetById<TEntity, TQuery, TDTO>
-    where TEntity : class, IEntity
+    where TEntity : class, IEntity, IAutorizable
     where TDTO : class
     where TQuery : QueryCRUDGetById<TDTO>
     where TRepository : class, IRepositoryCRUD<TEntity>
     where TFactory : TestFactoryEntityBase<TEntity>, new()
 {
+    private TEntity _entity;
+
+    protected override void InitializeFields()
+    {
+        base.InitializeFields();
+        _entity = FactoryEntity.CreateEntity(TestFactoryUsers.DefaultUser1Authenticated, GetQuery().Id);
+    }
+
+    protected abstract TQuery GetQuery();
+    protected abstract TDTO GetMappedDTO(TEntity entity);
+
     protected override void SetUpMocks()
     {
         RegisterMock<TRepository>();
+
+        Mock<IMapper> mockMapper = new();
+        mockMapper
+            .Setup(m => m.Map<TDTO>(It.Is<TEntity>(entity => entity == _entity)))
+            .Returns(GetMappedDTO(_entity));
+        RegisterMock<IMapper, Mock<IMapper>>(mockMapper);
         base.SetUpMocks();
     }
-    
-    protected abstract TQuery GetQuery();
-    
-    protected async Task GetOne_ValidData_ReturnedOne_Base(Action<TEntity, TDTO> assertions)
+
+    protected async Task GetOne_ValidData_ReturnedOne_Base()
     {
         // Arrange
         TQuery query = GetQuery();
-        TEntity entity = FactoryEntity.CreateEntity(TestFactoryUsers.DefaultUser1Authenticated, query.Id);
         GetMock<TRepository>()
             .Setup(m => m.GetByIdAsync(It.Is<int>(
-                id => id == entity.Id
+                id => id == _entity.Id
             )))
-            .ReturnsAsync(entity);
+            .ReturnsAsync(_entity);
 
         // Act
         Result<TDTO> result = await Handler.Handle(query, CancellationToken.None);
 
         // Assert
-        Assert.True(result.IsSuccess);
-        Assert.Empty(result.Errors);
-        Assert.NotNull(result.Value);
+        result.IsSuccess.Should().BeTrue();
+        result.Errors.Should().BeNullOrEmpty();
+        result.Value.Should().NotBeNull();
 
         TDTO dto = result.Value;
-        assertions(entity, dto);
+        dto.Should().BeEquivalentTo(GetMappedDTO(_entity));
     }
-    
+
     protected async Task GetOne_NoEntryAtPassedID_ReturnedNull_Base()
     {
         // Arrange
@@ -65,8 +81,8 @@ public abstract class TestHandlerGetById<THandler, TEntity, TDTO, TQuery, TRepos
         Result<TDTO> result = await Handler.Handle(query, CancellationToken.None);
 
         // Assert
-        Assert.False(result.IsSuccess);
-        Assert.NotEmpty(result.Errors);
-        Assert.Null(result.Value);
+        result.IsSuccess.Should().BeFalse();
+        result.Errors.Should().NotBeNullOrEmpty();
+        result.Value.Should().BeNull();
     }
 }
