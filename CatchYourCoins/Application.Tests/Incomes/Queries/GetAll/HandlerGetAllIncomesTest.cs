@@ -1,7 +1,10 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Application.DTOs.OutputDTOs.Incomes;
 using Application.Incomes.Queries.GetAll;
 using Application.Tests.Factories;
+using AutoMapper;
 using Domain.Dashboard.Entities.Incomes;
 using Domain.Interfaces.Repositories;
 using JetBrains.Annotations;
@@ -21,21 +24,26 @@ public class HandlerGetAllIncomesTest
     >
 {
     protected override HandlerGetAllIncomes CreateHandler() =>
-        new(GetMock<IRepositoryIncome>().Object);
-    
+        new(
+            GetMock<IRepositoryIncome>().Object,
+            GetMock<IMapper>().Object
+        );
+
     [Fact]
     public async Task GetAll_ValidData_ReturnedAll() =>
-        await GetAll_ValidData_ReturnedAll_Base((inputEntity, resultDTO) =>
-        {
-            Assert.Equal(inputEntity.Id, resultDTO.Id);
-            Assert.Equal(inputEntity.Amount, resultDTO.Amount);
-            Assert.Equal(inputEntity.Date, resultDTO.Date);
-            Assert.Equal(inputEntity.Description, resultDTO.Description);
-            Assert.NotNull(inputEntity.Category);
-            Assert.Equal(inputEntity.Category.Name, resultDTO.Category);
-        });
-    
+        await GetAll_ValidData_ReturnedAll_Base();
+
     [Fact]
     public async Task GetAll_NoEntryInDB_ReturnedNull() =>
         await GetAll_NoEntryInDB_ReturnedNull_Base();
+
+    protected override IReadOnlyList<OutputDTOIncome> GetMappedDTOs(List<Income> entity) =>
+        entity.Select(e => new OutputDTOIncome
+        {
+            Id = e.Id,
+            Amount = e.Amount,
+            Date = e.Date,
+            Description = e.Description,
+            Category = e.Category?.Name,
+        }).ToList();
 }

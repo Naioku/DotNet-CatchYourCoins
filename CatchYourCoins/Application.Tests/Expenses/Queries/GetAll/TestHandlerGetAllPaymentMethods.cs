@@ -1,7 +1,10 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Application.DTOs.OutputDTOs.Expenses;
 using Application.Expenses.Queries.GetAll;
 using Application.Tests.Factories;
+using AutoMapper;
 using Domain.Dashboard.Entities.Expenses;
 using Domain.Interfaces.Repositories;
 using JetBrains.Annotations;
@@ -21,17 +24,24 @@ public class TestHandlerGetAllPaymentMethods
     >
 {
     protected override HandlerGetAllPaymentMethods CreateHandler() =>
-        new(GetMock<IRepositoryExpensePaymentMethod>().Object);
+        new(
+            GetMock<IRepositoryExpensePaymentMethod>().Object,
+            GetMock<IMapper>().Object
+        );
 
     [Fact]
     public async Task GetAll_ValidData_ReturnedAll() =>
-        await GetAll_ValidData_ReturnedAll_Base((inputEntity, resultDTO) =>
-        {
-            Assert.Equal(inputEntity.Name, resultDTO.Name);
-            Assert.Equal(inputEntity.Limit, resultDTO.Limit);
-        });
+        await GetAll_ValidData_ReturnedAll_Base();
 
     [Fact]
     public async Task GetAll_NoEntryInDB_ReturnedNull() =>
         await GetAll_NoEntryInDB_ReturnedNull_Base();
+
+    protected override IReadOnlyList<OutputDTOExpensePaymentMethod> GetMappedDTOs(List<ExpensePaymentMethod> entity) =>
+        entity.Select(e => new OutputDTOExpensePaymentMethod
+        {
+            Id = e.Id,
+            Name = e.Name,
+            Limit = e.Limit,
+        }).ToList();
 }

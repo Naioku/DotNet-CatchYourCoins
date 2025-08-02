@@ -1,7 +1,10 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Application.DTOs.OutputDTOs.Expenses;
 using Application.Expenses.Queries.GetAll;
 using Application.Tests.Factories;
+using AutoMapper;
 using Domain.Dashboard.Entities.Expenses;
 using Domain.Interfaces.Repositories;
 using JetBrains.Annotations;
@@ -21,23 +24,27 @@ public class TestHandlerGetAllExpenses
     >
 {
     protected override HandlerGetAllExpenses CreateHandler() =>
-        new(GetMock<IRepositoryExpense>().Object);
-    
+        new(
+            GetMock<IRepositoryExpense>().Object,
+            GetMock<IMapper>().Object
+        );
+
     [Fact]
     public async Task GetAll_ValidData_ReturnedAll() =>
-        await GetAll_ValidData_ReturnedAll_Base((inputEntity, resultDTO) =>
-        {
-            Assert.Equal(inputEntity.Id, resultDTO.Id);
-            Assert.Equal(inputEntity.Amount, resultDTO.Amount);
-            Assert.Equal(inputEntity.Date, resultDTO.Date);
-            Assert.Equal(inputEntity.Description, resultDTO.Description);
-            Assert.NotNull(inputEntity.Category);
-            Assert.NotNull(inputEntity.PaymentMethod);
-            Assert.Equal(inputEntity.Category.Name, resultDTO.Category);
-            Assert.Equal(inputEntity.PaymentMethod.Name, resultDTO.PaymentMethod);
-        });
-    
+        await GetAll_ValidData_ReturnedAll_Base();
+
     [Fact]
     public async Task GetAll_NoEntryInDB_ReturnedNull() =>
         await GetAll_NoEntryInDB_ReturnedNull_Base();
+
+    protected override IReadOnlyList<OutputDTOExpense> GetMappedDTOs(List<Expense> entity) =>
+        entity.Select(e => new OutputDTOExpense
+        {
+            Id = e.Id,
+            Amount = e.Amount,
+            Date = e.Date,
+            Description = e.Description,
+            Category = e.Category?.Name,
+            PaymentMethod = e.PaymentMethod?.Name,
+        }).ToList();
 }
