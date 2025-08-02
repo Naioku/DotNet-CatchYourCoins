@@ -1,8 +1,8 @@
 ﻿using Application.DTOs.InputDTOs.Expenses;
 using Application.Requests.Commands;
+using AutoMapper;
 using Domain.Dashboard.Entities.Expenses;
 using Domain.Interfaces.Repositories;
-using Domain.Interfaces.Services;
 using JetBrains.Annotations;
 
 namespace Application.Expenses.Commands.CreateRange;
@@ -19,15 +19,10 @@ public class ValidatorCreateRangeCategories
 
 public class HandlerCreateRangeCategories(
     IRepositoryExpenseCategory repository,
-    IServiceCurrentUser serviceCurrentUser,
-    IUnitOfWork unitOfWork)
-    : HandlerCRUDCreateRange<ExpenseCategory, CommandCreateRangeCategories, InputDTOExpenseCategory>(repository, unitOfWork)
-{
-    protected override ExpenseCategory MapDTOToEntity(InputDTOExpenseCategory dto) =>
-        new()
-        {
-            Name = dto.Name,
-            Limit = dto.Limit,
-            UserId = serviceCurrentUser.User.Id
-        };
-}
+    IUnitOfWork unitOfWork,
+    IMapper mapper)
+    : HandlerCRUDCreateRange<
+        ExpenseCategory,
+        CommandCreateRangeCategories,
+        InputDTOExpenseCategory
+    >(repository, unitOfWork, mapper);

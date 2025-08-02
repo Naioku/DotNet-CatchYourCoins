@@ -1,4 +1,5 @@
-﻿using Domain;
+﻿using AutoMapper;
+using Domain;
 using Domain.Interfaces.Repositories;
 using FluentValidation;
 using JetBrains.Annotations;
@@ -29,16 +30,15 @@ public abstract class ValidatorCRUDCreateRange<TCommand, TDTO, TDTOValidator>
 
 public abstract class HandlerCRUDCreateRange<TEntity, TCommand, TDTO>(
     IRepositoryCRUD<TEntity> repository,
-    IUnitOfWork unitOfWork) : IRequestHandler<TCommand, Result>
+    IUnitOfWork unitOfWork,
+    IMapper mapper) : IRequestHandler<TCommand, Result>
     where TCommand : CommandCRUDCreateRange<TDTO>
 {
-    protected abstract TEntity MapDTOToEntity(TDTO dto);
-
     public async Task<Result> Handle(TCommand request, CancellationToken cancellationToken)
     {
         try
         {
-            IList<TEntity> entities = request.Data.Select(MapDTOToEntity).ToList();
+            IList<TEntity> entities = mapper.Map<IList<TEntity>>(request.Data);
             await repository.CreateRangeAsync(entities);
             await unitOfWork.SaveChangesAsync(cancellationToken);
             return Result.Success();
