@@ -36,7 +36,6 @@ public class TestHandlerCreateExpense
     {
         return new HandlerCreateExpense(
             GetMock<IRepositoryExpense>().Object,
-            GetMock<IServiceCurrentUser>().Object,
             GetMock<IUnitOfWork>().Object,
             GetMock<IMapper>().Object
         );

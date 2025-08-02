@@ -16,7 +16,6 @@ public class ValidatorCreateIncome
 
 public class HandlerCreateIncome(
     IRepositoryIncome repository,
-    IServiceCurrentUser serviceCurrentUser,
     IUnitOfWork unitOfWork,
     IMapper mapper)
     : HandlerCRUDCreate<

@@ -20,7 +20,6 @@ public class ValidatorCreateExpense
 
 public class HandlerCreateExpense(
     IRepositoryExpense repository,
-    IServiceCurrentUser serviceCurrentUser,
     IUnitOfWork unitOfWork,
     IMapper mapper)
     : HandlerCRUDCreate<

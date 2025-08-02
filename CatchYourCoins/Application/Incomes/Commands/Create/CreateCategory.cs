@@ -16,7 +16,6 @@ public class ValidatorCreateCategory
 
 public class HandlerCreateCategory(
     IRepositoryIncomeCategory repository,
-    IServiceCurrentUser serviceCurrentUser,
     IUnitOfWork unitOfWork,
     IMapper mapper)
     : HandlerCRUDCreate<

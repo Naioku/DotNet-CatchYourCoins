@@ -20,7 +20,6 @@ public class ValidatorCreatePaymentMethod
 
 public class HandlerCreatePaymentMethod(
     IRepositoryExpensePaymentMethod repository,
-    IServiceCurrentUser serviceCurrentUser,
     IUnitOfWork unitOfWork,
     IMapper mapper)
     : HandlerCRUDCreate<

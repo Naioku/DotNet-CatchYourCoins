@@ -20,7 +20,6 @@ public class ValidatorCreateCategory
 
 public class HandlerCreateCategory(
     IRepositoryExpenseCategory repository,
-    IServiceCurrentUser serviceCurrentUser,
     IUnitOfWork unitOfWork,
     IMapper mapper)
     : HandlerCRUDCreate<

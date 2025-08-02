@@ -32,7 +32,6 @@ public class TestHandlerCreateCategory
     {
         return new HandlerCreateCategory(
             GetMock<IRepositoryExpenseCategory>().Object,
-            GetMock<IServiceCurrentUser>().Object,
             GetMock<IUnitOfWork>().Object,
             GetMock<IMapper>().Object
         );

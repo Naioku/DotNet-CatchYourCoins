@@ -35,7 +35,6 @@ public class HandlerCreateIncomeTest
     {
         return new HandlerCreateIncome(
             GetMock<IRepositoryIncome>().Object,
-            GetMock<IServiceCurrentUser>().Object,
             GetMock<IUnitOfWork>().Object,
             GetMock<IMapper>().Object
         );

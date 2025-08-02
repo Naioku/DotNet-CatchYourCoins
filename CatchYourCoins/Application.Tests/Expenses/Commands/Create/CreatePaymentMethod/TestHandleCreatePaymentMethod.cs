@@ -32,7 +32,6 @@ public class TestHandlerCreatePaymentMethod
     {
         return new HandlerCreatePaymentMethod(
             GetMock<IRepositoryExpensePaymentMethod>().Object,
-            GetMock<IServiceCurrentUser>().Object,
             GetMock<IUnitOfWork>().Object,
             GetMock<IMapper>().Object
         );
