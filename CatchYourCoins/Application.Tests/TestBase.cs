@@ -1,8 +1,7 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Application.Tests.Factories;
-using Domain;
 using Domain.Dashboard.Entities;
 using Domain.Interfaces.Services;
 using Moq;
@@ -10,17 +9,12 @@ using Xunit;
 
 namespace Application.Tests;
 
-public abstract class CQRSHandlerTestBase<THandler, TFactory, TEntity> : IAsyncLifetime
-    where THandler : class
-    where TFactory : TestFactoryEntityBase<TEntity>, new()
-    where TEntity : IEntity
+public abstract class TestBase : IAsyncLifetime
 {
     private readonly Dictionary<Type, object> _mocks = new();
 
-    protected THandler Handler { get; private set; }
-    protected TestFactoryUsers TestFactoryUsers { get; } = new();
-    protected TFactory FactoryEntity { get; } = new();
-
+    protected TestFactoryUsers FactoryUsers { get; } = new();
+    
     protected Mock<T> GetMock<T>() where T : class => _mocks[typeof(T)] as Mock<T>;
     protected void RegisterMock<T>() where T : class => _mocks[typeof(T)] = new Mock<T>();
 
@@ -29,19 +23,25 @@ public abstract class CQRSHandlerTestBase<THandler, TFactory, TEntity> : IAsyncL
         where TMock : Mock<T>
         => _mocks[typeof(T)] = mock;
 
-    public virtual Task InitializeAsync()
+    protected virtual void InitializeFields() {}
+    protected virtual void SetUpMocks() {}
+    protected virtual void SetUpTestedObjects() {}
+    protected virtual void CleanUp() {}
+
+
+    public Task InitializeAsync()
     {
+        InitializeFields();
         MockServiceCurrentUser();
-        Handler = CreateHandler();
+        SetUpMocks();
+        SetUpTestedObjects();
         return Task.CompletedTask;
     }
 
-    protected abstract THandler CreateHandler();
-
-    public virtual Task DisposeAsync()
+    public Task DisposeAsync()
     {
         _mocks.Clear();
-        Handler = null;
+        CleanUp();
         return Task.CompletedTask;
     }
 
@@ -54,7 +54,7 @@ public abstract class CQRSHandlerTestBase<THandler, TFactory, TEntity> : IAsyncL
         Mock<IServiceCurrentUser> mock = new();
         mock
             .Setup(m => m.User)
-            .Returns(loggedInUser ?? TestFactoryUsers.DefaultUser1Authenticated);
+            .Returns(loggedInUser ?? FactoryUsers.DefaultUser1Authenticated);
 
         RegisterMock<IServiceCurrentUser, Mock<IServiceCurrentUser>>(mock);
     }

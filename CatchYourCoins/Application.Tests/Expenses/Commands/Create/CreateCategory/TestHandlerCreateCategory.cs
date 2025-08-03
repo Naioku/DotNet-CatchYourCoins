@@ -1,12 +1,9 @@
-﻿using System;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Application.DTOs.InputDTOs.Expenses;
 using Application.Expenses.Commands.Create;
-using Application.Tests.Factories;
+using AutoMapper;
 using Domain.Dashboard.Entities.Expenses;
 using Domain.Interfaces.Repositories;
-using Domain.Interfaces.Services;
 using JetBrains.Annotations;
 using Xunit;
 
@@ -19,36 +16,29 @@ public class TestHandlerCreateCategory
         ExpenseCategory,
         InputDTOExpenseCategory,
         CommandCreateCategory,
-        IRepositoryExpenseCategory,
-        TestFactoryExpenseCategory
+        IRepositoryExpenseCategory
     >
 {
     protected override HandlerCreateCategory CreateHandler()
     {
         return new HandlerCreateCategory(
             GetMock<IRepositoryExpenseCategory>().Object,
-            GetMock<IServiceCurrentUser>().Object,
-            GetMock<IUnitOfWork>().Object
+            GetMock<IUnitOfWork>().Object,
+            GetMock<IMapper>().Object
         );
     }
 
-    protected override CommandCreateCategory GetCommand() =>
-        new()
-        {
-            Data = new InputDTOExpenseCategory
-            {
-                Name = "Test1",
-                Limit = 1000
-            },
-        };
-
-    protected override Expression<Func<ExpenseCategory, bool>> GetRepositoryMatch(CommandCreateCategory command) =>
-        c =>
-            c.Name == command.Data.Name &&
-            c.Limit == command.Data.Limit &&
-            c.UserId == TestFactoryUsers.DefaultUser1Authenticated.Id;
+    protected override CommandCreateCategory GetCommand(InputDTOExpenseCategory dto) => new() { Data = dto };
 
     [Fact]
     public async Task Create_ValidData_EntityCreated() =>
         await Create_ValidData_EntityCreated_Base();
+    
+    [Fact]
+    public async Task Create_RepositoryThrowsException_EntityNotCreated() =>
+        await Create_RepositoryThrowsException_EntityNotCreated_Base();
+    
+    [Fact]
+    public async Task Create_UnitOfWorkThrowsException_EntityNotCreated() =>
+        await Create_UnitOfWorkThrowsException_EntityNotCreated_Base();
 }

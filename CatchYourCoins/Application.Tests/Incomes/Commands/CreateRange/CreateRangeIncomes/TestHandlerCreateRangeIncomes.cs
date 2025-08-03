@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Application.DTOs.InputDTOs.Incomes;
 using Application.Incomes.Commands.CreateRange;
-using Application.Tests.Factories;
+using AutoMapper;
 using Domain.Dashboard.Entities.Incomes;
 using Domain.Interfaces.Repositories;
-using Domain.Interfaces.Services;
 using JetBrains.Annotations;
 using Xunit;
 
@@ -21,51 +17,29 @@ public class TestHandlerCreateRangeIncomes
         Income,
         InputDTOIncome,
         CommandCreateRangeIncomes,
-        IRepositoryIncome,
-        TestFactoryIncome
+        IRepositoryIncome
     >
 {
     protected override HandlerCreateRangeIncomes CreateHandler()
     {
         return new HandlerCreateRangeIncomes(
             GetMock<IRepositoryIncome>().Object,
-            GetMock<IServiceCurrentUser>().Object,
-            GetMock<IUnitOfWork>().Object
+            GetMock<IUnitOfWork>().Object,
+            GetMock<IMapper>().Object
         );
     }
 
-    protected override CommandCreateRangeIncomes GetCommand() =>
-        new()
-        {
-            Data = [
-                new InputDTOIncome
-                {
-                    Amount = 100,
-                    Date = DateTime.Now,
-                    Description = "Test1",
-                    CategoryId = 1,
-                },
-                new InputDTOIncome
-                {
-                    Amount = 200,
-                    Date = DateTime.Now,
-                    Description = "Test2",
-                    CategoryId = 2,
-                },
-            ]
-        };
-
-    protected override Expression<Func<IList<Income>, bool>> GetRepositoryMatch(CommandCreateRangeIncomes command) =>
-        c =>
-            c.Count == command.Data.Count &&
-            Enumerable.Range(0, command.Data.Count).All(i => 
-                c[i].Amount == command.Data[i].Amount &&
-                c[i].Date == command.Data[i].Date &&
-                c[i].Description == command.Data[i].Description &&
-                c[i].CategoryId == command.Data[i].CategoryId &&
-                c[i].UserId == TestFactoryUsers.DefaultUser1Authenticated.Id);
+    protected override CommandCreateRangeIncomes GetCommand(List<InputDTOIncome> dtos) => new() { Data = dtos };
 
     [Fact]
-    public async Task Create_ValidData_EntityCreated() =>
-        await Create_ValidData_EntityCreated_Base();
+    public async Task Create_ValidData_EntitiesCreated() =>
+        await Create_ValidData_EntitiesCreated_Base();
+    
+    [Fact]
+    public async Task Create_RepositoryThrowsException_EntityNotCreated() =>
+        await Create_RepositoryThrowsException_EntitiesNotCreated_Base();
+    
+    [Fact]
+    public async Task Create_UnitOfWorkThrowsException_EntitiesNotCreated() =>
+        await Create_UnitOfWorkThrowsException_EntitiesNotCreated_Base();
 }

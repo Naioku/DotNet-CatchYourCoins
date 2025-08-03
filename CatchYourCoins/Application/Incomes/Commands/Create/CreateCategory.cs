@@ -1,8 +1,8 @@
 ﻿using Application.DTOs.InputDTOs.Incomes;
 using Application.Requests.Commands;
+using AutoMapper;
 using Domain.Dashboard.Entities.Incomes;
 using Domain.Interfaces.Repositories;
-using Domain.Interfaces.Services;
 using JetBrains.Annotations;
 
 namespace Application.Incomes.Commands.Create;
@@ -15,15 +15,10 @@ public class ValidatorCreateCategory
 
 public class HandlerCreateCategory(
     IRepositoryIncomeCategory repository,
-    IServiceCurrentUser serviceCurrentUser,
-    IUnitOfWork unitOfWork)
-    : HandlerCRUDCreate<IncomeCategory, CommandCreateCategory, InputDTOIncomeCategory>(repository, unitOfWork)
-{
-    protected override IncomeCategory MapDTOToEntity(InputDTOIncomeCategory dto) =>
-        new()
-        {
-            Name = dto.Name,
-            Limit = dto.Limit,
-            UserId = serviceCurrentUser.User.Id
-        };
-}
+    IUnitOfWork unitOfWork,
+    IMapper mapper)
+    : HandlerCRUDCreate<
+        IncomeCategory,
+        CommandCreateCategory,
+        InputDTOIncomeCategory
+    >(repository, unitOfWork, mapper);

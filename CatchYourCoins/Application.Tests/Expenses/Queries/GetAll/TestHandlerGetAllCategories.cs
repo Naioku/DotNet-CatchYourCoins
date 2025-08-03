@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Application.DTOs.OutputDTOs.Expenses;
 using Application.Expenses.Queries.GetAll;
-using Application.Tests.Factories;
+using AutoMapper;
 using Domain.Dashboard.Entities.Expenses;
 using Domain.Interfaces.Repositories;
 using JetBrains.Annotations;
@@ -16,21 +16,19 @@ public class TestHandlerGetAllCategories
         ExpenseCategory,
         OutputDTOExpenseCategory,
         QueryGetAllCategories,
-        IRepositoryExpenseCategory,
-        TestFactoryExpenseCategory
+        IRepositoryExpenseCategory
     >
 {
     protected override HandlerGetAllCategories CreateHandler() =>
-        new(GetMock<IRepositoryExpenseCategory>().Object);
-    
+        new(
+            GetMock<IRepositoryExpenseCategory>().Object,
+            GetMock<IMapper>().Object
+        );
+
     [Fact]
     public async Task GetAll_ValidData_ReturnedAll() =>
-        await GetAll_ValidData_ReturnedAll_Base((inputEntity, resultDTO) =>
-        {
-            Assert.Equal(inputEntity.Name, resultDTO.Name);
-            Assert.Equal(inputEntity.Limit, resultDTO.Limit);
-        });
-    
+        await GetAll_ValidData_ReturnedAll_Base();
+
     [Fact]
     public async Task GetAll_NoEntryInDB_ReturnedNull() =>
         await GetAll_NoEntryInDB_ReturnedNull_Base();

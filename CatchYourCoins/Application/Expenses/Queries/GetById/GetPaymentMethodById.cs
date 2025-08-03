@@ -1,26 +1,25 @@
 ﻿using Application.DTOs.OutputDTOs.Expenses;
 using Application.Requests.Queries;
+using AutoMapper;
 using Domain.Dashboard.Entities.Expenses;
 using Domain.Interfaces.Repositories;
 
 namespace Application.Expenses.Queries.GetById;
 
-public class QueryGetPaymentMethodById : QueryCRUDGetById<OutputDTOPaymentMethod>;
+public class QueryGetPaymentMethodById : QueryCRUDGetById<OutputDTOExpensePaymentMethod>;
 
-public class HandlerGetPaymentMethodById(IRepositoryExpensePaymentMethod repository)
-    : HandlerCRUDGetById<ExpensePaymentMethod, QueryGetPaymentMethodById, OutputDTOPaymentMethod>(repository)
+public class HandlerGetPaymentMethodById(
+    IRepositoryExpensePaymentMethod repository,
+    IMapper mapper)
+    : HandlerCRUDGetById<
+        ExpensePaymentMethod,
+        QueryGetPaymentMethodById,
+        OutputDTOExpensePaymentMethod
+    >(repository, mapper)
 {
     protected override Dictionary<string, string> GetFailureMessages() =>
         new()
         {
             { "PaymentMethod", "Payment method not found" }
-        };
-
-    protected override OutputDTOPaymentMethod MapEntityToDTO(ExpensePaymentMethod entity) =>
-        new()
-        {
-            Id = entity.Id,
-            Name = entity.Name,
-            Limit = entity.Limit,
         };
 }

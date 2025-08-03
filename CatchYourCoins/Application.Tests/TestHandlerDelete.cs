@@ -1,7 +1,6 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using Application.Requests.Commands;
-using Application.Tests.Factories;
 using Domain;
 using Domain.Interfaces.Repositories;
 using Moq;
@@ -9,20 +8,19 @@ using Xunit;
 
 namespace Application.Tests;
 
-public abstract class TestHandlerDelete<THandler, TEntity, TCommand, TRepository, TFactory, TUnitOfWork>
-    : CQRSHandlerTestBase<THandler, TFactory, TEntity>
+public abstract class TestHandlerDelete<THandler, TEntity, TCommand, TRepository, TUnitOfWork>
+    : TestCQRSHandlerBase<THandler, TEntity>
     where THandler : HandlerCRUDDelete<TEntity, TCommand>
     where TEntity : class, IEntity
     where TCommand : CommandCRUDDelete
     where TRepository : class, IRepositoryCRUD<TEntity>
-    where TFactory : TestFactoryEntityBase<TEntity>, new()
     where TUnitOfWork : class, IUnitOfWork
 {
-    public override Task InitializeAsync()
+    protected override void SetUpMocks()
     {
         RegisterMock<TRepository>();
         RegisterMock<IUnitOfWork>();
-        return base.InitializeAsync();
+        base.SetUpMocks();
     }
     
     protected abstract TCommand GetCommand();
@@ -30,7 +28,7 @@ public abstract class TestHandlerDelete<THandler, TEntity, TCommand, TRepository
     protected async Task DeleteOne_ValidData_DeletedEntity_Base()
     {
         // Arrange
-        TEntity entity = FactoryEntity.CreateEntity(TestFactoryUsers.DefaultUser1Authenticated);
+        TEntity entity = FactoryEntity.CreateEntity(FactoryUsers.DefaultUser1Authenticated);
         GetMock<TRepository>()
             .Setup(m => m.GetByIdAsync(It.Is<int>(
                 id => id == entity.Id

@@ -2,7 +2,7 @@
 using JetBrains.Annotations;
 using Xunit;
 
-namespace Application.Tests.Incomes.Delete.DeleteCategory;
+namespace Application.Tests.Incomes.Commands.Delete.DeleteCategory;
 
 [TestSubject(typeof(ValidatorDeleteCategory))]
 public class ValidatorDeleteCategoryTest : TestValidatorBase<ValidatorDeleteCategory, CommandDeleteCategory>
