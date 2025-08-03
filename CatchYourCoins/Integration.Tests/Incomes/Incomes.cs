@@ -1,7 +1,7 @@
 ﻿using Application.DTOs.InputDTOs.Incomes;
 using Application.DTOs.OutputDTOs.Incomes;
-using Application.Incomes.Commands.Create;
-using Application.Incomes.Queries.GetById;
+using Application.Requests.Incomes.Commands.Create;
+using Application.Requests.Incomes.Queries.GetById;
 using Domain;
 using Domain.Dashboard.Entities.Incomes;
 using Domain.Interfaces.Services;

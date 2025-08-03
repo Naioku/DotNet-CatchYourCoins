@@ -1,5 +1,5 @@
 ﻿using Application.DTOs.InputDTOs.Expenses;
-using Application.Expenses.Commands.Create;
+using Application.Requests.Expenses.Commands.Create;
 using Domain.Dashboard.Entities.Expenses;
 using Domain.Interfaces.Services;
 using Infrastructure.Persistence;

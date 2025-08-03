@@ -1,7 +1,7 @@
 ﻿using Application.DTOs.InputDTOs.Expenses;
 using Application.DTOs.OutputDTOs.Expenses;
-using Application.Expenses.Commands.Create;
-using Application.Expenses.Queries.GetById;
+using Application.Requests.Expenses.Commands.Create;
+using Application.Requests.Expenses.Queries.GetById;
 using Domain;
 using Domain.Dashboard.Entities.Expenses;
 using Domain.Interfaces.Services;

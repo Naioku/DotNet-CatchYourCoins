@@ -1,6 +1,6 @@
 ﻿using Application.DTOs.InputDTOs.Incomes;
-using Application.Incomes.Commands.Create;
-using Application.Incomes.Commands.Delete;
+using Application.Requests.Incomes.Commands.Create;
+using Application.Requests.Incomes.Commands.Delete;
 using Domain.Dashboard.Entities.Incomes;
 using Domain.Interfaces.Services;
 using Infrastructure.Persistence;
