@@ -3,7 +3,6 @@ using Application.Requests.Commands;
 using AutoMapper;
 using Domain.Dashboard.Entities.Expenses;
 using Domain.Interfaces.Repositories;
-using Domain.Interfaces.Services;
 using JetBrains.Annotations;
 
 namespace Application.Expenses.Commands.Create;

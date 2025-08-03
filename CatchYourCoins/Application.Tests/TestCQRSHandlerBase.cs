@@ -1,15 +1,15 @@
 using Application.Tests.Factories;
+using Application.Tests.Factories.Entity;
 using Domain;
 
 namespace Application.Tests;
 
-public abstract class TestCQRSHandlerBase<THandler, TFactory, TEntity> : TestBase
+public abstract class TestCQRSHandlerBase<THandler, TEntity> : TestBase
     where THandler : class
-    where TFactory : TestFactoryEntityBase<TEntity>, new()
     where TEntity : IEntity
 {
     protected THandler Handler { get; private set; }
-    protected TFactory FactoryEntity { get; } = new();
+    protected TestFactoryEntityBase<TEntity> FactoryEntity { get; } = TestFactoriesProvider.GetFactory<TestFactoryEntityBase<TEntity>>();
 
     protected override void SetUpMocks() { }
     protected override void SetUpTestedObjects() => Handler = CreateHandler();

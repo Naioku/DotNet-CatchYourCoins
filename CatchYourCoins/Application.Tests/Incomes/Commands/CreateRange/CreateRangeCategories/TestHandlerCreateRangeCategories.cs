@@ -1,9 +1,7 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Application.DTOs.InputDTOs.Incomes;
 using Application.Incomes.Commands.CreateRange;
-using Application.Tests.Factories;
 using AutoMapper;
 using Domain.Dashboard.Entities.Incomes;
 using Domain.Interfaces.Repositories;
@@ -19,23 +17,9 @@ public class TestHandlerCreateRangeCategories
         IncomeCategory,
         InputDTOIncomeCategory,
         CommandCreateRangeCategories,
-        IRepositoryIncomeCategory,
-        TestFactoryIncomeCategory
+        IRepositoryIncomeCategory
     >
 {
-    private readonly IList<InputDTOIncomeCategory> _inputDTOs = [
-        new()
-        {
-            Name = "Test1",
-            Limit = 1000
-        },
-        new()
-        {
-            Name = "Test2",
-            Limit = 2000
-        },
-    ];
-
     protected override HandlerCreateRangeCategories CreateHandler()
     {
         return new HandlerCreateRangeCategories(
@@ -45,18 +29,17 @@ public class TestHandlerCreateRangeCategories
         );
     }
 
-    protected override IEnumerable<InputDTOIncomeCategory> GetInputDTOs() => _inputDTOs;
-    protected override CommandCreateRangeCategories GetCommand() => new() { Data = _inputDTOs };
-
-    protected override IList<IncomeCategory> GetMappedEntities() =>
-        _inputDTOs.Select(dto => new IncomeCategory
-        {
-            Name = dto.Name,
-            Limit = dto.Limit,
-            UserId = TestFactoryUsers.DefaultUser1Authenticated.Id,
-        }).ToList();
+    protected override CommandCreateRangeCategories GetCommand(List<InputDTOIncomeCategory> dtos) => new() { Data = dtos };
 
     [Fact]
-    public async Task Create_ValidData_EntityCreated() =>
-        await Create_ValidData_EntityCreated_Base();
+    public async Task Create_ValidData_EntitiesCreated() =>
+        await Create_ValidData_EntitiesCreated_Base();
+    
+    [Fact]
+    public async Task Create_RepositoryThrowsException_EntityNotCreated() =>
+        await Create_RepositoryThrowsException_EntitiesNotCreated_Base();
+    
+    [Fact]
+    public async Task Create_UnitOfWorkThrowsException_EntitiesNotCreated() =>
+        await Create_UnitOfWorkThrowsException_EntitiesNotCreated_Base();
 }

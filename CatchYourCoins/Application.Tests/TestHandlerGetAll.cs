@@ -1,35 +1,41 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Requests.Queries;
 using Application.Tests.Factories;
+using Application.Tests.Factories.DTOs;
 using AutoMapper;
 using Domain;
 using Domain.Interfaces.Repositories;
 using FluentAssertions;
 using Moq;
-using Xunit;
 
 namespace Application.Tests;
 
-public abstract class TestHandlerGetAll<THandler, TEntity, TDTO, TQuery, TRepository, TFactory>
-    : TestCQRSHandlerBase<THandler, TFactory, TEntity>
+public abstract class TestHandlerGetAll<THandler, TEntity, TDTO, TQuery, TRepository>
+    : TestCQRSHandlerBase<THandler, TEntity>
     where THandler : HandlerCRUDGetAll<TEntity, TQuery, TDTO>
     where TEntity : IEntity
     where TDTO : class
     where TQuery : QueryCRUDGetAll<TDTO>, new()
     where TRepository : class, IRepositoryCRUD<TEntity>
-    where TFactory : TestFactoryEntityBase<TEntity>, new()
 {
     private List<TEntity> _entities;
+    private List<TDTO> _dtos;
     
-    protected abstract IReadOnlyList<TDTO> GetMappedDTOs(List<TEntity> entity);
-
     protected override void InitializeFields()
     {
         base.InitializeFields();
-        _entities = FactoryEntity.CreateEntities(TestFactoryUsers.DefaultUser1Authenticated, 5);
+        TestFactoryDTOBase<TEntity, TDTO> factoryDTO = TestFactoriesProvider.GetFactory<TestFactoryDTOBase<TEntity, TDTO>>();
+        _entities = FactoryEntity.CreateEntities(FactoryUsers.DefaultUser1Authenticated, 5);
+        _dtos = factoryDTO.CreateDTOs(_entities);
+    }
+    
+    protected override void CleanUp()
+    {
+        base.CleanUp();
+        _entities = null;
+        _dtos = null;
     }
 
     protected override void SetUpMocks()
@@ -39,7 +45,7 @@ public abstract class TestHandlerGetAll<THandler, TEntity, TDTO, TQuery, TReposi
         Mock<IMapper> mockMapper = new();
         mockMapper
             .Setup(m => m.Map<IReadOnlyList<TDTO>>(It.Is<IReadOnlyList<TEntity>>(entities => entities == _entities)))
-            .Returns(GetMappedDTOs(_entities));
+            .Returns(_dtos);
         RegisterMock<IMapper, Mock<IMapper>>(mockMapper);
         base.SetUpMocks();
     }
@@ -64,7 +70,7 @@ public abstract class TestHandlerGetAll<THandler, TEntity, TDTO, TQuery, TReposi
         IReadOnlyList<TDTO> dtos = result.Value;
 
         dtos.Should().HaveCount(_entities.Count);
-        dtos.Should().BeEquivalentTo(GetMappedDTOs(_entities));
+        dtos.Should().BeEquivalentTo(_dtos);
     }
     
     protected async Task GetAll_NoEntryInDB_ReturnedNull_Base()

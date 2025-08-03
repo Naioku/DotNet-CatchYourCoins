@@ -1,6 +1,5 @@
 ﻿using System.Threading.Tasks;
 using Application.Incomes.Commands.Delete;
-using Application.Tests.Factories;
 using Domain.Dashboard.Entities.Incomes;
 using Domain.Interfaces.Repositories;
 using JetBrains.Annotations;
@@ -15,7 +14,6 @@ public class HandlerDeleteIncomeTest
         Income,
         CommandDeleteIncome,
         IRepositoryIncome,
-        TestFactoryIncome,
         IUnitOfWork
     >
 {

@@ -1,36 +1,43 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using Application.Requests.Queries;
 using Application.Tests.Factories;
+using Application.Tests.Factories.DTOs;
 using AutoMapper;
 using Domain;
 using Domain.Interfaces.Repositories;
 using FluentAssertions;
 using Moq;
-using Xunit;
 
 namespace Application.Tests;
 
-public abstract class TestHandlerGetById<THandler, TEntity, TDTO, TQuery, TRepository, TFactory>
-    : TestCQRSHandlerBase<THandler, TFactory, TEntity>
+public abstract class TestHandlerGetById<THandler, TEntity, TDTO, TQuery, TRepository>
+    : TestCQRSHandlerBase<THandler, TEntity>
     where THandler : HandlerCRUDGetById<TEntity, TQuery, TDTO>
     where TEntity : class, IEntity, IAutorizable
     where TDTO : class
     where TQuery : QueryCRUDGetById<TDTO>
     where TRepository : class, IRepositoryCRUD<TEntity>
-    where TFactory : TestFactoryEntityBase<TEntity>, new()
 {
     private TEntity _entity;
+    private TDTO _dto;
 
     protected override void InitializeFields()
     {
         base.InitializeFields();
-        _entity = FactoryEntity.CreateEntity(TestFactoryUsers.DefaultUser1Authenticated, GetQuery().Id);
+        TestFactoryDTOBase<TEntity, TDTO> factoryDTO = TestFactoriesProvider.GetFactory<TestFactoryDTOBase<TEntity, TDTO>>();
+        _entity = FactoryEntity.CreateEntity(FactoryUsers.DefaultUser1Authenticated, GetQuery().Id);
+        _dto = factoryDTO.CreateDTO(_entity);
+    }
+
+    protected override void CleanUp()
+    {
+        base.CleanUp();
+        _entity = null;
+        _dto = null;
     }
 
     protected abstract TQuery GetQuery();
-    protected abstract TDTO GetMappedDTO(TEntity entity);
 
     protected override void SetUpMocks()
     {
@@ -39,7 +46,7 @@ public abstract class TestHandlerGetById<THandler, TEntity, TDTO, TQuery, TRepos
         Mock<IMapper> mockMapper = new();
         mockMapper
             .Setup(m => m.Map<TDTO>(It.Is<TEntity>(entity => entity == _entity)))
-            .Returns(GetMappedDTO(_entity));
+            .Returns(_dto);
         RegisterMock<IMapper, Mock<IMapper>>(mockMapper);
         base.SetUpMocks();
     }
@@ -63,7 +70,7 @@ public abstract class TestHandlerGetById<THandler, TEntity, TDTO, TQuery, TRepos
         result.Value.Should().NotBeNull();
 
         TDTO dto = result.Value;
-        dto.Should().BeEquivalentTo(GetMappedDTO(_entity));
+        dto.Should().BeEquivalentTo(_dto);
     }
 
     protected async Task GetOne_NoEntryAtPassedID_ReturnedNull_Base()

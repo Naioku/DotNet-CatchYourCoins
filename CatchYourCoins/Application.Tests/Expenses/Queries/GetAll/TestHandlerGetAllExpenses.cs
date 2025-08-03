@@ -1,9 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Application.DTOs.OutputDTOs.Expenses;
 using Application.Expenses.Queries.GetAll;
-using Application.Tests.Factories;
 using AutoMapper;
 using Domain.Dashboard.Entities.Expenses;
 using Domain.Interfaces.Repositories;
@@ -19,8 +16,7 @@ public class TestHandlerGetAllExpenses
         Expense,
         OutputDTOExpense,
         QueryGetAllExpenses,
-        IRepositoryExpense,
-        TestFactoryExpense
+        IRepositoryExpense
     >
 {
     protected override HandlerGetAllExpenses CreateHandler() =>
@@ -36,15 +32,4 @@ public class TestHandlerGetAllExpenses
     [Fact]
     public async Task GetAll_NoEntryInDB_ReturnedNull() =>
         await GetAll_NoEntryInDB_ReturnedNull_Base();
-
-    protected override IReadOnlyList<OutputDTOExpense> GetMappedDTOs(List<Expense> entity) =>
-        entity.Select(e => new OutputDTOExpense
-        {
-            Id = e.Id,
-            Amount = e.Amount,
-            Date = e.Date,
-            Description = e.Description,
-            Category = e.Category?.Name,
-            PaymentMethod = e.PaymentMethod?.Name,
-        }).ToList();
 }

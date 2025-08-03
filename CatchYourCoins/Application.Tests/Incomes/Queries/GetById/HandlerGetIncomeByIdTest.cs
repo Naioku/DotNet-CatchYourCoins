@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Application.DTOs.OutputDTOs.Incomes;
 using Application.Incomes.Queries.GetById;
-using Application.Tests.Factories;
 using AutoMapper;
 using Domain.Dashboard.Entities.Incomes;
 using Domain.Interfaces.Repositories;
@@ -17,8 +16,7 @@ public class HandlerGetIncomeByIdTest
         Income,
         OutputDTOIncome,
         QueryGetIncomeById,
-        IRepositoryIncome,
-        TestFactoryIncome
+        IRepositoryIncome
     >
 {
     protected override HandlerGetIncomeById CreateHandler() =>
@@ -28,16 +26,6 @@ public class HandlerGetIncomeByIdTest
         );
 
     protected override QueryGetIncomeById GetQuery() => new() { Id = 1 };
-
-    protected override OutputDTOIncome GetMappedDTO(Income entity) =>
-        new()
-        {
-            Id = entity.Id,
-            Amount = entity.Amount,
-            Date = entity.Date,
-            Description = entity.Description,
-            Category = entity.Category?.Name,
-        };
 
     [Fact]
     public async Task GetOne_ValidData_ReturnedOne() =>

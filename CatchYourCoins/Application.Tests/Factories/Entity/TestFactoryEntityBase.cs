@@ -2,7 +2,7 @@
 using Domain;
 using Domain.Dashboard.Entities;
 
-namespace Application.Tests.Factories;
+namespace Application.Tests.Factories.Entity;
 
 public abstract class TestFactoryEntityBase<TEntity> where TEntity : IEntity
 {

@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Application.DTOs.InputDTOs.Expenses;
 using Application.Expenses.Commands.CreateRange;
-using Application.Tests.Factories;
 using AutoMapper;
 using Domain.Dashboard.Entities.Expenses;
 using Domain.Interfaces.Repositories;
@@ -20,30 +17,9 @@ public class TestHandlerCreateRangeExpense
         Expense,
         InputDTOExpense,
         CommandCreateRangeExpenses,
-        IRepositoryExpense,
-        TestFactoryExpense
+        IRepositoryExpense
     >
 {
-    private readonly IList<InputDTOExpense> _inputDTOs =
-    [
-        new()
-        {
-            Amount = 100,
-            Date = DateTime.Now,
-            Description = "Test1",
-            CategoryId = 1,
-            PaymentMethodId = 1
-        },
-        new()
-        {
-            Amount = 200,
-            Date = DateTime.Now,
-            Description = "Test2",
-            CategoryId = 2,
-            PaymentMethodId = 2
-        },
-    ];
-
     protected override HandlerCreateRangeExpenses CreateHandler()
     {
         return new HandlerCreateRangeExpenses(
@@ -53,21 +29,17 @@ public class TestHandlerCreateRangeExpense
         );
     }
 
-    protected override IEnumerable<InputDTOExpense> GetInputDTOs() => _inputDTOs;
-    protected override CommandCreateRangeExpenses GetCommand() => new() { Data = _inputDTOs };
-
-    protected override IList<Expense> GetMappedEntities() =>
-        _inputDTOs.Select(dto => new Expense
-        {
-            Amount = dto.Amount,
-            Date = dto.Date,
-            Description = dto.Description,
-            CategoryId = dto.CategoryId,
-            PaymentMethodId = dto.PaymentMethodId,
-            UserId = TestFactoryUsers.DefaultUser1Authenticated.Id,
-        }).ToList();
+    protected override CommandCreateRangeExpenses GetCommand(List<InputDTOExpense> dtos) => new() { Data = dtos };
 
     [Fact]
-    public async Task Create_ValidData_EntityCreated() =>
-        await Create_ValidData_EntityCreated_Base();
+    public async Task Create_ValidData_EntitiesCreated() =>
+        await Create_ValidData_EntitiesCreated_Base();
+    
+    [Fact]
+    public async Task Create_RepositoryThrowsException_EntityNotCreated() =>
+        await Create_RepositoryThrowsException_EntitiesNotCreated_Base();
+    
+    [Fact]
+    public async Task Create_UnitOfWorkThrowsException_EntitiesNotCreated() =>
+        await Create_UnitOfWorkThrowsException_EntitiesNotCreated_Base();
 }

@@ -1,7 +1,7 @@
 ﻿using Domain.Dashboard.Entities;
 using Domain.Dashboard.Entities.Expenses;
 
-namespace Application.Tests.Factories;
+namespace Application.Tests.Factories.Entity;
 
 public class TestFactoryExpenseCategory : TestFactoryEntityBase<ExpenseCategory>
 {

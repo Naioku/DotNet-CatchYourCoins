@@ -2,7 +2,7 @@
 using Domain.Dashboard.Entities;
 using Domain.Dashboard.Entities.Incomes;
 
-namespace Application.Tests.Factories;
+namespace Application.Tests.Factories.Entity;
 
 public class TestFactoryIncome : TestFactoryEntityBase<Income>
 {

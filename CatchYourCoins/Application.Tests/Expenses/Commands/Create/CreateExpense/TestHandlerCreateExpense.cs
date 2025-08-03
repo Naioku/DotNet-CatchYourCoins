@@ -1,12 +1,9 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Application.DTOs.InputDTOs.Expenses;
 using Application.Expenses.Commands.Create;
-using Application.Tests.Factories;
 using AutoMapper;
 using Domain.Dashboard.Entities.Expenses;
 using Domain.Interfaces.Repositories;
-using Domain.Interfaces.Services;
 using JetBrains.Annotations;
 using Xunit;
 
@@ -19,19 +16,9 @@ public class TestHandlerCreateExpense
         Expense,
         InputDTOExpense,
         CommandCreateExpense,
-        IRepositoryExpense,
-        TestFactoryExpense
+        IRepositoryExpense
     >
 {
-    private readonly InputDTOExpense _dto = new()
-    {
-        Amount = 100,
-        Date = DateTime.Now,
-        Description = "Test",
-        CategoryId = 1,
-        PaymentMethodId = 1
-    };
-
     protected override HandlerCreateExpense CreateHandler()
     {
         return new HandlerCreateExpense(
@@ -41,20 +28,17 @@ public class TestHandlerCreateExpense
         );
     }
 
-    protected override InputDTOExpense GetInputDTO() => _dto;
-    protected override CommandCreateExpense GetCommand() => new() { Data = _dto };
-
-    protected override Expense GetMappedEntity() => new()
-    {
-        Amount = _dto.Amount,
-        Date = _dto.Date,
-        Description = _dto.Description,
-        CategoryId = _dto.CategoryId,
-        PaymentMethodId = _dto.PaymentMethodId,
-        UserId = TestFactoryUsers.DefaultUser1Authenticated.Id,
-    };
+    protected override CommandCreateExpense GetCommand(InputDTOExpense dto) => new() { Data = dto };
 
     [Fact]
     public async Task Create_ValidData_EntityCreated() =>
         await Create_ValidData_EntityCreated_Base();
+    
+    [Fact]
+    public async Task Create_RepositoryThrowsException_EntityNotCreated() =>
+        await Create_RepositoryThrowsException_EntityNotCreated_Base();
+    
+    [Fact]
+    public async Task Create_UnitOfWorkThrowsException_EntityNotCreated() =>
+        await Create_UnitOfWorkThrowsException_EntityNotCreated_Base();
 }

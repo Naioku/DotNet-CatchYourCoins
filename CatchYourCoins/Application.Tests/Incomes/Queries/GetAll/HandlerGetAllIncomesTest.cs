@@ -1,9 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Application.DTOs.OutputDTOs.Incomes;
 using Application.Incomes.Queries.GetAll;
-using Application.Tests.Factories;
 using AutoMapper;
 using Domain.Dashboard.Entities.Incomes;
 using Domain.Interfaces.Repositories;
@@ -19,8 +16,7 @@ public class HandlerGetAllIncomesTest
         Income,
         OutputDTOIncome,
         QueryGetAllIncomes,
-        IRepositoryIncome,
-        TestFactoryIncome
+        IRepositoryIncome
     >
 {
     protected override HandlerGetAllIncomes CreateHandler() =>
@@ -36,14 +32,4 @@ public class HandlerGetAllIncomesTest
     [Fact]
     public async Task GetAll_NoEntryInDB_ReturnedNull() =>
         await GetAll_NoEntryInDB_ReturnedNull_Base();
-
-    protected override IReadOnlyList<OutputDTOIncome> GetMappedDTOs(List<Income> entity) =>
-        entity.Select(e => new OutputDTOIncome
-        {
-            Id = e.Id,
-            Amount = e.Amount,
-            Date = e.Date,
-            Description = e.Description,
-            Category = e.Category?.Name,
-        }).ToList();
 }

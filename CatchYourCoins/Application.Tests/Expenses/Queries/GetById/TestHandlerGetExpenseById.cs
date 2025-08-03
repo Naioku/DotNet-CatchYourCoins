@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Application.DTOs.OutputDTOs.Expenses;
 using Application.Expenses.Queries.GetById;
-using Application.Tests.Factories;
 using AutoMapper;
 using Domain.Dashboard.Entities.Expenses;
 using Domain.Interfaces.Repositories;
@@ -17,8 +16,7 @@ public class TestHandlerGetExpenseById
         Expense,
         OutputDTOExpense,
         QueryGetExpenseById,
-        IRepositoryExpense,
-        TestFactoryExpense
+        IRepositoryExpense
     >
 {
     protected override HandlerGetExpenseById CreateHandler() =>
@@ -28,17 +26,6 @@ public class TestHandlerGetExpenseById
         );
 
     protected override QueryGetExpenseById GetQuery() => new() { Id = 1 };
-
-    protected override OutputDTOExpense GetMappedDTO(Expense entity) =>
-        new()
-        {
-            Id = entity.Id,
-            Amount = entity.Amount,
-            Date = entity.Date,
-            Description = entity.Description,
-            Category = entity.Category?.Name,
-            PaymentMethod = entity.PaymentMethod?.Name,
-        };
 
     [Fact]
     public async Task GetOne_ValidData_ReturnedOne() =>

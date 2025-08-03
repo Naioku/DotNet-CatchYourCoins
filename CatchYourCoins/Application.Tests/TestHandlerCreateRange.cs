@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Requests.Commands;
 using Application.Tests.Factories;
+using Application.Tests.Factories.DTOs;
 using AutoMapper;
 using Domain;
 using Domain.Interfaces.Repositories;
@@ -13,17 +13,31 @@ using Moq;
 
 namespace Application.Tests;
 
-public abstract class TestHandlerCreateRange<THandler, TEntity, TDTO, TCommand, TRepository, TFactory>
-    : TestCQRSHandlerBase<THandler, TFactory, TEntity>
+public abstract class TestHandlerCreateRange<THandler, TEntity, TDTO, TCommand, TRepository>
+    : TestCQRSHandlerBase<THandler, TEntity>
     where THandler : HandlerCRUDCreateRange<TEntity, TCommand, TDTO>
     where TEntity : class, IEntity, IAutorizable
     where TCommand : CommandCRUDCreateRange<TDTO>
     where TRepository : class, IRepositoryCRUD<TEntity>
-    where TFactory : TestFactoryEntityBase<TEntity>, new()
 {
-    protected abstract IEnumerable<TDTO> GetInputDTOs();
-    protected abstract TCommand GetCommand();
-    protected abstract IList<TEntity> GetMappedEntities();
+    private List<TEntity> _entities;
+    private List<TDTO> _dtos;
+    protected abstract TCommand GetCommand(List<TDTO> dtos);
+    
+    protected override void InitializeFields()
+    {
+        base.InitializeFields();
+        TestFactoryDTOBase<TEntity, TDTO> factoryDTO = TestFactoriesProvider.GetFactory<TestFactoryDTOBase<TEntity, TDTO>>();
+        _entities = FactoryEntity.CreateEntities(FactoryUsers.DefaultUser1Authenticated, 5);
+        _dtos = factoryDTO.CreateDTOs(_entities);
+    }
+    
+    protected override void CleanUp()
+    {
+        base.CleanUp();
+        _entities = null;
+        _dtos = null;
+    }
 
     protected override void SetUpMocks()
     {
@@ -31,23 +45,23 @@ public abstract class TestHandlerCreateRange<THandler, TEntity, TDTO, TCommand, 
         RegisterMock<IUnitOfWork>();
         Mock<IMapper> mockMapper = new();
         mockMapper
-            .Setup(m => m.Map<IList<TEntity>>(It.Is<IList<TDTO>>(dto => CheckDTOContent(dto))))
-            .Returns(GetMappedEntities());
+            .Setup(m => m.Map<IList<TEntity>>(It.Is<IList<TDTO>>(dtos => dtos == _dtos)))
+            .Returns(_entities);
         RegisterMock<IMapper, Mock<IMapper>>(mockMapper);
         base.SetUpMocks();
     }
 
-    protected async Task Create_ValidData_EntityCreated_Base()
+    protected async Task Create_ValidData_EntitiesCreated_Base()
     {
         // Arrange
-        TCommand command = GetCommand();
-        
+        TCommand command = GetCommand(_dtos);
+
         // Act
         await Handler.Handle(command, CancellationToken.None);
 
         // Assert
         GetMock<TRepository>().Verify(
-            m => m.CreateRangeAsync(It.Is<IEnumerable<TEntity>>(entity => CheckEntity(entity))),
+            m => m.CreateRangeAsync(It.Is<IEnumerable<TEntity>>(entities => entities == _entities)),
             Times.Once
         );
         GetMock<IUnitOfWork>().Verify(
@@ -56,32 +70,37 @@ public abstract class TestHandlerCreateRange<THandler, TEntity, TDTO, TCommand, 
         );
     }
     
-    private bool CheckEntity(IEnumerable<TEntity> entities) =>
-        CheckFluentAssertions(() =>
-        {
-            IEnumerable<TEntity> entitiesList = entities.ToList();
-            entitiesList.Should().HaveSameCount(GetMappedEntities());
-            entitiesList.Should().BeEquivalentTo(GetMappedEntities(), options => options.ExcludingMissingMembers());
-            entitiesList.Should().AllSatisfy(e => e.UserId.Should().Be(TestFactoryUsers.DefaultUser1Authenticated.Id));
-        });
-
-    private bool CheckDTOContent(IList<TDTO> dtos) =>
-        CheckFluentAssertions(() =>
-        {
-            dtos.Should().HaveSameCount(GetMappedEntities());
-            dtos.Should().BeEquivalentTo(GetInputDTOs(), options => options.ExcludingMissingMembers());
-        });
-
-    private static bool CheckFluentAssertions(Action assertions)
+    protected async Task Create_RepositoryThrowsException_EntitiesNotCreated_Base()
     {
-        try
-        {
-            assertions();
-            return true;
-        }
-        catch
-        {
-            return false;
-        }
+        // Arrange
+        GetMock<TRepository>()
+            .Setup(m => m.CreateRangeAsync(It.IsAny<IList<TEntity>>()))
+            .ThrowsAsync(new Exception());
+        
+        TCommand command = GetCommand(_dtos);
+
+        // Act
+        Result result = await Handler.Handle(command, CancellationToken.None);
+        
+        // Assert
+        result.IsSuccess.Should().BeFalse();
+        result.Errors.Should().NotBeNullOrEmpty();
+    }
+    
+    protected async Task Create_UnitOfWorkThrowsException_EntitiesNotCreated_Base()
+    {
+        // Arrange
+        GetMock<IUnitOfWork>()
+            .Setup(m => m.SaveChangesAsync(It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new Exception());
+        
+        TCommand command = GetCommand(_dtos);
+
+        // Act
+        Result result = await Handler.Handle(command, CancellationToken.None);
+        
+        // Assert
+        result.IsSuccess.Should().BeFalse();
+        result.Errors.Should().NotBeNullOrEmpty();
     }
 }

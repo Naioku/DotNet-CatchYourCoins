@@ -13,7 +13,7 @@ public abstract class TestBase : IAsyncLifetime
 {
     private readonly Dictionary<Type, object> _mocks = new();
 
-    protected TestFactoryUsers TestFactoryUsers { get; } = new();
+    protected TestFactoryUsers FactoryUsers { get; } = new();
     
     protected Mock<T> GetMock<T>() where T : class => _mocks[typeof(T)] as Mock<T>;
     protected void RegisterMock<T>() where T : class => _mocks[typeof(T)] = new Mock<T>();
@@ -54,7 +54,7 @@ public abstract class TestBase : IAsyncLifetime
         Mock<IServiceCurrentUser> mock = new();
         mock
             .Setup(m => m.User)
-            .Returns(loggedInUser ?? TestFactoryUsers.DefaultUser1Authenticated);
+            .Returns(loggedInUser ?? FactoryUsers.DefaultUser1Authenticated);
 
         RegisterMock<IServiceCurrentUser, Mock<IServiceCurrentUser>>(mock);
     }

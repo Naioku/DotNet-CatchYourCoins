@@ -1,11 +1,9 @@
 ﻿using System.Threading.Tasks;
 using Application.DTOs.InputDTOs.Expenses;
 using Application.Expenses.Commands.Create;
-using Application.Tests.Factories;
 using AutoMapper;
 using Domain.Dashboard.Entities.Expenses;
 using Domain.Interfaces.Repositories;
-using Domain.Interfaces.Services;
 using JetBrains.Annotations;
 using Xunit;
 
@@ -18,16 +16,9 @@ public class TestHandlerCreatePaymentMethod
         ExpensePaymentMethod,
         InputDTOExpensePaymentMethod,
         CommandCreatePaymentMethod,
-        IRepositoryExpensePaymentMethod,
-        TestFactoryExpensePaymentMethod
+        IRepositoryExpensePaymentMethod
     >
 {
-    private readonly InputDTOExpensePaymentMethod _dto = new()
-    {
-        Name = "Test",
-        Limit = 1000
-    };
-
     protected override HandlerCreatePaymentMethod CreateHandler()
     {
         return new HandlerCreatePaymentMethod(
@@ -37,18 +28,17 @@ public class TestHandlerCreatePaymentMethod
         );
     }
 
-    protected override InputDTOExpensePaymentMethod GetInputDTO() => _dto;
-
-    protected override CommandCreatePaymentMethod GetCommand() => new() { Data = _dto };
-
-    protected override ExpensePaymentMethod GetMappedEntity() => new()
-    {
-        Name = _dto.Name,
-        Limit = _dto.Limit,
-        UserId = TestFactoryUsers.DefaultUser1Authenticated.Id,
-    };
+    protected override CommandCreatePaymentMethod GetCommand(InputDTOExpensePaymentMethod dto) => new() { Data = dto };
 
     [Fact]
     public async Task Create_ValidData_EntryCreated() =>
         await Create_ValidData_EntityCreated_Base();
+    
+    [Fact]
+    public async Task Create_RepositoryThrowsException_EntityNotCreated() =>
+        await Create_RepositoryThrowsException_EntityNotCreated_Base();
+    
+    [Fact]
+    public async Task Create_UnitOfWorkThrowsException_EntityNotCreated() =>
+        await Create_UnitOfWorkThrowsException_EntityNotCreated_Base();
 }
