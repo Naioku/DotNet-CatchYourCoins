@@ -44,5 +44,45 @@ public class PaymentMethods(TestFixture fixture) : TestBase(fixture)
         Assert.Equal(paymentMethod.Limit, command.Data.Limit);
     }
     
-    // Todo: DeletePaymentMethod_WhenPaymentMethodBelongsToExpense_ShouldDeletePaymentMethodLeavingNullInExpensesDB
+    [Fact]
+    public async Task DeletePaymentMethod_WhenPaymentMethodBelongsToExpense_ShouldDeletePaymentMethodLeavingNullInExpensesDB()
+    {
+        // Arrange
+        ExpensePaymentMethod paymentMethod = new ExpensePaymentMethod
+        {
+            Name = "Test",
+            Limit = 1000,
+            UserId = user1.Id,
+        };
+        await dbContext.Set<ExpensePaymentMethod>().AddAsync(paymentMethod);
+        await dbContext.SaveChangesAsync();
+
+        await dbContext.Set<Expense>().AddAsync(new Expense
+        {
+            Amount = 100,
+            Date = DateTime.Now,
+            Description = "Test",
+            UserId = user1.Id,
+            PaymentMethodId = paymentMethod.Id,
+        });
+        await dbContext.SaveChangesAsync();
+        
+        CommandCRUDDelete<ExpensePaymentMethod> command = new()
+        {
+            Id = paymentMethod.Id,
+        };
+        
+        // Act
+        Result result = await _mediator.Send(command);
+        
+        // Assert
+        Assert.True(result.IsSuccess);
+        Assert.Empty(result.Errors);
+        
+        Expense? entity = await _dbContext.Set<Expense>().FirstOrDefaultAsync();
+
+        Assert.NotNull(entity);
+        Assert.Null(entity.PaymentMethod);
+        Assert.Null(entity.PaymentMethodId);
+    }
 }

@@ -10,8 +10,6 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Integration.Expenses;
 
-class CommandCreateCategory : CommandCRUDCreate<InputDTOExpenseCategory>;
-
 public class Categories(TestFixture fixture) : TestBase(fixture)
 {
     private readonly IMediator _mediator = fixture.ServiceProvider.GetRequiredService<IMediator>();
