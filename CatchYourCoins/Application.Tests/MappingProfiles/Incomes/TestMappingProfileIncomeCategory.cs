@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using Application.DTOs.InputDTOs.Incomes;
-using Application.DTOs.OutputDTOs.Incomes;
+using Application.Dashboard.DTOs.InputDTOs.Incomes;
+using Application.Dashboard.DTOs.OutputDTOs.Incomes;
 using Application.MappingProfiles.Incomes;
 using AutoMapper;
 using Domain.Dashboard.Entities.Incomes;

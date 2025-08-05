@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using FluentValidation.TestHelper;
 
-namespace Application.Tests.Requests;
+namespace Application.Tests;
 
 public abstract class TestValidatorBase<TValidator, TValidated>
     where TValidator : AbstractValidator<TValidated>, new()
