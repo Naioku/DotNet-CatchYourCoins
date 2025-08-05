@@ -3,6 +3,7 @@ using Application.Requests.Commands;
 using Domain;
 using Domain.Dashboard.Entities.Expenses;
 using Domain.Interfaces.Services;
+using FluentAssertions;
 using Infrastructure.Persistence;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -33,15 +34,15 @@ public class PaymentMethods(TestFixture fixture) : TestBase(fixture)
         Result result = await _mediator.Send(command);
 
         // Assert
-        Assert.True(result.IsSuccess);
-        Assert.Empty(result.Errors);
+        result.IsSuccess.Should().BeTrue();
+        result.Errors.Should().BeEmpty();
         
         ExpensePaymentMethod? paymentMethod = await _dbContext.Set<ExpensePaymentMethod>().FirstOrDefaultAsync();
         
-        Assert.NotNull(paymentMethod);
-        Assert.Equal(paymentMethod.UserId, _testServiceCurrentUser.User.Id);
-        Assert.Equal(paymentMethod.Name, command.Data.Name);
-        Assert.Equal(paymentMethod.Limit, command.Data.Limit);
+        paymentMethod.Should().NotBeNull();
+        paymentMethod.UserId.Should().Be(_testServiceCurrentUser.User.Id);
+        paymentMethod.Name.Should().Be(command.Data.Name);
+        paymentMethod.Limit.Should().Be(command.Data.Limit);
     }
     
     [Fact]
@@ -76,13 +77,13 @@ public class PaymentMethods(TestFixture fixture) : TestBase(fixture)
         Result result = await _mediator.Send(command);
         
         // Assert
-        Assert.True(result.IsSuccess);
-        Assert.Empty(result.Errors);
+        result.IsSuccess.Should().BeTrue();
+        result.Errors.Should().BeEmpty();
         
         Expense? entity = await _dbContext.Set<Expense>().FirstOrDefaultAsync();
 
-        Assert.NotNull(entity);
-        Assert.Null(entity.PaymentMethod);
-        Assert.Null(entity.PaymentMethodId);
+        entity.Should().NotBeNull();
+        entity.PaymentMethod.Should().BeNull();
+        entity.PaymentMethodId.Should().BeNull();
     }
 }

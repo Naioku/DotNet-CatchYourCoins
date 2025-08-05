@@ -1,7 +1,9 @@
 ﻿using Application.DTOs.InputDTOs.Incomes;
 using Application.Requests.Commands;
+using Domain;
 using Domain.Dashboard.Entities.Incomes;
 using Domain.Interfaces.Services;
+using FluentAssertions;
 using Infrastructure.Persistence;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -29,15 +31,18 @@ public class Categories(TestFixture fixture) : TestBase(fixture)
         };
 
         // Act
-        await _mediator.Send(command);
+        Result result = await _mediator.Send(command);
 
         // Assert
+        result.IsSuccess.Should().BeTrue();
+        result.Errors.Should().BeEmpty();
+        
         IncomeCategory? category = await _dbContext.Set<IncomeCategory>().FirstOrDefaultAsync();
 
-        Assert.NotNull(category);
-        Assert.Equal(category.UserId, _testServiceCurrentUser.User.Id);
-        Assert.Equal(category.Name, command.Data.Name);
-        Assert.Equal(category.Limit, command.Data.Limit);
+        category.Should().NotBeNull();
+        category.UserId.Should().Be(_testServiceCurrentUser.User.Id);
+        category.Name.Should().Be(command.Data.Name);
+        category.Limit.Should().Be(command.Data.Limit);
     }
     
     [Fact]
@@ -69,13 +74,16 @@ public class Categories(TestFixture fixture) : TestBase(fixture)
         };
         
         // Act
-        await _mediator.Send(command);
+        Result result = await _mediator.Send(command);
         
         // Assert
+        result.IsSuccess.Should().BeTrue();
+        result.Errors.Should().BeEmpty();
+        
         Income? entity = await _dbContext.Set<Income>().FirstOrDefaultAsync();
 
-        Assert.NotNull(entity);
-        Assert.Null(entity.CategoryId);
-        Assert.Null(entity.Category);
+        entity.Should().NotBeNull();
+        entity.Category.Should().BeNull();
+        entity.CategoryId.Should().BeNull();
     }
 }

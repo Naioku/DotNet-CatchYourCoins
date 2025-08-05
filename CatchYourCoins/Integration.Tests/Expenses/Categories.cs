@@ -3,6 +3,7 @@ using Application.Requests.Commands;
 using Domain;
 using Domain.Dashboard.Entities.Expenses;
 using Domain.Interfaces.Services;
+using FluentAssertions;
 using Infrastructure.Persistence;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -33,15 +34,15 @@ public class Categories(TestFixture fixture) : TestBase(fixture)
         Result result = await _mediator.Send(command);
 
         // Assert
-        Assert.True(result.IsSuccess);
-        Assert.Empty(result.Errors);
+        result.IsSuccess.Should().BeTrue();
+        result.Errors.Should().BeEmpty();
         
         ExpenseCategory? category = await _dbContext.Set<ExpenseCategory>().FirstOrDefaultAsync();
         
-        Assert.NotNull(category);
-        Assert.Equal(category.UserId, _testServiceCurrentUser.User.Id);
-        Assert.Equal(category.Name, command.Data.Name);
-        Assert.Equal(category.Limit, command.Data.Limit);
+        category.Should().NotBeNull();
+        category.UserId.Should().Be(_testServiceCurrentUser.User.Id);
+        category.Name.Should().Be(command.Data.Name);
+        category.Limit.Should().Be(command.Data.Limit);
     }
     
     [Fact]
@@ -76,13 +77,13 @@ public class Categories(TestFixture fixture) : TestBase(fixture)
         Result result = await _mediator.Send(command);
         
         // Assert
-        Assert.True(result.IsSuccess);
-        Assert.Empty(result.Errors);
+        result.IsSuccess.Should().BeTrue();
+        result.Errors.Should().BeEmpty();
         
         Expense? entity = await _dbContext.Set<Expense>().FirstOrDefaultAsync();
 
-        Assert.NotNull(entity);
-        Assert.Null(entity.CategoryId);
-        Assert.Null(entity.Category);
+        entity.Should().NotBeNull();
+        entity.Category.Should().BeNull();
+        entity.CategoryId.Should().BeNull();
     }
 }

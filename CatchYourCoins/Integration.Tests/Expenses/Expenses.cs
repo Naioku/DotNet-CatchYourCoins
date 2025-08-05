@@ -5,6 +5,7 @@ using Application.Requests.Queries;
 using Domain;
 using Domain.Dashboard.Entities.Expenses;
 using Domain.Interfaces.Services;
+using FluentAssertions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -31,28 +32,28 @@ public class Expenses(TestFixture fixture) : TestBase(fixture)
             Limit = 1000,
             UserId = user1.Id,
         });
-        
+
         _categoryUser2 = await AddCategory(new ExpenseCategory
         {
             Name = "Test2",
             Limit = 2000,
             UserId = user2.Id,
         });
-        
+
         _paymentMethodUser1 = await AddPaymentMethod(new ExpensePaymentMethod
         {
             Name = "Test1",
             Limit = 1000,
             UserId = user1.Id,
         });
-        
+
         _paymentMethodUser2 = await AddPaymentMethod(new ExpensePaymentMethod
         {
             Name = "Test2",
             Limit = 2000,
             UserId = user2.Id,
         });
-        
+
         await dbContext.SaveChangesAsync();
     }
 
@@ -68,7 +69,7 @@ public class Expenses(TestFixture fixture) : TestBase(fixture)
         // Arrange
         Assert.NotNull(_categoryUser1);
         Assert.NotNull(_paymentMethodUser1);
-    
+
         CommandCRUDCreate<InputDTOExpense> command = new()
         {
             Data = new InputDTOExpense
@@ -80,24 +81,95 @@ public class Expenses(TestFixture fixture) : TestBase(fixture)
                 PaymentMethodId = _paymentMethodUser1.Id,
             }
         };
-    
+
         // Act
         Result result = await _mediator.Send(command);
-    
+
         // Assert
-        Assert.True(result.IsSuccess);
-        Assert.Empty(result.Errors);
-        
+        result.IsSuccess.Should().BeTrue();
+        result.Errors.Should().BeEmpty();
+
         Expense? entity = await dbContext.Set<Expense>().FirstOrDefaultAsync();
-    
-        Assert.NotNull(entity);
-        Assert.Equal(entity.Amount, command.Data.Amount);
-        Assert.Equal(entity.Date, command.Data.Date);
-        Assert.Equal(entity.Description, command.Data.Description);
-        Assert.Equal(entity.CategoryId, command.Data.CategoryId);
-        Assert.Equal(entity.PaymentMethodId, command.Data.PaymentMethodId);
+
+        entity.Should().NotBeNull();
+        entity.UserId.Should().Be(_testServiceCurrentUser.User.Id);
+        entity.Amount.Should().Be(command.Data.Amount);
+        entity.Date.Should().Be(command.Data.Date);
+        entity.Description.Should().Be(command.Data.Description);
+        entity.CategoryId.Should().Be(command.Data.CategoryId);
+        entity.PaymentMethodId.Should().Be(command.Data.PaymentMethodId);
     }
-    
+
+    [Fact]
+    public async Task CreateExpense_WithOnlyCategoryId_ShouldCreateExpenseInDBWithNullPaymentMethodId()
+    {
+        // Arrange
+        Assert.NotNull(_categoryUser1);
+
+        CommandCRUDCreate<InputDTOExpense> command = new()
+        {
+            Data = new InputDTOExpense
+            {
+                Amount = 100,
+                Date = DateTime.Now,
+                Description = "Test",
+                CategoryId = _categoryUser1.Id,
+            }
+        };
+
+        // Act
+        Result result = await _mediator.Send(command);
+
+        // Assert
+        result.IsSuccess.Should().BeTrue();
+        result.Errors.Should().BeEmpty();
+
+        Expense? entity = await dbContext.Set<Expense>().FirstOrDefaultAsync();
+
+        entity.Should().NotBeNull();
+        entity.UserId.Should().Be(_testServiceCurrentUser.User.Id);
+        entity.Amount.Should().Be(command.Data.Amount);
+        entity.Date.Should().Be(command.Data.Date);
+        entity.Description.Should().Be(command.Data.Description);
+        entity.CategoryId.Should().Be(command.Data.CategoryId);
+        entity.PaymentMethodId.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task CreateExpense_WithOnlyPaymentMethodId_ShouldCreateExpenseInDBWithNullCategoryId()
+    {
+        // Arrange
+        Assert.NotNull(_paymentMethodUser1);
+
+        CommandCRUDCreate<InputDTOExpense> command = new()
+        {
+            Data = new InputDTOExpense
+            {
+                Amount = 100,
+                Date = DateTime.Now,
+                Description = "Test",
+                PaymentMethodId = _paymentMethodUser1.Id,
+            }
+        };
+
+        // Act
+        Result result = await _mediator.Send(command);
+
+        // Assert
+        result.IsSuccess.Should().BeTrue();
+        result.Errors.Should().BeEmpty();
+
+        Expense? entity = await dbContext.Set<Expense>().FirstOrDefaultAsync();
+
+        entity.Should().NotBeNull();
+        entity.UserId.Should().Be(_testServiceCurrentUser.User.Id);
+        entity.Amount.Should().Be(command.Data.Amount);
+        entity.Date.Should().Be(command.Data.Date);
+        entity.Description.Should().Be(command.Data.Description);
+        entity.CategoryId.Should().BeNull();
+        entity.PaymentMethodId.Should().Be(command.Data.PaymentMethodId);
+    }
+
     [Fact]
     public async Task CreateExpense_WithInvalidCategoryIdAndPaymentMethodId_ShouldNotCreateExpenseInDB()
     {
@@ -113,81 +185,15 @@ public class Expenses(TestFixture fixture) : TestBase(fixture)
                 PaymentMethodId = -1,
             }
         };
-    
+
         // Act
         Result result = await _mediator.Send(command);
-        
+
         // Assert
-        Assert.False(result.IsSuccess);
-        Assert.NotEmpty(result.Errors);
+        result.IsSuccess.Should().BeFalse();
+        result.Errors.Should().NotBeEmpty();
     }
-    
-    [Fact]
-    public async Task CreateExpense_WithOnlyCategoryId_ShouldCreateExpenseInDBWithNullPaymentMethodId()
-    {
-        // Arrange
-        Assert.NotNull(_categoryUser1);
-        
-        CommandCRUDCreate<InputDTOExpense> command = new()
-        {
-            Data = new InputDTOExpense
-            {
-                Amount = 100,
-                Date = DateTime.Now,
-                Description = "Test",
-                CategoryId = _categoryUser1.Id,
-            }
-        };
-    
-        // Act
-        Result result = await _mediator.Send(command);
-        
-        // Assert
-        Assert.True(result.IsSuccess);
-        Assert.Empty(result.Errors);
-        
-        Expense? entity = await dbContext.Set<Expense>().FirstOrDefaultAsync();
-        Assert.NotNull(entity);
-        Assert.Equal(command.Data.Amount, entity.Amount);
-        Assert.Equal(command.Data.Date, entity.Date);
-        Assert.Equal(command.Data.Description, entity.Description);
-        Assert.Equal(command.Data.CategoryId, entity.CategoryId);
-        Assert.Null(entity.PaymentMethodId);
-    }
-    
-    [Fact]
-    public async Task CreateExpense_WithOnlyPaymentMethodId_ShouldCreateExpenseInDBWithNullCategoryId()
-    {
-        // Arrange
-        Assert.NotNull(_paymentMethodUser1);
-        
-        CommandCRUDCreate<InputDTOExpense> command = new()
-        {
-            Data = new InputDTOExpense
-            {
-                Amount = 100,
-                Date = DateTime.Now,
-                Description = "Test",
-                PaymentMethodId = _paymentMethodUser1.Id,
-            }
-        };
-    
-        // Act
-        Result result = await _mediator.Send(command);
-        
-        // Assert
-        Assert.True(result.IsSuccess);
-        Assert.Empty(result.Errors);
-        
-        Expense? entity = await dbContext.Set<Expense>().FirstOrDefaultAsync();
-        Assert.NotNull(entity);
-        Assert.Equal(command.Data.Amount, entity.Amount);
-        Assert.Equal(command.Data.Date, entity.Date);
-        Assert.Equal(command.Data.Description, entity.Description);
-        Assert.Equal(command.Data.PaymentMethodId, entity.PaymentMethodId);
-        Assert.Null(entity.CategoryId);
-    }
-    
+
     [Fact]
     public async Task GetExpense_WithValidData_ShouldReturnExpenseForView()
     {
@@ -195,7 +201,7 @@ public class Expenses(TestFixture fixture) : TestBase(fixture)
         Assert.NotNull(_categoryUser1);
         Assert.NotNull(_paymentMethodUser1);
 
-        Expense expense = new()
+        Expense entity = new()
         {
             Amount = 100,
             Date = DateTime.Now,
@@ -204,29 +210,30 @@ public class Expenses(TestFixture fixture) : TestBase(fixture)
             CategoryId = _categoryUser1.Id,
             PaymentMethodId = _paymentMethodUser1.Id,
         };
-        await dbContext.Set<Expense>().AddAsync(expense);
+        await dbContext.Set<Expense>().AddAsync(entity);
         await dbContext.SaveChangesAsync();
-    
-        QueryCRUDGetById<OutputDTOExpense> query = new() { Id = expense.Id };
-    
+
+        QueryCRUDGetById<OutputDTOExpense> query = new() { Id = entity.Id };
+
         // Act
         Result<OutputDTOExpense> result = await _mediator.Send(query);
-    
+
         // Assert
-        Assert.True(result.IsSuccess);
-        Assert.Empty(result.Errors);
-        Assert.NotNull(result.Value);
-    
+        result.IsSuccess.Should().BeTrue();
+        result.Errors.Should().BeEmpty();
+        result.Value.Should().NotBeNull();
+
         OutputDTOExpense dto = result.Value;
-        Assert.NotNull(dto);
-        Assert.Equal(query.Id, dto.Id);
-        Assert.Equal(dto.Amount, dto.Amount);
-        Assert.Equal(dto.Date, dto.Date);
-        Assert.Equal(dto.Description, dto.Description);
-        Assert.Equal(_categoryUser1.Name, dto.Category);
-        Assert.Equal(_paymentMethodUser1.Name, dto.PaymentMethod);
+
+        dto.Should().NotBeNull();
+        dto.Id.Should().Be(query.Id);
+        dto.Amount.Should().Be(entity.Amount);
+        dto.Date.Should().Be(entity.Date);
+        dto.Description.Should().Be(entity.Description);
+        dto.Category.Should().Be(_categoryUser1.Name);
+        dto.PaymentMethod.Should().Be(_paymentMethodUser1.Name);
     }
-    
+
     [Fact]
     public async Task GetExpense_WithInvalidUser_ShouldReturnNull()
     {
@@ -245,15 +252,15 @@ public class Expenses(TestFixture fixture) : TestBase(fixture)
         };
         await dbContext.Set<Expense>().AddAsync(expense);
         await dbContext.SaveChangesAsync();
-    
+
         QueryCRUDGetById<OutputDTOExpense> query = new() { Id = expense.Id };
-    
+
         // Act
         Result<OutputDTOExpense> result = await _mediator.Send(query);
-    
+
         // Assert
-        Assert.False(result.IsSuccess);
-        Assert.NotEmpty(result.Errors);
-        Assert.Null(result.Value);
+        result.IsSuccess.Should().BeFalse();
+        result.Errors.Should().NotBeEmpty();
+        result.Value.Should().BeNull();
     }
 }
