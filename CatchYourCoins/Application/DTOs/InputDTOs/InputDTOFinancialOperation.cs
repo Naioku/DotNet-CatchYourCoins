@@ -1,6 +1,6 @@
 ﻿namespace Application.DTOs.InputDTOs;
 
-public abstract class InputDTOFinancialOperation
+public class InputDTOFinancialOperation
 {
     public required decimal Amount { get; init; }
     public required DateTime Date { get; init; }

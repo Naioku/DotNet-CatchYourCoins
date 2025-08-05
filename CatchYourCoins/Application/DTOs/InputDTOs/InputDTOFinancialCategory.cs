@@ -1,6 +1,6 @@
 ﻿namespace Application.DTOs.InputDTOs;
 
-public abstract class InputDTOFinancialCategory
+public class InputDTOFinancialCategory
 {
     public required string Name { get; init; }
     public decimal? Limit { get; init; }

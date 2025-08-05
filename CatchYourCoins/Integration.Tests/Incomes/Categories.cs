@@ -1,6 +1,5 @@
 ﻿using Application.DTOs.InputDTOs.Incomes;
-using Application.Requests.Incomes.Commands.Create;
-using Application.Requests.Incomes.Commands.Delete;
+using Application.Requests.Commands;
 using Domain.Dashboard.Entities.Incomes;
 using Domain.Interfaces.Services;
 using Infrastructure.Persistence;
@@ -20,7 +19,7 @@ public class Categories(TestFixture fixture) : TestBase(fixture)
     public async Task CreateCategory_WithValidData_ShouldCreateCategoryInDB()
     {
         // Arrange
-        CommandCreateCategory command = new()
+        CommandCRUDCreate<InputDTOIncomeCategory> command = new()
         {
             Data = new InputDTOIncomeCategory
             {
@@ -64,7 +63,7 @@ public class Categories(TestFixture fixture) : TestBase(fixture)
         });
         await dbContext.SaveChangesAsync();
         
-        CommandDeleteCategory command = new()
+        CommandCRUDDelete<IncomeCategory> command = new()
         {
             Id = category.Id,
         };

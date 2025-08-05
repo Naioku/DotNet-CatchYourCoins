@@ -3,28 +3,28 @@ using FluentValidation.TestHelper;
 
 namespace Application.Tests.Requests;
 
-public abstract class TestValidatorBase<TValidator, TCommand>
-    where TValidator : AbstractValidator<TCommand>, new()
+public abstract class TestValidatorBase<TValidator, TValidated>
+    where TValidator : AbstractValidator<TValidated>, new()
 {
-    protected void AssertSuccess(TCommand command)
+    protected void AssertSuccess(TValidated validatedObj)
     {
         // Arrange
         TValidator validator = new();
         
         // Act
-        TestValidationResult<TCommand> result = validator.TestValidate(command);
+        TestValidationResult<TValidated> result = validator.TestValidate(validatedObj);
         
         // Assert
         result.ShouldNotHaveAnyValidationErrors();
     }
 
-    protected void AssertFailure(TCommand command)
+    protected void AssertFailure(TValidated validatedObj)
     {
         // Arrange
         TValidator validator = new();
         
         // Act
-        TestValidationResult<TCommand> result = validator.TestValidate(command);
+        TestValidationResult<TValidated> result = validator.TestValidate(validatedObj);
         
         // Assert
         result.ShouldHaveValidationErrors();

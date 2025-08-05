@@ -1,6 +1,6 @@
 ﻿using Application.DTOs.InputDTOs.Expenses;
-using Application.Requests.Expenses.Commands.Create;
-using Application.Requests.Expenses.Commands.Delete;
+using Application.Requests.Commands;
+using Domain;
 using Domain.Dashboard.Entities.Expenses;
 using Domain.Interfaces.Services;
 using Infrastructure.Persistence;
@@ -9,6 +9,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Integration.Expenses;
+
+class CommandCreateCategory : CommandCRUDCreate<InputDTOExpenseCategory>;
 
 public class Categories(TestFixture fixture) : TestBase(fixture)
 {
@@ -20,7 +22,7 @@ public class Categories(TestFixture fixture) : TestBase(fixture)
     public async Task CreateCategory_WithValidData_ShouldCreateCategoryInDB()
     {
         // Arrange
-        CommandCreateCategory command = new()
+        CommandCRUDCreate<InputDTOExpenseCategory> command = new()
         {
             Data = new InputDTOExpenseCategory
             {
@@ -30,9 +32,12 @@ public class Categories(TestFixture fixture) : TestBase(fixture)
         };
 
         // Act
-        await _mediator.Send(command);
+        Result result = await _mediator.Send(command);
 
         // Assert
+        Assert.True(result.IsSuccess);
+        Assert.Empty(result.Errors);
+        
         ExpenseCategory? category = await _dbContext.Set<ExpenseCategory>().FirstOrDefaultAsync();
         
         Assert.NotNull(category);
@@ -42,7 +47,7 @@ public class Categories(TestFixture fixture) : TestBase(fixture)
     }
     
     [Fact]
-    public async Task DeleteCategory_WhenCategoryBelongsToExpense_ShouldCreateCategoryLeavingNullInExpensesDB()
+    public async Task DeleteCategory_WhenCategoryBelongsToExpense_ShouldDeleteCategoryLeavingNullInExpensesDB()
     {
         // Arrange
         ExpenseCategory category = new ExpenseCategory
@@ -64,15 +69,18 @@ public class Categories(TestFixture fixture) : TestBase(fixture)
         });
         await dbContext.SaveChangesAsync();
         
-        CommandDeleteCategory command = new()
+        CommandCRUDDelete<ExpenseCategory> command = new()
         {
             Id = category.Id,
         };
         
         // Act
-        await _mediator.Send(command);
+        Result result = await _mediator.Send(command);
         
         // Assert
+        Assert.True(result.IsSuccess);
+        Assert.Empty(result.Errors);
+        
         Expense? entity = await _dbContext.Set<Expense>().FirstOrDefaultAsync();
 
         Assert.NotNull(entity);

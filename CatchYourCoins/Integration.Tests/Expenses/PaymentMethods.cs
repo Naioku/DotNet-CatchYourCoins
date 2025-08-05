@@ -1,5 +1,6 @@
 ﻿using Application.DTOs.InputDTOs.Expenses;
-using Application.Requests.Expenses.Commands.Create;
+using Application.Requests.Commands;
+using Domain;
 using Domain.Dashboard.Entities.Expenses;
 using Domain.Interfaces.Services;
 using Infrastructure.Persistence;
@@ -19,7 +20,7 @@ public class PaymentMethods(TestFixture fixture) : TestBase(fixture)
     public async Task CreatePaymentMethod_WithValidData_ShouldCreatePaymentMethodInDB()
     {
         // Arrange
-        var command = new CommandCreatePaymentMethod
+        var command = new CommandCRUDCreate<InputDTOExpensePaymentMethod>
         {
             Data = new InputDTOExpensePaymentMethod
             {
@@ -29,9 +30,12 @@ public class PaymentMethods(TestFixture fixture) : TestBase(fixture)
         };
 
         // Act
-        await _mediator.Send(command);
+        Result result = await _mediator.Send(command);
 
         // Assert
+        Assert.True(result.IsSuccess);
+        Assert.Empty(result.Errors);
+        
         ExpensePaymentMethod? paymentMethod = await _dbContext.Set<ExpensePaymentMethod>().FirstOrDefaultAsync();
         
         Assert.NotNull(paymentMethod);
@@ -39,4 +43,6 @@ public class PaymentMethods(TestFixture fixture) : TestBase(fixture)
         Assert.Equal(paymentMethod.Name, command.Data.Name);
         Assert.Equal(paymentMethod.Limit, command.Data.Limit);
     }
+    
+    // Todo: DeletePaymentMethod_WhenPaymentMethodBelongsToExpense_ShouldDeletePaymentMethodLeavingNullInExpensesDB
 }

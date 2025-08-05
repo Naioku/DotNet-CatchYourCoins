@@ -1,7 +1,7 @@
 ﻿using Application.DTOs.InputDTOs.Expenses;
 using Application.DTOs.OutputDTOs.Expenses;
-using Application.Requests.Expenses.Commands.Create;
-using Application.Requests.Expenses.Queries.GetById;
+using Application.Requests.Commands;
+using Application.Requests.Queries;
 using Domain;
 using Domain.Dashboard.Entities.Expenses;
 using Domain.Interfaces.Services;
@@ -69,7 +69,7 @@ public class Expenses(TestFixture fixture) : TestBase(fixture)
         Assert.NotNull(_categoryUser1);
         Assert.NotNull(_paymentMethodUser1);
     
-        CommandCreateExpense command = new()
+        CommandCRUDCreate<InputDTOExpense> command = new()
         {
             Data = new InputDTOExpense
             {
@@ -102,7 +102,7 @@ public class Expenses(TestFixture fixture) : TestBase(fixture)
     public async Task CreateExpense_WithInvalidCategoryIdAndPaymentMethodId_ShouldNotCreateExpenseInDB()
     {
         // Arrange
-        CommandCreateExpense command = new()
+        CommandCRUDCreate<InputDTOExpense> command = new()
         {
             Data = new InputDTOExpense
             {
@@ -128,7 +128,7 @@ public class Expenses(TestFixture fixture) : TestBase(fixture)
         // Arrange
         Assert.NotNull(_categoryUser1);
         
-        CommandCreateExpense command = new()
+        CommandCRUDCreate<InputDTOExpense> command = new()
         {
             Data = new InputDTOExpense
             {
@@ -161,7 +161,7 @@ public class Expenses(TestFixture fixture) : TestBase(fixture)
         // Arrange
         Assert.NotNull(_paymentMethodUser1);
         
-        CommandCreateExpense command = new()
+        CommandCRUDCreate<InputDTOExpense> command = new()
         {
             Data = new InputDTOExpense
             {
@@ -207,7 +207,7 @@ public class Expenses(TestFixture fixture) : TestBase(fixture)
         await dbContext.Set<Expense>().AddAsync(expense);
         await dbContext.SaveChangesAsync();
     
-        var query = new QueryGetExpenseById { Id = expense.Id };
+        QueryCRUDGetById<OutputDTOExpense> query = new() { Id = expense.Id };
     
         // Act
         Result<OutputDTOExpense> result = await _mediator.Send(query);
@@ -246,7 +246,7 @@ public class Expenses(TestFixture fixture) : TestBase(fixture)
         await dbContext.Set<Expense>().AddAsync(expense);
         await dbContext.SaveChangesAsync();
     
-        var query = new QueryGetExpenseById { Id = expense.Id };
+        QueryCRUDGetById<OutputDTOExpense> query = new() { Id = expense.Id };
     
         // Act
         Result<OutputDTOExpense> result = await _mediator.Send(query);

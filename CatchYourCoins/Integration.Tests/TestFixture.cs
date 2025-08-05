@@ -1,15 +1,11 @@
-﻿using Application.Account.Commands;
-using Domain.IdentityEntities;
-using Domain.Interfaces.Repositories;
+﻿using Application.Extensions;
 using Domain.Interfaces.Services;
+using Infrastructure.Extensions;
 using Infrastructure.Persistence;
-using Infrastructure.Repositories;
 using JetBrains.Annotations;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 
 namespace Integration;
 
@@ -29,32 +25,16 @@ public class TestFixture : IDisposable
 
         ServiceCollection services = new ServiceCollection();
         services.AddSingleton<IConfiguration>(configuration);
-        services.AddLogging(builder =>
-        {
-            builder.AddConsole();
-            builder.AddDebug();
-        });
+        
+        services.AddApplication();
+        services.AddInfrastructure(configuration);
+        services.AddSingleton<TestServiceCurrentUser>();
+        services.AddScoped<IServiceCurrentUser>(sp => sp.GetRequiredService<TestServiceCurrentUser>());
 
         services.AddDbContext<AppDbContext>(options =>
             options.UseSqlServer(configuration.GetConnectionString("Main"))
         );
-
-        services
-            .AddIdentity<AppUser, AppRole>(options => { options.User.RequireUniqueEmail = true; })
-            .AddEntityFrameworkStores<AppDbContext>()
-            .AddDefaultTokenProviders();
-
-        services.AddSingleton<TestServiceCurrentUser>();
-
-        services.AddScoped<IRepositoryExpenseCategory, RepositoryExpenseCategory>();
-        services.AddScoped<IRepositoryExpensePaymentMethod, RepositoryExpensePaymentMethod>();
-        services.AddScoped<IRepositoryExpense, RepositoryExpense>();
-        services.AddScoped<IRepositoryIncomeCategory, RepositoryIncomeCategory>();
-        services.AddScoped<IRepositoryIncome, RepositoryIncome>();
-        services.AddScoped<IUnitOfWork, UnitOfWork>();
-        services.AddScoped<IServiceCurrentUser>(sp => sp.GetRequiredService<TestServiceCurrentUser>());
-        services.AddMediatR(cfg => { cfg.RegisterServicesFromAssemblyContaining<CommandRegister>(); });
-
+        
         ServiceProvider = services.BuildServiceProvider();
 
         using (IServiceScope scope = ServiceProvider.CreateScope())

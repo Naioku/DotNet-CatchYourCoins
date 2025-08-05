@@ -1,4 +1,6 @@
-﻿using Domain.IdentityEntities;
+﻿using Domain.Dashboard.Entities.Expenses;
+using Domain.Dashboard.Entities.Incomes;
+using Domain.IdentityEntities;
 using Domain.Interfaces.Repositories;
 using Domain.Interfaces.Services;
 using Infrastructure.Persistence;
@@ -27,11 +29,11 @@ public static class ExtensionServiceCollection
         services.AddScoped<IServiceIdentity, ServiceIdentity>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IServiceCurrentUser, ServiceCurrentUser>();
-        services.AddScoped<IRepositoryExpenseCategory, RepositoryExpenseCategory>();
-        services.AddScoped<IRepositoryExpensePaymentMethod, RepositoryExpensePaymentMethod>();
-        services.AddScoped<IRepositoryExpense, RepositoryExpense>();
-        services.AddScoped<IRepositoryIncomeCategory, RepositoryIncomeCategory>();
-        services.AddScoped<IRepositoryIncome, RepositoryIncome>();
+        services.AddScoped<IRepositoryCRUD<ExpenseCategory>, RepositoryExpenseCategory>();
+        services.AddScoped<IRepositoryCRUD<ExpensePaymentMethod>, RepositoryExpensePaymentMethod>();
+        services.AddScoped<IRepositoryCRUD<Expense>, RepositoryExpense>();
+        services.AddScoped<IRepositoryCRUD<IncomeCategory>, RepositoryIncomeCategory>();
+        services.AddScoped<IRepositoryCRUD<Income>, RepositoryIncome>();
 
         return services;
     }

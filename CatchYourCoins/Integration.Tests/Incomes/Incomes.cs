@@ -1,7 +1,7 @@
 ﻿using Application.DTOs.InputDTOs.Incomes;
 using Application.DTOs.OutputDTOs.Incomes;
-using Application.Requests.Incomes.Commands.Create;
-using Application.Requests.Incomes.Queries.GetById;
+using Application.Requests.Commands;
+using Application.Requests.Queries;
 using Domain;
 using Domain.Dashboard.Entities.Incomes;
 using Domain.Interfaces.Services;
@@ -49,7 +49,7 @@ public class Incomes(TestFixture fixture) : TestBase(fixture)
         // Arrange
         Assert.NotNull(_categoryUser1);
     
-        CommandCreateIncome command = new()
+        CommandCRUDCreate<InputDTOIncome> command = new()
         {
             Data = new InputDTOIncome
             {
@@ -82,7 +82,7 @@ public class Incomes(TestFixture fixture) : TestBase(fixture)
         // Arrange
         Assert.NotNull(_categoryUser1);
         
-        CommandCreateIncome command = new()
+        CommandCRUDCreate<InputDTOIncome> command = new()
         {
             Data = new InputDTOIncome
             {
@@ -111,7 +111,7 @@ public class Incomes(TestFixture fixture) : TestBase(fixture)
     public async Task CreateIncome_WithInvalidCategoryIdAndPaymentMethodId_ShouldNotCreateIncomeInDB()
     {
         // Arrange
-        CommandCreateIncome command = new()
+        CommandCRUDCreate<InputDTOIncome> command = new()
         {
             Data = new InputDTOIncome
             {
@@ -148,7 +148,7 @@ public class Incomes(TestFixture fixture) : TestBase(fixture)
         
         await dbContext.SaveChangesAsync();
     
-        var query = new QueryGetIncomeById { Id = income.Id };
+        QueryCRUDGetById<OutputDTOIncome> query = new() { Id = income.Id };
     
         // Act
         Result<OutputDTOIncome> result = await _mediator.Send(query);
@@ -184,7 +184,7 @@ public class Incomes(TestFixture fixture) : TestBase(fixture)
         await dbContext.Set<Income>().AddAsync(income);
         await dbContext.SaveChangesAsync();
     
-        var query = new QueryGetIncomeById { Id = income.Id };
+        QueryCRUDGetById<OutputDTOIncome> query = new() { Id = income.Id };
     
         // Act
         Result<OutputDTOIncome> result = await _mediator.Send(query);
