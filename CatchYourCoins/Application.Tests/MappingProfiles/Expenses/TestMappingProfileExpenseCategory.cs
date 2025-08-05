@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using Application.DTOs.InputDTOs.Expenses;
-using Application.DTOs.OutputDTOs.Expenses;
+using Application.Dashboard.DTOs.InputDTOs.Expenses;
+using Application.Dashboard.DTOs.OutputDTOs.Expenses;
 using Application.MappingProfiles.Expenses;
 using AutoMapper;
 using Domain.Dashboard.Entities.Expenses;

@@ -1,5 +1,0 @@
-﻿using Domain.Dashboard.Entities.Incomes;
-
-namespace Domain.Interfaces.Repositories;
-
-public interface IRepositoryIncome : IRepositoryCRUD<Income>;

@@ -1,7 +1,7 @@
-﻿using Application.DTOs.InputDTOs;
-using Application.DTOs.InputDTOs.Expenses;
-using Application.DTOs.OutputDTOs;
-using Application.DTOs.OutputDTOs.Expenses;
+﻿using Application.Dashboard.DTOs.InputDTOs;
+using Application.Dashboard.DTOs.InputDTOs.Expenses;
+using Application.Dashboard.DTOs.OutputDTOs;
+using Application.Dashboard.DTOs.OutputDTOs.Expenses;
 using AutoMapper;
 using Domain.Dashboard.Entities;
 using Domain.Dashboard.Entities.Expenses;

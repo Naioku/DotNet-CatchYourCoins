@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using Application.DTOs.InputDTOs;
-using Application.DTOs.OutputDTOs;
+using Application.Dashboard.DTOs.InputDTOs;
+using Application.Dashboard.DTOs.OutputDTOs;
 using Application.MappingProfiles;
 using AutoMapper;
 using Domain.Dashboard.Entities;

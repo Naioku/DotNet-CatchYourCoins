@@ -3,7 +3,7 @@ using Domain.Interfaces.Repositories;
 
 namespace Domain.Dashboard.Entities;
 
-public class FinancialOperation<TCategory> : IAutorizable, IEntity
+public abstract class FinancialOperation<TCategory> : IAutorizable, IEntity
     where TCategory : FinancialCategory
 {
     public int Id { get; init; }
