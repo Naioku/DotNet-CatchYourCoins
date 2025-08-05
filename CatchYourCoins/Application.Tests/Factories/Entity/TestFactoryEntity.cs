@@ -1,13 +1,25 @@
-﻿using Domain.Dashboard.Entities;
+﻿using System.Collections.Generic;
+using Domain.Dashboard.Entities;
 
 namespace Application.Tests.Factories.Entity;
 
-public class TestFactoryEntity : TestFactoryEntityBase<TestEntity>
+public class TestFactoryEntity
 {
-    public override TestEntity CreateEntity(CurrentUser currentUser, int id = 1) => new()
+    public TestEntity CreateEntity(CurrentUser currentUser, int id = 1) => new()
     {
         Id = id,
         Name = $"Test-{id}",
         UserId = currentUser.Id,
     };
+    
+    public List<TestEntity> CreateEntities(CurrentUser currentUser, int quantity)
+    {
+        List<TestEntity> result = [];
+        for (int i = 0; i < quantity; i++)
+        {
+            result.Add(CreateEntity(currentUser, i + 1));
+        }
+        
+        return result;
+    }
 }

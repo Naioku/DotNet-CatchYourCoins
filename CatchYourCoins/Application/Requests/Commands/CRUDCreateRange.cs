@@ -17,7 +17,7 @@ public class ValidatorCRUDCreateRange<TDTO, TDTOValidator>
     : AbstractValidator<CommandCRUDCreateRange<TDTO>>
     where TDTOValidator : AbstractValidator<TDTO>, new()
 {
-    protected ValidatorCRUDCreateRange()
+    public ValidatorCRUDCreateRange()
     {
         RuleFor(x => x.Data)
             .NotEmpty();

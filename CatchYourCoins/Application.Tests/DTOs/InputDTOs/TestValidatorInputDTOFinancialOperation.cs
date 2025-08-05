@@ -7,7 +7,7 @@ using Xunit;
 namespace Application.Tests.DTOs.InputDTOs;
 
 [TestSubject(typeof(ValidatorInputDTOFinancialOperation<>))]
-public class ValidatorInputDTOFinancialOperationTest
+public class TestValidatorInputDTOFinancialOperation
     : TestValidatorBase<
         ValidatorInputDTOFinancialOperation<InputDTOFinancialOperation>,
         InputDTOFinancialOperation

@@ -9,7 +9,7 @@ public abstract class TestCQRSHandlerBase<THandler, TEntity> : TestBase
     where TEntity : IEntity
 {
     protected THandler Handler { get; private set; }
-    protected TestFactoryEntityBase<TEntity> FactoryEntity { get; } = TestFactoriesProvider.GetFactory<TestFactoryEntityBase<TEntity>>();
+    protected TestFactoryEntity FactoryEntity { get; } = TestFactoriesProvider.GetFactory<TestFactoryEntity>();
 
     protected override void SetUpMocks() { }
     protected override void SetUpTestedObjects() => Handler = CreateHandler();

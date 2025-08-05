@@ -14,7 +14,7 @@ public class CommandCRUDDelete<TEntity> : IRequest<Result>
 [UsedImplicitly]
 public class ValidatorCRUDDelete<TEntity> : AbstractValidator<CommandCRUDDelete<TEntity>>
 {
-    protected ValidatorCRUDDelete()
+    public ValidatorCRUDDelete()
     {
         RuleFor(x => x.Id)
             .GreaterThanOrEqualTo(0);

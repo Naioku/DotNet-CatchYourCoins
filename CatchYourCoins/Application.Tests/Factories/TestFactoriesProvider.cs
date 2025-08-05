@@ -13,8 +13,8 @@ public static class TestFactoriesProvider
     
     static TestFactoriesProvider()
     {
-        Factories.Add(typeof(TestFactoryEntityBase<TestEntity>), new TestFactoryEntity());
-        Factories.Add(typeof(TestFactoryDTOBase<TestEntity, TestDTO>), new TestFactoryDTO());
+        Factories.Add(typeof(TestFactoryEntity), new TestFactoryEntity());
+        Factories.Add(typeof(TestFactoryDTO), new TestFactoryDTO());
         Factories.Add(typeof(TestFactoryUsers), new TestFactoryUsers());
     }
 }

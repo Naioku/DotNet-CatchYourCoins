@@ -16,7 +16,7 @@ public class CommandCRUDCreate<TDTO> : IRequest<Result>
 public class ValidatorCRUDCreate<TDTO, TDTOValidator> : AbstractValidator<CommandCRUDCreate<TDTO>>
     where TDTOValidator : AbstractValidator<TDTO>, new()
 {
-    protected ValidatorCRUDCreate()
+    public ValidatorCRUDCreate()
     {
         RuleFor(x => x.Data)
             .NotNull()

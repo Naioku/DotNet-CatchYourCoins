@@ -27,7 +27,7 @@ public class TestHandlerCRUDCreate : TestCQRSHandlerBase<HandlerCRUDCreate<TestE
     protected override void InitializeFields()
     {
         base.InitializeFields();
-        TestFactoryDTOBase<TestEntity, TestDTO> factoryDTO = TestFactoriesProvider.GetFactory<TestFactoryDTOBase<TestEntity, TestDTO>>();
+        TestFactoryDTO factoryDTO = TestFactoriesProvider.GetFactory<TestFactoryDTO>();
         _entity = FactoryEntity.CreateEntity(FactoryUsers.DefaultUser1Authenticated);
         _dto = factoryDTO.CreateDTO(_entity);
     }
