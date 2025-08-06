@@ -7,7 +7,11 @@ using Xunit;
 namespace Application.Tests.Dashboard.Commands;
 
 [TestSubject(typeof(ValidatorCRUDCreateRange<,>))]
-public class ValidatorCRUDCreateRangeTest : TestValidatorBase<ValidatorCRUDCreateRange<TestDTO, TestValidator<TestDTO>>, CommandCRUDCreateRange<TestDTO>>
+public class TestValidatorCRUDCreateRange
+    : TestValidatorBase<
+        ValidatorCRUDCreateRange<TestDTO, TestValidator<TestDTO>>,
+        CommandCRUDCreateRange<TestDTO>
+    >
 {
     [Fact]
     protected void Validate_AllValidData_NoError()

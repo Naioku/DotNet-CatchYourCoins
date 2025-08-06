@@ -27,5 +27,7 @@ public class RepositoryCRUD<TEntity>(
             .WhereAuthorized(serviceCurrentUser.User.Id)
             .ToListAsync();
 
+    public void Update(TEntity entity) => dbContext.Set<TEntity>().Update(entity);
+
     public void Delete(TEntity entity) => dbContext.Set<TEntity>().Remove(entity);
 }
