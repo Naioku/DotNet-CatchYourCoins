@@ -6,7 +6,11 @@ using Xunit;
 namespace Application.Tests.Dashboard.Commands;
 
 [TestSubject(typeof(ValidatorCRUDDelete<>))]
-public class ValidatorCRUDDeleteTest : TestValidatorBase<ValidatorCRUDDelete<TestDTO>, CommandCRUDDelete<TestDTO>>
+public class TestValidatorCRUDDelete
+    : TestValidatorBase<
+        ValidatorCRUDDelete<TestDTO>,
+        CommandCRUDDelete<TestDTO>
+    >
 {
     [Fact]
     protected void Validate_AllValidData_NoError()
