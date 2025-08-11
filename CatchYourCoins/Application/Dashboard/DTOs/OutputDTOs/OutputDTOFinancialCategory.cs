@@ -1,8 +1,7 @@
 ﻿namespace Application.Dashboard.DTOs.OutputDTOs;
 
-public abstract class OutputDTOFinancialCategory
+public abstract class OutputDTOFinancialCategory : OutputDTOBase
 {
-    public required int Id { get; init; }
     public required string Name { get; init; }
     public decimal? Limit { get; init; }
 }

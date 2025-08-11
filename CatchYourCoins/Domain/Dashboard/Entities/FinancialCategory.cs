@@ -1,15 +1,9 @@
-﻿using Domain.IdentityEntities;
-using Domain.Interfaces.Repositories;
+﻿namespace Domain.Dashboard.Entities;
 
-namespace Domain.Dashboard.Entities;
-
-public abstract class FinancialCategory : IAutorizable, IEntity
+public abstract class FinancialCategory : DashboardEntity
 {
-    public int Id { get; init; }
     public required string Name { get; init; }
     public decimal? Limit { get; init; }
-    public required Guid UserId { get; init; }
-    public AppUser User { get; init; }
     
     public DateTime CreatedAt { get; init; }
 }

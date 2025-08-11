@@ -7,6 +7,7 @@ using Application.Tests.Factories.DTOs;
 using Application.Tests.Factories.Entity;
 using AutoMapper;
 using Domain;
+using Domain.Dashboard.Specifications;
 using Domain.Interfaces.Repositories;
 using FluentAssertions;
 using JetBrains.Annotations;
@@ -15,23 +16,23 @@ using Xunit;
 
 namespace Application.Tests.Dashboard.Queries;
 
-using Query = QueryCRUDGetAll<TestDTO>;
+using Query = QueryCRUDGet<TestEntity, TestDTO>;
 using IRepository = IRepositoryCRUD<TestEntity>;
 
-[TestSubject(typeof(HandlerCRUDGetAll<,>))]
-public abstract class TestHandlerGetAll : TestCQRSHandlerBase<HandlerCRUDGetAll<TestEntity, TestDTO>, TestEntity>
+[TestSubject(typeof(HandlerCRUDGet<,>))]
+public class TestHandlerCRUDGet : TestCQRSHandlerBase<HandlerCRUDGet<TestEntity, TestDTO>, TestEntity>
 {
     private List<TestEntity> _entities;
     private List<TestDTO> _dtos;
-    
+
     protected override void InitializeFields()
     {
         base.InitializeFields();
         TestFactoryDTO factoryDTO = TestFactoriesProvider.GetFactory<TestFactoryDTO>();
-        _entities = FactoryEntity.CreateEntities(FactoryUsers.DefaultUser1Authenticated, 5);
+        _entities = FactoryEntity.CreateEntities(FactoryUsers.DefaultUser1Authenticated, 2);
         _dtos = factoryDTO.CreateDTOs(_entities);
     }
-    
+
     protected override void CleanUp()
     {
         base.CleanUp();
@@ -39,10 +40,17 @@ public abstract class TestHandlerGetAll : TestCQRSHandlerBase<HandlerCRUDGetAll<
         _dtos = null;
     }
 
+    protected override HandlerCRUDGet<TestEntity, TestDTO> CreateHandler() =>
+        new(
+            GetMock<IRepositoryCRUD<TestEntity>>().Object,
+            GetMock<IMapper>().Object
+        );
+
     protected override void SetUpMocks()
     {
         RegisterMock<IRepository>();
-        
+        RegisterMock<ISpecificationDashboardEntity<TestEntity>>();
+
         Mock<IMapper> mockMapper = new();
         mockMapper
             .Setup(m => m.Map<IReadOnlyList<TestDTO>>(It.Is<IReadOnlyList<TestEntity>>(entities => entities == _entities)))
@@ -52,14 +60,21 @@ public abstract class TestHandlerGetAll : TestCQRSHandlerBase<HandlerCRUDGetAll<
     }
 
     [Fact]
-    private async Task GetAll_ValidData_ReturnedAll_Base()
+    private async Task GetOne_ValidData_ReturnedOne_Base()
     {
         // Arrange
-        GetMock<IRepository>()
-            .Setup(m => m.GetAllAsync())
-            .ReturnsAsync(_entities);
+        ISpecificationDashboardEntity<TestEntity> mockSpecification = GetMock<ISpecificationDashboardEntity<TestEntity>>().Object;
         
-        Query query = new();
+        Query query = new()
+        {
+            Specification = mockSpecification,
+        };
+        
+        GetMock<IRepository>()
+            .Setup(m => m.GetAsync(It.Is<ISpecificationDashboardEntity<TestEntity>>(
+                s => s == mockSpecification
+            )))
+            .ReturnsAsync(_entities);
 
         // Act
         Result<IReadOnlyList<TestDTO>> result = await Handler.Handle(query, CancellationToken.None);
@@ -69,21 +84,26 @@ public abstract class TestHandlerGetAll : TestCQRSHandlerBase<HandlerCRUDGetAll<
         result.Errors.Should().BeNullOrEmpty();
         result.Value.Should().NotBeNull();
 
-        IReadOnlyList<TestDTO> dtos = result.Value;
-
-        dtos.Should().HaveCount(_entities.Count);
-        dtos.Should().BeEquivalentTo(_dtos);
+        IReadOnlyList<TestDTO> dto = result.Value;
+        dto.Should().BeEquivalentTo(_dtos);
     }
-    
+
     [Fact]
-    private async Task GetAll_NoEntryInDB_ReturnedNull_Base()
+    private async Task GetOne_NoEntryAtPassedID_ReturnedNull_Base()
     {
         // Arrange
-        GetMock<IRepository>()
-            .Setup(m => m.GetAllAsync())
-            .ReturnsAsync([]);
+        ISpecificationDashboardEntity<TestEntity> mockSpecification = GetMock<ISpecificationDashboardEntity<TestEntity>>().Object;
         
-        Query query = new();
+        Query query = new()
+        {
+            Specification = mockSpecification,
+        };
+
+        GetMock<IRepository>()
+            .Setup(m => m.GetAsync(It.Is<ISpecificationDashboardEntity<TestEntity>>(
+                s => s == mockSpecification
+            )))
+            .ReturnsAsync([]);
 
         // Act
         Result<IReadOnlyList<TestDTO>> result = await Handler.Handle(query, CancellationToken.None);

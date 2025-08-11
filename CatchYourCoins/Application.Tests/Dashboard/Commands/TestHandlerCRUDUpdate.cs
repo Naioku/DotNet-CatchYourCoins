@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Dashboard.Commands;
@@ -7,6 +8,7 @@ using Application.Tests.Factories.DTOs;
 using Application.Tests.Factories.Entity;
 using AutoMapper;
 using Domain;
+using Domain.Dashboard.Specifications;
 using Domain.Interfaces.Repositories;
 using FluentAssertions;
 using JetBrains.Annotations;
@@ -15,31 +17,31 @@ using Xunit;
 
 namespace Application.Tests.Dashboard.Commands;
 
-using Command = CommandCRUDUpdate<TestDTO>;
+using Command = CommandCRUDUpdate<TestEntity, TestDTO>;
 using IRepository = IRepositoryCRUD<TestEntity>;
 
 [TestSubject(typeof(HandlerCRUDUpdate<,>))]
 public class TestHandlerCRUDUpdate : TestCQRSHandlerBase<HandlerCRUDUpdate<TestEntity, TestDTO>, TestEntity>
 {
-    private TestEntity _entityOld;
-    private TestEntity _entityNew;
-    private TestDTO _dtoNew;
+    private List<TestEntity> _entitiesOld;
+    private List<TestEntity> _entitiesNew;
+    private List<TestDTO> _dtosNew;
 
     protected override void InitializeFields()
     {
         base.InitializeFields();
         TestFactoryDTO factoryDTO = TestFactoriesProvider.GetFactory<TestFactoryDTO>();
-        _entityOld = FactoryEntity.CreateEntity(FactoryUsers.DefaultUser1Authenticated, namePrefix: "TestOld");
-        _entityNew = FactoryEntity.CreateEntity(FactoryUsers.DefaultUser1Authenticated, namePrefix: "TestNew");
-        _dtoNew = factoryDTO.CreateDTO(_entityNew);
+        _entitiesOld = FactoryEntity.CreateEntities(FactoryUsers.DefaultUser1Authenticated, 2, namePrefix: "TestOld");
+        _entitiesNew = FactoryEntity.CreateEntities(FactoryUsers.DefaultUser1Authenticated, 2, namePrefix: "TestNew");
+        _dtosNew = factoryDTO.CreateDTOs(_entitiesNew);
     }
 
     protected override void CleanUp()
     {
         base.CleanUp();
-        _entityOld = null;
-        _entityNew = null;
-        _dtoNew = null;
+        _entitiesOld = null;
+        _entitiesNew = null;
+        _dtosNew = null;
     }
 
     protected override HandlerCRUDUpdate<TestEntity, TestDTO> CreateHandler() =>
@@ -53,11 +55,15 @@ public class TestHandlerCRUDUpdate : TestCQRSHandlerBase<HandlerCRUDUpdate<TestE
     {
         RegisterMock<IRepository>();
         RegisterMock<IUnitOfWork>();
+        RegisterMock<ISpecificationDashboardEntity<TestEntity>>();
 
         Mock<IMapper> mockMapper = new();
         mockMapper
-            .Setup(m => m.Map<TestEntity>(It.Is<TestDTO>(dto => dto == _dtoNew)))
-            .Returns(_entityNew);
+            .Setup(m => m.Map(
+                It.Is<IReadOnlyList<TestDTO>>(dto => dto == _dtosNew),
+                It.Is<IReadOnlyList<TestEntity>>(entity => entity == _entitiesOld)
+            ))
+            .Returns(_entitiesNew);
         RegisterMock<IMapper, Mock<IMapper>>(mockMapper);
         base.SetUpMocks();
     }
@@ -66,15 +72,16 @@ public class TestHandlerCRUDUpdate : TestCQRSHandlerBase<HandlerCRUDUpdate<TestE
     [Fact]
     private async Task Update_ValidData_EntityUpdated_Base()
     {
-        // Arrange
+        ISpecificationDashboardEntity<TestEntity> mockSpecification = GetMock<ISpecificationDashboardEntity<TestEntity>>().Object;
+
         GetMock<IRepository>()
-            .Setup(m => m.GetByIdAsync(It.Is<int>(id => id == _entityOld.Id)))
-            .ReturnsAsync(_entityOld);
-        
+            .Setup(m => m.GetAsync(It.Is<ISpecificationDashboardEntity<TestEntity>>(s => s == mockSpecification)))
+            .ReturnsAsync(_entitiesOld);
+
         Command command = new()
         {
-            Id = _entityOld.Id,
-            Data = _dtoNew
+            Specification = mockSpecification,
+            Data = _dtosNew
         };
 
         // Act
@@ -85,7 +92,7 @@ public class TestHandlerCRUDUpdate : TestCQRSHandlerBase<HandlerCRUDUpdate<TestE
         result.Errors.Should().BeNullOrEmpty();
 
         GetMock<IRepository>().Verify(
-            m => m.Update(It.Is<TestEntity>(entity => entity == _entityNew)),
+            m => m.Update(It.Is<IReadOnlyList<TestEntity>>(entities => entities == _entitiesNew)),
             Times.Once
         );
         GetMock<IUnitOfWork>().Verify(
@@ -93,19 +100,21 @@ public class TestHandlerCRUDUpdate : TestCQRSHandlerBase<HandlerCRUDUpdate<TestE
             Times.Once
         );
     }
-    
+
     [Fact]
     private async Task Update_NoEntityAtPassedId_EntityUpdated_Base()
     {
         // Arrange
+        ISpecificationDashboardEntity<TestEntity> mockSpecification = GetMock<ISpecificationDashboardEntity<TestEntity>>().Object;
+
         GetMock<IRepository>()
-            .Setup(m => m.GetByIdAsync(It.Is<int>(id => id == _entityOld.Id)))
-            .ReturnsAsync((TestEntity)null);
-        
+            .Setup(m => m.GetAsync(It.Is<ISpecificationDashboardEntity<TestEntity>>(s => s == mockSpecification)))
+            .ReturnsAsync([]);
+
         Command command = new()
         {
-            Id = _entityOld.Id,
-            Data = _dtoNew
+            Specification = mockSpecification,
+            Data = _dtosNew
         };
 
         // Act
@@ -116,7 +125,7 @@ public class TestHandlerCRUDUpdate : TestCQRSHandlerBase<HandlerCRUDUpdate<TestE
         result.Errors.Should().NotBeNullOrEmpty();
 
         GetMock<IRepository>().Verify(
-            m => m.Update(It.IsAny<TestEntity>()),
+            m => m.Update(It.IsAny<IReadOnlyList<TestEntity>>()),
             Times.Never
         );
         GetMock<IUnitOfWork>().Verify(
@@ -130,13 +139,13 @@ public class TestHandlerCRUDUpdate : TestCQRSHandlerBase<HandlerCRUDUpdate<TestE
     {
         // Arrange
         GetMock<IRepository>()
-            .Setup(m => m.Update(It.IsAny<TestEntity>()))
+            .Setup(m => m.Update(It.IsAny<IReadOnlyList<TestEntity>>()))
             .Throws(new Exception());
 
         Command command = new()
         {
-            Id = _entityOld.Id,
-            Data = _dtoNew
+            Specification = GetMock<ISpecificationDashboardEntity<TestEntity>>().Object,
+            Data = _dtosNew
         };
 
         // Act
@@ -145,7 +154,7 @@ public class TestHandlerCRUDUpdate : TestCQRSHandlerBase<HandlerCRUDUpdate<TestE
         // Assert
         result.IsSuccess.Should().BeFalse();
         result.Errors.Should().NotBeNullOrEmpty();
-        
+
         GetMock<IUnitOfWork>().Verify(
             m => m.SaveChangesAsync(It.IsAny<CancellationToken>()),
             Times.Never
@@ -162,8 +171,8 @@ public class TestHandlerCRUDUpdate : TestCQRSHandlerBase<HandlerCRUDUpdate<TestE
 
         Command command = new()
         {
-            Id = _entityOld.Id,
-            Data = _dtoNew
+            Specification = GetMock<ISpecificationDashboardEntity<TestEntity>>().Object,
+            Data = _dtosNew
         };
 
         // Act

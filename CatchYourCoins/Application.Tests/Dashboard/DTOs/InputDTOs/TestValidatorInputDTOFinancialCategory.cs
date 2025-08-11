@@ -6,13 +6,13 @@ namespace Application.Tests.Dashboard.DTOs.InputDTOs;
 
 [TestSubject(typeof(ValidatorInputDTOFinancialCategory<>))]
 public class TestValidatorInputDTOFinancialCategory
-    : TestValidatorBase<ValidatorInputDTOFinancialCategory<InputDTOFinancialCategory>,
-        InputDTOFinancialCategory
+    : TestValidatorBase<ValidatorInputDTOFinancialCategory<TestInputDTOFinancialCategory>,
+        TestInputDTOFinancialCategory
     >
 {
     [Fact]
     public void Validate_AllValidData_NoError() =>
-        AssertSuccess(new InputDTOFinancialCategory
+        AssertSuccess(new TestInputDTOFinancialCategory
         {
             Name = "Test",
             Limit = 1000,
@@ -20,15 +20,22 @@ public class TestValidatorInputDTOFinancialCategory
 
     [Fact]
     public void Validate_MinimalValidData_NoError() =>
-        AssertSuccess(new InputDTOFinancialCategory
+        AssertSuccess(new TestInputDTOFinancialCategory
         {
             Name = "Test",
         });
     
     [Fact]
     public void Validate_EmptyName_Error() =>
-        AssertFailure(new InputDTOFinancialCategory
+        AssertFailure(new TestInputDTOFinancialCategory
         {
             Name = "",
+        });
+    
+    [Fact]
+    public void Validate_NullName_Error() =>
+        AssertFailure(new TestInputDTOFinancialCategory
+        {
+            Name = null,
         });
 }

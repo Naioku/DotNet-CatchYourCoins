@@ -1,9 +1,12 @@
 ﻿using Application.Dashboard.Commands;
 using Application.Dashboard.DTOs.InputDTOs.Incomes;
 using Application.Dashboard.DTOs.OutputDTOs.Incomes;
+using Application.Dashboard.DTOs.UpdateDTOs;
+using Application.Dashboard.DTOs.UpdateDTOs.Incomes;
 using Application.Dashboard.Queries;
 using Domain;
 using Domain.Dashboard.Entities.Incomes;
+using Domain.Dashboard.Specifications.Incomes;
 using Domain.Interfaces.Services;
 using FluentAssertions;
 using MediatR;
@@ -151,21 +154,26 @@ public class Incomes(TestFixture fixture) : TestBase(fixture)
         await dbContext.Set<Income>().AddAsync(entity);
         
         await dbContext.SaveChangesAsync();
-    
-        QueryCRUDGetById<OutputDTOIncome> query = new() { Id = entity.Id };
+
+        QueryCRUDGet<Income, OutputDTOIncome> query = new()
+        {
+            Specification = SpecificationIncome.GetBuilder()
+                .WithId(entity.Id)
+                .Build(),
+        };
     
         // Act
-        Result<OutputDTOIncome> result = await _mediator.Send(query);
+        Result<IReadOnlyList<OutputDTOIncome>> result = await _mediator.Send(query);
     
         // Assert
         result.IsSuccess.Should().BeTrue();
         result.Errors.Should().BeEmpty();
         result.Value.Should().NotBeNull();
     
-        OutputDTOIncome dto = result.Value;
+        OutputDTOIncome dto = result.Value[0];
         
         dto.Should().NotBeNull();
-        dto.Id.Should().Be(query.Id);
+        dto.Id.Should().Be(entity.Id);
         dto.Amount.Should().Be(entity.Amount);
         dto.Date.Should().Be(entity.Date);
         dto.Description.Should().Be(entity.Description);
@@ -178,7 +186,7 @@ public class Incomes(TestFixture fixture) : TestBase(fixture)
         // Arrange
         Assert.NotNull(_categoryUser2);
 
-        Income income = new()
+        Income entity = new()
         {
             Amount = 100,
             Date = DateTime.Now,
@@ -186,17 +194,84 @@ public class Incomes(TestFixture fixture) : TestBase(fixture)
             UserId = user2.Id,
             CategoryId = _categoryUser2.Id,
         };
-        await dbContext.Set<Income>().AddAsync(income);
+        await dbContext.Set<Income>().AddAsync(entity);
         await dbContext.SaveChangesAsync();
     
-        QueryCRUDGetById<OutputDTOIncome> query = new() { Id = income.Id };
+        QueryCRUDGet<Income, OutputDTOIncome> query = new()
+        {
+            Specification = SpecificationIncome.GetBuilder()
+                .WithId(entity.Id)
+                .Build(),
+        };
     
         // Act
-        Result<OutputDTOIncome> result = await _mediator.Send(query);
+        Result<IReadOnlyList<OutputDTOIncome>> result = await _mediator.Send(query);
     
         // Assert
         result.IsSuccess.Should().BeFalse();
         result.Errors.Should().NotBeEmpty();
         result.Value.Should().BeNull();
+    }
+    
+    [Fact]
+    public async Task UpdateIncome_WithValidData_ShouldUpdateIncomeInDB()
+    {
+        // Arrange
+        Assert.NotNull(_categoryUser1);
+        IReadOnlyList<Income> entities =
+        [
+            new()
+            {
+                Amount = 100,
+                Date = DateTime.Today,
+                Description = "Test",
+                UserId = _testServiceCurrentUser.User.Id,
+                CategoryId = _categoryUser1.Id,
+            }
+        ];
+        await dbContext.Set<Income>().AddRangeAsync(entities);
+        await dbContext.SaveChangesAsync();
+        dbContext.ChangeTracker.Clear();
+
+        CommandCRUDUpdate<Income, UpdateDTOIncome> command = new()
+        {
+            Specification = SpecificationIncome.GetBuilder()
+                .WithIdRange(entities.Select(e => e.Id).ToList())
+                .Build(),
+            Data =
+            [
+                new UpdateDTOIncome
+                {
+                    Id = entities[0].Id,
+                    Amount = new Optional<decimal?>(200),
+                    Description = new Optional<string?>("Test2"),
+                }
+            ]
+        };
+
+        // Act
+        Result result = await _mediator.Send(command);
+        dbContext.ChangeTracker.Clear();
+
+        // Assert
+        result.IsSuccess.Should().BeTrue();
+        result.Errors.Should().BeEmpty();
+
+        IReadOnlyList<Income> entitiesUpdated = await dbContext.Set<Income>()
+            .Include(c => c.Category)
+            .ToListAsync();
+
+        entitiesUpdated.Should().NotBeEmpty();
+
+        for (var i = 0; i < entitiesUpdated.Count; i++)
+        {
+            Income expense = entitiesUpdated[i];
+            expense.UserId.Should().Be(_testServiceCurrentUser.User.Id);
+            expense.Amount.Should().Be(command.Data[i].Amount.Value);
+            expense.Date.Should().Be(entities[i].Date);
+            expense.Description.Should().Be(command.Data[i].Description.Value);
+            expense.CategoryId.Should().Be(entities[i].CategoryId);
+            expense.Category.Should().NotBeNull();
+        }
     }
 }

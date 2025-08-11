@@ -31,9 +31,9 @@ public class TestFixture : IDisposable
         services.AddSingleton<TestServiceCurrentUser>();
         services.AddScoped<IServiceCurrentUser>(sp => sp.GetRequiredService<TestServiceCurrentUser>());
 
-        services.AddDbContext<AppDbContext>(options =>
-            options.UseSqlServer(configuration.GetConnectionString("Main"))
-        );
+        // services.AddDbContext<AppDbContext>(options =>
+        //     options.UseSqlServer(configuration.GetConnectionString("Main"))
+        // );
         
         ServiceProvider = services.BuildServiceProvider();
 

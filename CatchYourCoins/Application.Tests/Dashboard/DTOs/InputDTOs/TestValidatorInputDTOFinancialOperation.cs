@@ -8,13 +8,13 @@ namespace Application.Tests.Dashboard.DTOs.InputDTOs;
 [TestSubject(typeof(ValidatorInputDTOFinancialOperation<>))]
 public class TestValidatorInputDTOFinancialOperation
     : TestValidatorBase<
-        ValidatorInputDTOFinancialOperation<InputDTOFinancialOperation>,
-        InputDTOFinancialOperation
+        ValidatorInputDTOFinancialOperation<TestInputDTOFinancialOperation>,
+        TestInputDTOFinancialOperation
     >
 {
     [Fact]
     public void Validate_AllValidData_NoError() =>
-        AssertSuccess(new InputDTOFinancialOperation
+        AssertSuccess(new TestInputDTOFinancialOperation
         {
             Amount = 1000,
             Date = DateTime.Now,
@@ -24,7 +24,7 @@ public class TestValidatorInputDTOFinancialOperation
 
     [Fact]
     public void Validate_MinimalValidData_NoError() =>
-        AssertSuccess(new InputDTOFinancialOperation
+        AssertSuccess(new TestInputDTOFinancialOperation
         {
             Amount = 1000,
             Date = DateTime.Now,
@@ -33,7 +33,7 @@ public class TestValidatorInputDTOFinancialOperation
     [Fact]
     public void Validate_AmountGreaterThanMaxValue_Error()
     {
-        AssertFailure(new InputDTOFinancialOperation
+        AssertFailure(new TestInputDTOFinancialOperation
         {
             Amount = 9999999999999999.99m + .01m,
             Date = DateTime.Now,
@@ -42,7 +42,7 @@ public class TestValidatorInputDTOFinancialOperation
 
     [Fact]
     public void Validate_AmountLessThan0_Error() =>
-        AssertFailure(new InputDTOFinancialOperation
+        AssertFailure(new TestInputDTOFinancialOperation
         {
             Amount = -1000,
             Date = DateTime.Now,
@@ -50,7 +50,7 @@ public class TestValidatorInputDTOFinancialOperation
     
     [Fact]
     public void Validate_DescriptionPassedAndIsTooShort_Error() =>
-        AssertFailure(new InputDTOFinancialOperation
+        AssertFailure(new TestInputDTOFinancialOperation
         {
             Amount = -1000,
             Date = DateTime.Now,
@@ -59,7 +59,7 @@ public class TestValidatorInputDTOFinancialOperation
     
     [Fact]
     public void Validate_DescriptionPassedAndIsTooLong_Error() =>
-        AssertFailure(new InputDTOFinancialOperation
+        AssertFailure(new TestInputDTOFinancialOperation
         {
             Amount = -1000,
             Date = DateTime.Now,

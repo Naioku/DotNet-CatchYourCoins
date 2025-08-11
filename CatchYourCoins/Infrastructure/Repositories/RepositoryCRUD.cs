@@ -1,4 +1,5 @@
-﻿using Domain;
+﻿using Domain.Dashboard.Entities;
+using Domain.Dashboard.Specifications;
 using Domain.Interfaces.Repositories;
 using Domain.Interfaces.Services;
 using Infrastructure.Extensions;
@@ -10,24 +11,50 @@ namespace Infrastructure.Repositories;
 public class RepositoryCRUD<TEntity>(
     AppDbContext dbContext,
     IServiceCurrentUser serviceCurrentUser) : IRepositoryCRUD<TEntity>
-    where TEntity : class, IAutorizable, IEntity
+    where TEntity : DashboardEntity
 {
     public async Task CreateAsync(TEntity entity) => await dbContext.Set<TEntity>().AddAsync(entity);
 
     public async Task CreateRangeAsync(IEnumerable<TEntity> entities) =>
         await dbContext.Set<TEntity>().AddRangeAsync(entities);
 
-    public async Task<TEntity?> GetByIdAsync(int id) =>
-        await dbContext.Set<TEntity>()
+    public async Task<List<TEntity>> GetAsync(ISpecificationDashboardEntity<TEntity> specification)
+    {
+        IQueryable<TEntity> query = dbContext.Set<TEntity>()
             .WhereAuthorized(serviceCurrentUser.User.Id)
-            .FirstOrDefaultAsync(c => c.Id == id);
+            .Where(specification.Criteria);
 
-    public Task<List<TEntity>> GetAllAsync() =>
-        dbContext.Set<TEntity>()
-            .WhereAuthorized(serviceCurrentUser.User.Id)
-            .ToListAsync();
+        query = specification.Includes.Aggregate(
+            query,
+            (current, include) => current.Include(include)
+        );
 
-    public void Update(TEntity entity) => dbContext.Set<TEntity>().Update(entity);
+        query = specification.IncludeStrings.Aggregate(
+            query,
+            (current, include) => current.Include(include)
+        );
 
-    public void Delete(TEntity entity) => dbContext.Set<TEntity>().Remove(entity);
+        if (specification.OrderBy != null)
+        {
+            query = query.OrderBy(specification.OrderBy);
+        }
+        else if (specification.OrderByDescending != null)
+        {
+            query = query.OrderByDescending(specification.OrderByDescending);
+        }
+
+        if (specification.IsPagingEnabled)
+        {
+            query = query
+                .Skip(specification.Skip)
+                .Take(specification.Take);
+        }
+
+        return await query.AsNoTracking().ToListAsync();
+        // return await query.ToListAsync();
+    }
+
+    public void Update(IEnumerable<TEntity> entities) => dbContext.Set<TEntity>().UpdateRange(entities);
+
+    public void Delete(IEnumerable<TEntity> entities) => dbContext.Set<TEntity>().RemoveRange(entities);
 }

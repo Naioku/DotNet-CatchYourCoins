@@ -2,6 +2,7 @@
 using Application.Dashboard.DTOs.InputDTOs.Incomes;
 using Domain;
 using Domain.Dashboard.Entities.Incomes;
+using Domain.Dashboard.Specifications.Incomes;
 using Domain.Interfaces.Services;
 using FluentAssertions;
 using Infrastructure.Persistence;
@@ -70,7 +71,9 @@ public class Categories(TestFixture fixture) : TestBase(fixture)
         
         CommandCRUDDelete<IncomeCategory> command = new()
         {
-            Id = category.Id,
+            Specification = SpecificationIncomeCategory.GetBuilder()
+                .WithId(category.Id)
+                .Build(),
         };
         
         // Act

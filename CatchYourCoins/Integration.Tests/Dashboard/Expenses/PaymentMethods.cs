@@ -2,6 +2,7 @@
 using Application.Dashboard.DTOs.InputDTOs.Expenses;
 using Domain;
 using Domain.Dashboard.Entities.Expenses;
+using Domain.Dashboard.Specifications.Expenses;
 using Domain.Interfaces.Services;
 using FluentAssertions;
 using Infrastructure.Persistence;
@@ -70,7 +71,9 @@ public class PaymentMethods(TestFixture fixture) : TestBase(fixture)
         
         CommandCRUDDelete<ExpensePaymentMethod> command = new()
         {
-            Id = paymentMethod.Id,
+            Specification = SpecificationExpensePaymentMethod.GetBuilder()
+                .WithId(paymentMethod.Id)
+                .Build(),
         };
         
         // Act

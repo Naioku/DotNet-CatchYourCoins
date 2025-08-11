@@ -2,6 +2,7 @@
 using Application.Dashboard.DTOs.InputDTOs.Expenses;
 using Domain;
 using Domain.Dashboard.Entities.Expenses;
+using Domain.Dashboard.Specifications.Expenses;
 using Domain.Interfaces.Services;
 using FluentAssertions;
 using Infrastructure.Persistence;
@@ -36,15 +37,15 @@ public class Categories(TestFixture fixture) : TestBase(fixture)
         // Assert
         result.IsSuccess.Should().BeTrue();
         result.Errors.Should().BeEmpty();
-        
+
         ExpenseCategory? category = await _dbContext.Set<ExpenseCategory>().FirstOrDefaultAsync();
-        
+
         category.Should().NotBeNull();
         category.UserId.Should().Be(_testServiceCurrentUser.User.Id);
         category.Name.Should().Be(command.Data.Name);
         category.Limit.Should().Be(command.Data.Limit);
     }
-    
+
     [Fact]
     public async Task DeleteCategory_WhenCategoryBelongsToExpense_ShouldDeleteCategoryLeavingNullInExpensesDB()
     {
@@ -67,19 +68,21 @@ public class Categories(TestFixture fixture) : TestBase(fixture)
             CategoryId = category.Id,
         });
         await dbContext.SaveChangesAsync();
-        
+
         CommandCRUDDelete<ExpenseCategory> command = new()
         {
-            Id = category.Id,
+            Specification = SpecificationExpenseCategory.GetBuilder()
+                .WithId(category.Id)
+                .Build(),
         };
-        
+
         // Act
         Result result = await _mediator.Send(command);
-        
+
         // Assert
         result.IsSuccess.Should().BeTrue();
         result.Errors.Should().BeEmpty();
-        
+
         Expense? entity = await _dbContext.Set<Expense>().FirstOrDefaultAsync();
 
         entity.Should().NotBeNull();
