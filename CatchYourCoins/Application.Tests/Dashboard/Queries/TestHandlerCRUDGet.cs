@@ -61,7 +61,7 @@ public class TestHandlerCRUDGet : TestCQRSHandlerBase<HandlerCRUDGet<TestObjEnti
     }
 
     [Fact]
-    private async Task GetOne_ValidData_ReturnedOne_Base()
+    private async Task GetOne_ValidData_ReturnedOne()
     {
         // Arrange
         ISpecificationDashboardEntity<TestObjEntity> mockSpecification = GetMock<ISpecificationDashboardEntity<TestObjEntity>>().Object;
@@ -90,7 +90,7 @@ public class TestHandlerCRUDGet : TestCQRSHandlerBase<HandlerCRUDGet<TestObjEnti
     }
 
     [Fact]
-    private async Task GetOne_NoEntryAtPassedID_ReturnedNull_Base()
+    private async Task GetOne_NoEntryAtPassedID_ReturnedNull()
     {
         // Arrange
         ISpecificationDashboardEntity<TestObjEntity> mockSpecification = GetMock<ISpecificationDashboardEntity<TestObjEntity>>().Object;

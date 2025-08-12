@@ -26,7 +26,7 @@ public abstract class TestHandlerCRUDDelete : TestCQRSHandlerBase<HandlerCRUDDel
     }
 
     [Fact]
-    private async Task DeleteOne_ValidData_DeletedEntity_Base()
+    private async Task DeleteOne_ValidData_DeletedEntity()
     {
         // Arrange
         ISpecificationDashboardEntity<TestObjEntity> mockSpecification = GetMock<ISpecificationDashboardEntity<TestObjEntity>>().Object;
@@ -55,7 +55,7 @@ public abstract class TestHandlerCRUDDelete : TestCQRSHandlerBase<HandlerCRUDDel
     }
 
     [Fact]
-    private async Task DeleteOne_NoEntryAtPassedID_DeletedNothing_Base()
+    private async Task DeleteOne_NoEntryAtPassedID_DeletedNothing()
     {
         // Arrange
         ISpecificationDashboardEntity<TestObjEntity> mockSpecification = GetMock<ISpecificationDashboardEntity<TestObjEntity>>().Object;

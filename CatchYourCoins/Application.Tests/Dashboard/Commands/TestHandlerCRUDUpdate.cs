@@ -69,9 +69,8 @@ public class TestHandlerCRUDUpdate : TestCQRSHandlerBase<HandlerCRUDUpdate<TestO
         base.SetUpMocks();
     }
 
-    // Todo: Delete "Base" from every test method.
     [Fact]
-    private async Task Update_ValidData_EntityUpdated_Base()
+    private async Task Update_ValidData_EntityUpdated()
     {
         ISpecificationDashboardEntity<TestObjEntity> mockSpecification = GetMock<ISpecificationDashboardEntity<TestObjEntity>>().Object;
 
@@ -103,7 +102,7 @@ public class TestHandlerCRUDUpdate : TestCQRSHandlerBase<HandlerCRUDUpdate<TestO
     }
 
     [Fact]
-    private async Task Update_NoEntityAtPassedId_EntityUpdated_Base()
+    private async Task Update_NoEntityAtPassedId_EntityUpdated()
     {
         // Arrange
         ISpecificationDashboardEntity<TestObjEntity> mockSpecification = GetMock<ISpecificationDashboardEntity<TestObjEntity>>().Object;
@@ -136,7 +135,7 @@ public class TestHandlerCRUDUpdate : TestCQRSHandlerBase<HandlerCRUDUpdate<TestO
     }
 
     [Fact]
-    private async Task Update_RepositoryThrowsException_EntityNotUpdated_Base()
+    private async Task Update_RepositoryThrowsException_EntityNotUpdated()
     {
         // Arrange
         GetMock<IRepository>()
@@ -163,7 +162,7 @@ public class TestHandlerCRUDUpdate : TestCQRSHandlerBase<HandlerCRUDUpdate<TestO
     }
 
     [Fact]
-    private async Task Update_UnitOfWorkThrowsException_EntityNotUpdated_Base()
+    private async Task Update_UnitOfWorkThrowsException_EntityNotUpdated()
     {
         // Arrange
         GetMock<IUnitOfWork>()

@@ -61,7 +61,7 @@ public class TestHandlerCRUDCreate : TestCQRSHandlerBase<HandlerCRUDCreate<TestO
     }
 
     [Fact]
-    private async Task Create_ValidData_EntityCreated_Base()
+    private async Task Create_ValidData_EntityCreated()
     {
         // Arrange
         Command command = new() { Data = _dto };
@@ -84,7 +84,7 @@ public class TestHandlerCRUDCreate : TestCQRSHandlerBase<HandlerCRUDCreate<TestO
     }
 
     [Fact]
-    private async Task Create_RepositoryThrowsException_EntityNotCreated_Base()
+    private async Task Create_RepositoryThrowsException_EntityNotCreated()
     {
         // Arrange
         GetMock<IRepository>()
@@ -102,7 +102,7 @@ public class TestHandlerCRUDCreate : TestCQRSHandlerBase<HandlerCRUDCreate<TestO
     }
 
     [Fact]
-    private async Task Create_UnitOfWorkThrowsException_EntityNotCreated_Base()
+    private async Task Create_UnitOfWorkThrowsException_EntityNotCreated()
     {
         // Arrange
         GetMock<IUnitOfWork>()

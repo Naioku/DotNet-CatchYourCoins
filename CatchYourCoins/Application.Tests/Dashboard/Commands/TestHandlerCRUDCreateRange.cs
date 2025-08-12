@@ -54,7 +54,7 @@ public abstract class TestHandlerCRUDCreateRange : TestCQRSHandlerBase<HandlerCR
     }
 
     [Fact]
-    private async Task Create_ValidData_EntitiesCreated_Base()
+    private async Task Create_ValidData_EntitiesCreated()
     {
         // Arrange
         Command command = new() { Data = _dtos };
@@ -74,7 +74,7 @@ public abstract class TestHandlerCRUDCreateRange : TestCQRSHandlerBase<HandlerCR
     }
 
     [Fact]
-    private async Task Create_RepositoryThrowsException_EntitiesNotCreated_Base()
+    private async Task Create_RepositoryThrowsException_EntitiesNotCreated()
     {
         // Arrange
         GetMock<IRepository>()
@@ -92,7 +92,7 @@ public abstract class TestHandlerCRUDCreateRange : TestCQRSHandlerBase<HandlerCR
     }
 
     [Fact]
-    private async Task Create_UnitOfWorkThrowsException_EntitiesNotCreated_Base()
+    private async Task Create_UnitOfWorkThrowsException_EntitiesNotCreated()
     {
         // Arrange
         GetMock<IUnitOfWork>()
