@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Dashboard.Commands;
-using Application.Tests.Factories.Entity;
+using Application.Tests.TestObjects.Entity;
 using Domain;
 using Domain.Dashboard.Specifications;
 using Domain.Interfaces.Repositories;
@@ -12,11 +12,11 @@ using Xunit;
 
 namespace Application.Tests.Dashboard.Commands;
 
-using Command = CommandCRUDDelete<TestEntity>;
-using IRepository = IRepositoryCRUD<TestEntity>;
+using Command = CommandCRUDDelete<TestObjEntity>;
+using IRepository = IRepositoryCRUD<TestObjEntity>;
 
 [TestSubject(typeof(HandlerCRUDDelete<>))]
-public abstract class TestHandlerDelete : TestCQRSHandlerBase<HandlerCRUDDelete<TestEntity>, TestEntity>
+public abstract class TestHandlerCRUDDelete : TestCQRSHandlerBase<HandlerCRUDDelete<TestObjEntity>, TestObjEntity>
 {
     protected override void SetUpMocks()
     {
@@ -29,11 +29,11 @@ public abstract class TestHandlerDelete : TestCQRSHandlerBase<HandlerCRUDDelete<
     private async Task DeleteOne_ValidData_DeletedEntity_Base()
     {
         // Arrange
-        ISpecificationDashboardEntity<TestEntity> mockSpecification = GetMock<ISpecificationDashboardEntity<TestEntity>>().Object;
+        ISpecificationDashboardEntity<TestObjEntity> mockSpecification = GetMock<ISpecificationDashboardEntity<TestObjEntity>>().Object;
 
-        TestEntity entity = FactoryEntity.CreateEntity(FactoryUsers.DefaultUser1Authenticated);
+        TestObjEntity entity = FactoryEntity.CreateEntity(FactoryUsers.DefaultUser1Authenticated);
         GetMock<IRepository>()
-            .Setup(m => m.GetAsync(It.Is<ISpecificationDashboardEntity<TestEntity>>(s => s == mockSpecification)))
+            .Setup(m => m.GetAsync(It.Is<ISpecificationDashboardEntity<TestObjEntity>>(s => s == mockSpecification)))
             .ReturnsAsync([entity]);
 
         Command command = new() { Specification = mockSpecification };
@@ -45,7 +45,7 @@ public abstract class TestHandlerDelete : TestCQRSHandlerBase<HandlerCRUDDelete<
         Assert.True(result.IsSuccess);
         Assert.Empty(result.Errors);
         GetMock<IRepository>().Verify(
-            m => m.Delete(It.Is<IReadOnlyList<TestEntity>>(entities => entities[0] == entity)),
+            m => m.Delete(It.Is<IReadOnlyList<TestObjEntity>>(entities => entities[0] == entity)),
             Times.Once
         );
         GetMock<IUnitOfWork>().Verify(m => m.SaveChangesAsync(
@@ -58,10 +58,10 @@ public abstract class TestHandlerDelete : TestCQRSHandlerBase<HandlerCRUDDelete<
     private async Task DeleteOne_NoEntryAtPassedID_DeletedNothing_Base()
     {
         // Arrange
-        ISpecificationDashboardEntity<TestEntity> mockSpecification = GetMock<ISpecificationDashboardEntity<TestEntity>>().Object;
+        ISpecificationDashboardEntity<TestObjEntity> mockSpecification = GetMock<ISpecificationDashboardEntity<TestObjEntity>>().Object;
 
         GetMock<IRepository>()
-            .Setup(m => m.GetAsync(It.Is<ISpecificationDashboardEntity<TestEntity>>(
+            .Setup(m => m.GetAsync(It.Is<ISpecificationDashboardEntity<TestObjEntity>>(
                 s => s == mockSpecification
             )))
             .ReturnsAsync([]);
@@ -74,6 +74,6 @@ public abstract class TestHandlerDelete : TestCQRSHandlerBase<HandlerCRUDDelete<
         // Assert
         Assert.False(result.IsSuccess);
         Assert.NotEmpty(result.Errors);
-        GetMock<IRepository>().Verify(m => m.Delete(It.IsAny<IReadOnlyList<TestEntity>>()), Times.Never);
+        GetMock<IRepository>().Verify(m => m.Delete(It.IsAny<IReadOnlyList<TestObjEntity>>()), Times.Never);
     }
 }

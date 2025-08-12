@@ -5,7 +5,8 @@ using System.Threading.Tasks;
 using Application.Dashboard.Commands;
 using Application.Tests.Factories;
 using Application.Tests.Factories.DTOs;
-using Application.Tests.Factories.Entity;
+using Application.Tests.TestObjects;
+using Application.Tests.TestObjects.Entity;
 using AutoMapper;
 using Domain;
 using Domain.Interfaces.Repositories;
@@ -16,14 +17,14 @@ using Xunit;
 
 namespace Application.Tests.Dashboard.Commands;
 
-using Command = CommandCRUDCreateRange<TestDTO>;
-using IRepository = IRepositoryCRUD<TestEntity>;
+using Command = CommandCRUDCreateRange<TestObjDTO>;
+using IRepository = IRepositoryCRUD<TestObjEntity>;
 
 [TestSubject(typeof(HandlerCRUDCreateRange<,>))]
-public abstract class TestHandlerCreateRange : TestCQRSHandlerBase<HandlerCRUDCreateRange<TestEntity, TestDTO>, TestEntity>
+public abstract class TestHandlerCRUDCreateRange : TestCQRSHandlerBase<HandlerCRUDCreateRange<TestObjEntity, TestObjDTO>, TestObjEntity>
 {
-    private List<TestEntity> _entities;
-    private List<TestDTO> _dtos;
+    private List<TestObjEntity> _entities;
+    private List<TestObjDTO> _dtos;
     
     protected override void InitializeFields()
     {
@@ -46,7 +47,7 @@ public abstract class TestHandlerCreateRange : TestCQRSHandlerBase<HandlerCRUDCr
         RegisterMock<IUnitOfWork>();
         Mock<IMapper> mockMapper = new();
         mockMapper
-            .Setup(m => m.Map<IList<TestEntity>>(It.Is<IList<TestDTO>>(dtos => dtos == _dtos)))
+            .Setup(m => m.Map<IList<TestObjEntity>>(It.Is<IList<TestObjDTO>>(dtos => dtos == _dtos)))
             .Returns(_entities);
         RegisterMock<IMapper, Mock<IMapper>>(mockMapper);
         base.SetUpMocks();
@@ -63,7 +64,7 @@ public abstract class TestHandlerCreateRange : TestCQRSHandlerBase<HandlerCRUDCr
 
         // Assert
         GetMock<IRepository>().Verify(
-            m => m.CreateRangeAsync(It.Is<IEnumerable<TestEntity>>(entities => entities == _entities)),
+            m => m.CreateRangeAsync(It.Is<IEnumerable<TestObjEntity>>(entities => entities == _entities)),
             Times.Once
         );
         GetMock<IUnitOfWork>().Verify(
@@ -77,7 +78,7 @@ public abstract class TestHandlerCreateRange : TestCQRSHandlerBase<HandlerCRUDCr
     {
         // Arrange
         GetMock<IRepository>()
-            .Setup(m => m.CreateRangeAsync(It.IsAny<IList<TestEntity>>()))
+            .Setup(m => m.CreateRangeAsync(It.IsAny<IList<TestObjEntity>>()))
             .ThrowsAsync(new Exception());
         
         Command command = new() { Data = _dtos };

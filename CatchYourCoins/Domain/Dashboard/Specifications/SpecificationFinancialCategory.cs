@@ -11,7 +11,7 @@ public abstract class SpecificationFinancialCategory<TEntity, TBuilder>(Expressi
 {
     public abstract class BuilderFinancialCategory : BuilderDashboardEntity
     {
-        public BuilderFinancialCategory WithName(string name)
+        public BuilderFinancialCategory WithName(string? name)
         {
             if (string.IsNullOrWhiteSpace(name))
             {

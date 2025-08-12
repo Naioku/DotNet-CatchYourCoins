@@ -4,7 +4,8 @@ using System.Threading.Tasks;
 using Application.Dashboard.Queries;
 using Application.Tests.Factories;
 using Application.Tests.Factories.DTOs;
-using Application.Tests.Factories.Entity;
+using Application.Tests.TestObjects;
+using Application.Tests.TestObjects.Entity;
 using AutoMapper;
 using Domain;
 using Domain.Dashboard.Specifications;
@@ -16,14 +17,14 @@ using Xunit;
 
 namespace Application.Tests.Dashboard.Queries;
 
-using Query = QueryCRUDGet<TestEntity, TestDTO>;
-using IRepository = IRepositoryCRUD<TestEntity>;
+using Query = QueryCRUDGet<TestObjEntity, TestObjDTO>;
+using IRepository = IRepositoryCRUD<TestObjEntity>;
 
 [TestSubject(typeof(HandlerCRUDGet<,>))]
-public class TestHandlerCRUDGet : TestCQRSHandlerBase<HandlerCRUDGet<TestEntity, TestDTO>, TestEntity>
+public class TestHandlerCRUDGet : TestCQRSHandlerBase<HandlerCRUDGet<TestObjEntity, TestObjDTO>, TestObjEntity>
 {
-    private List<TestEntity> _entities;
-    private List<TestDTO> _dtos;
+    private List<TestObjEntity> _entities;
+    private List<TestObjDTO> _dtos;
 
     protected override void InitializeFields()
     {
@@ -40,20 +41,20 @@ public class TestHandlerCRUDGet : TestCQRSHandlerBase<HandlerCRUDGet<TestEntity,
         _dtos = null;
     }
 
-    protected override HandlerCRUDGet<TestEntity, TestDTO> CreateHandler() =>
+    protected override HandlerCRUDGet<TestObjEntity, TestObjDTO> CreateHandler() =>
         new(
-            GetMock<IRepositoryCRUD<TestEntity>>().Object,
+            GetMock<IRepositoryCRUD<TestObjEntity>>().Object,
             GetMock<IMapper>().Object
         );
 
     protected override void SetUpMocks()
     {
         RegisterMock<IRepository>();
-        RegisterMock<ISpecificationDashboardEntity<TestEntity>>();
+        RegisterMock<ISpecificationDashboardEntity<TestObjEntity>>();
 
         Mock<IMapper> mockMapper = new();
         mockMapper
-            .Setup(m => m.Map<IReadOnlyList<TestDTO>>(It.Is<IReadOnlyList<TestEntity>>(entities => entities == _entities)))
+            .Setup(m => m.Map<IReadOnlyList<TestObjDTO>>(It.Is<IReadOnlyList<TestObjEntity>>(entities => entities == _entities)))
             .Returns(_dtos);
         RegisterMock<IMapper, Mock<IMapper>>(mockMapper);
         base.SetUpMocks();
@@ -63,7 +64,7 @@ public class TestHandlerCRUDGet : TestCQRSHandlerBase<HandlerCRUDGet<TestEntity,
     private async Task GetOne_ValidData_ReturnedOne_Base()
     {
         // Arrange
-        ISpecificationDashboardEntity<TestEntity> mockSpecification = GetMock<ISpecificationDashboardEntity<TestEntity>>().Object;
+        ISpecificationDashboardEntity<TestObjEntity> mockSpecification = GetMock<ISpecificationDashboardEntity<TestObjEntity>>().Object;
         
         Query query = new()
         {
@@ -71,20 +72,20 @@ public class TestHandlerCRUDGet : TestCQRSHandlerBase<HandlerCRUDGet<TestEntity,
         };
         
         GetMock<IRepository>()
-            .Setup(m => m.GetAsync(It.Is<ISpecificationDashboardEntity<TestEntity>>(
+            .Setup(m => m.GetAsync(It.Is<ISpecificationDashboardEntity<TestObjEntity>>(
                 s => s == mockSpecification
             )))
             .ReturnsAsync(_entities);
 
         // Act
-        Result<IReadOnlyList<TestDTO>> result = await Handler.Handle(query, CancellationToken.None);
+        Result<IReadOnlyList<TestObjDTO>> result = await Handler.Handle(query, CancellationToken.None);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
         result.Errors.Should().BeNullOrEmpty();
         result.Value.Should().NotBeNull();
 
-        IReadOnlyList<TestDTO> dto = result.Value;
+        IReadOnlyList<TestObjDTO> dto = result.Value;
         dto.Should().BeEquivalentTo(_dtos);
     }
 
@@ -92,7 +93,7 @@ public class TestHandlerCRUDGet : TestCQRSHandlerBase<HandlerCRUDGet<TestEntity,
     private async Task GetOne_NoEntryAtPassedID_ReturnedNull_Base()
     {
         // Arrange
-        ISpecificationDashboardEntity<TestEntity> mockSpecification = GetMock<ISpecificationDashboardEntity<TestEntity>>().Object;
+        ISpecificationDashboardEntity<TestObjEntity> mockSpecification = GetMock<ISpecificationDashboardEntity<TestObjEntity>>().Object;
         
         Query query = new()
         {
@@ -100,13 +101,13 @@ public class TestHandlerCRUDGet : TestCQRSHandlerBase<HandlerCRUDGet<TestEntity,
         };
 
         GetMock<IRepository>()
-            .Setup(m => m.GetAsync(It.Is<ISpecificationDashboardEntity<TestEntity>>(
+            .Setup(m => m.GetAsync(It.Is<ISpecificationDashboardEntity<TestObjEntity>>(
                 s => s == mockSpecification
             )))
             .ReturnsAsync([]);
 
         // Act
-        Result<IReadOnlyList<TestDTO>> result = await Handler.Handle(query, CancellationToken.None);
+        Result<IReadOnlyList<TestObjDTO>> result = await Handler.Handle(query, CancellationToken.None);
 
         // Assert
         result.IsSuccess.Should().BeFalse();

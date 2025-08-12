@@ -69,9 +69,12 @@ public abstract class SpecificationFinancialOperation<TEntity, TBuilder, TCatego
             return this;
         }
 
-        public BuilderFinancialOperation WithCategory(int id)
+        public BuilderFinancialOperation WithCategory(int? id)
         {
-            ValidateNotNegative(id);
+            if (id != null)
+            {
+                ValidateNotNegative(id.Value);
+            }
 
             criteria = criteria.And(e => e.CategoryId == id);
             return this;

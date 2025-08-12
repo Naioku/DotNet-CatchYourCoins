@@ -3,13 +3,14 @@ using Domain.Dashboard.Entities.Incomes;
 
 namespace Domain.Dashboard.Specifications.Incomes;
 
-public sealed class SpecificationIncome(Expression<Func<Income, bool>> criteria)
-    : SpecificationFinancialOperation<
+public sealed class SpecificationIncome : SpecificationFinancialOperation<
         Income,
         SpecificationIncome.BuilderIncome,
         IncomeCategory
-    >(criteria)
+    >
 {
+    private SpecificationIncome(Expression<Func<Income, bool>> criteria) : base(criteria) {}
+
     public static BuilderIncome GetBuilder() => new();
     
     public class BuilderIncome : BuilderFinancialOperation

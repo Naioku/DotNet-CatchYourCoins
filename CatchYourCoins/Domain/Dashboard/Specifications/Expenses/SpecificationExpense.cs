@@ -24,9 +24,12 @@ public sealed class SpecificationExpense
 
         public override SpecificationExpense Build() => new(criteria);
     
-        public BuilderExpense WithPaymentMethod(int id)
+        public BuilderExpense WithPaymentMethod(int? id)
         {
-            ValidateNotNegative(id);
+            if (id != null)
+            {
+                ValidateNotNegative(id.Value);
+            }
 
             criteria = criteria.And(e => e.PaymentMethodId == id);
             return this;

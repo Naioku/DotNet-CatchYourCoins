@@ -1,6 +1,6 @@
-﻿namespace Application.Tests.Factories.DTOs;
+﻿namespace Application.Tests.TestObjects;
 
-public class TestDTO
+public class TestObjDTO
 {
     public required int Id { get; init; }
     public required string Name { get; init; }

@@ -1,7 +1,8 @@
 ﻿using Application.Dashboard.Commands;
 using Application.Tests.Factories;
 using Application.Tests.Factories.DTOs;
-using Application.Tests.Factories.Entity;
+using Application.Tests.TestObjects;
+using Application.Tests.TestObjects.Entity;
 using Domain.Dashboard.Specifications;
 using JetBrains.Annotations;
 using Moq;
@@ -12,16 +13,16 @@ namespace Application.Tests.Dashboard.Commands;
 [TestSubject(typeof(ValidatorCRUDUpdate<,,>))]
 public class TestValidatorCRUDUpdate
     : TestValidatorBase<
-        ValidatorCRUDUpdate<TestEntity, TestDTO, TestValidator<TestDTO>>,
-        CommandCRUDUpdate<TestEntity, TestDTO>
+        ValidatorCRUDUpdate<TestObjEntity, TestObjDTO, TestObjValidator<TestObjDTO>>,
+        CommandCRUDUpdate<TestObjEntity, TestObjDTO>
     >
 {
     [Fact]
     protected void Validate_AllValidData_NoError()
     {
-        AssertSuccess(new CommandCRUDUpdate<TestEntity, TestDTO>
+        AssertSuccess(new CommandCRUDUpdate<TestObjEntity, TestObjDTO>
         {
-            Specification = new Mock<ISpecificationDashboardEntity<TestEntity>>().Object,
+            Specification = new Mock<ISpecificationDashboardEntity<TestObjEntity>>().Object,
             Data = TestFactoriesProvider.GetFactory<TestFactoryDTO>().CreateDTOs(2),
         });
     }
@@ -29,9 +30,9 @@ public class TestValidatorCRUDUpdate
     [Fact]
     protected void Validate_EmptyData_Error()
     {
-        AssertFailure(new CommandCRUDUpdate<TestEntity, TestDTO>
+        AssertFailure(new CommandCRUDUpdate<TestObjEntity, TestObjDTO>
         {
-            Specification = new Mock<ISpecificationDashboardEntity<TestEntity>>().Object,
+            Specification = new Mock<ISpecificationDashboardEntity<TestObjEntity>>().Object,
             Data = [],
         });
     }
