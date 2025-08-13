@@ -1,12 +1,13 @@
 ﻿using Application.Account.Commands;
 using Application.Dashboard.Commands;
-using Application.Dashboard.DTOs.InputDTOs.Expenses;
-using Application.Dashboard.DTOs.InputDTOs.Incomes;
+using Application.Dashboard.DTOs.CreateDTOs.Expenses;
+using Application.Dashboard.DTOs.CreateDTOs.Incomes;
 using Application.Dashboard.DTOs.OutputDTOs.Expenses;
 using Application.Dashboard.DTOs.OutputDTOs.Incomes;
 using Application.Dashboard.DTOs.UpdateDTOs.Expenses;
 using Application.Dashboard.DTOs.UpdateDTOs.Incomes;
 using Application.Dashboard.Queries;
+using Application.Mapping;
 using Application.MappingProfiles;
 using Application.MappingProfiles.Expenses;
 using Application.MappingProfiles.Incomes;
@@ -39,6 +40,7 @@ public static class ExtensionServiceCollection
                 using (IServiceScope scope = provider.CreateScope())
                 {
                     IServiceCurrentUser serviceCurrentUser = scope.ServiceProvider.GetRequiredService<IServiceCurrentUser>();
+                    config.AddProfile(new MappingProfileDashboardEntity(serviceCurrentUser));
                     config.AddProfile(new MappingProfileFinancialCategory(serviceCurrentUser));
                     config.AddProfile(new MappingProfileFinancialOperation(serviceCurrentUser));
                     config.AddProfile(new MappingProfileExpensePaymentMethod());
@@ -50,6 +52,7 @@ public static class ExtensionServiceCollection
             },
                 provider.GetService<ILoggerFactory>()).CreateMapper()
         );
+        services.AddScoped<IMapperExtended, MapperExtended>();
 
         services.AddValidatorsFromAssemblyContaining<ValidatorRegister>();
 
@@ -60,11 +63,11 @@ public static class ExtensionServiceCollection
     {
         Tuple<Type, Type, Type, Type>[] mappings =
         [
-            new(typeof(ExpenseCategory), typeof(InputDTOExpenseCategory), typeof(OutputDTOExpenseCategory), typeof(UpdateDTOExpenseCategory)),
-            new(typeof(ExpensePaymentMethod), typeof(InputDTOExpensePaymentMethod), typeof(OutputDTOExpensePaymentMethod), typeof(UpdateDTOExpensePaymentMethod)),
-            new(typeof(Expense), typeof(InputDTOExpense), typeof(OutputDTOExpense), typeof(UpdateDTOExpense)),
-            new(typeof(IncomeCategory), typeof(InputDTOIncomeCategory), typeof(OutputDTOIncomeCategory), typeof(UpdateDTOIncomeCategory)),
-            new(typeof(Income), typeof(InputDTOIncome), typeof(OutputDTOIncome), typeof(UpdateDTOIncome)),
+            new(typeof(ExpenseCategory), typeof(CreateDTOExpenseCategory), typeof(OutputDTOExpenseCategory), typeof(UpdateDTOExpenseCategory)),
+            new(typeof(ExpensePaymentMethod), typeof(CreateDTOExpensePaymentMethod), typeof(OutputDTOExpensePaymentMethod), typeof(UpdateDTOExpensePaymentMethod)),
+            new(typeof(Expense), typeof(CreateDTOExpense), typeof(OutputDTOExpense), typeof(UpdateDTOExpense)),
+            new(typeof(IncomeCategory), typeof(CreateDTOIncomeCategory), typeof(OutputDTOIncomeCategory), typeof(UpdateDTOIncomeCategory)),
+            new(typeof(Income), typeof(CreateDTOIncome), typeof(OutputDTOIncome), typeof(UpdateDTOIncome)),
         ];
     
         foreach (Tuple<Type, Type, Type, Type> mapping in mappings)

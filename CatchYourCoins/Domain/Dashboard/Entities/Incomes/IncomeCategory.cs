@@ -1,3 +1,3 @@
 ﻿namespace Domain.Dashboard.Entities.Incomes;
 
-public class IncomeCategory : FinancialCategory;
+public sealed class IncomeCategory : FinancialCategory;

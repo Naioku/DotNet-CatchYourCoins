@@ -1,5 +1,5 @@
-﻿using Application.Dashboard.DTOs.InputDTOs;
-using Application.Dashboard.DTOs.InputDTOs.Expenses;
+﻿using Application.Dashboard.DTOs.CreateDTOs;
+using Application.Dashboard.DTOs.CreateDTOs.Expenses;
 using Application.Dashboard.DTOs.OutputDTOs;
 using Application.Dashboard.DTOs.OutputDTOs.Expenses;
 using AutoMapper;
@@ -12,8 +12,8 @@ public class MappingProfileExpensePaymentMethod : Profile
 {
     public MappingProfileExpensePaymentMethod()
     {
-        CreateMap<InputDTOExpensePaymentMethod, ExpensePaymentMethod>()
-            .IncludeBase<InputDTOFinancialCategory, FinancialCategory>();
+        CreateMap<CreateDTOExpensePaymentMethod, ExpensePaymentMethod>()
+            .IncludeBase<CreateDTOFinancialCategory, FinancialCategory>();
         
         CreateMap<ExpensePaymentMethod, OutputDTOExpensePaymentMethod>()
             .IncludeBase<FinancialCategory, OutputDTOFinancialCategory>();

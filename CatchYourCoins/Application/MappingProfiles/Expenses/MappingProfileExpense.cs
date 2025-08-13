@@ -1,5 +1,5 @@
-﻿using Application.Dashboard.DTOs.InputDTOs;
-using Application.Dashboard.DTOs.InputDTOs.Expenses;
+﻿using Application.Dashboard.DTOs.CreateDTOs;
+using Application.Dashboard.DTOs.CreateDTOs.Expenses;
 using Application.Dashboard.DTOs.OutputDTOs;
 using Application.Dashboard.DTOs.OutputDTOs.Expenses;
 using Application.Dashboard.DTOs.UpdateDTOs;
@@ -14,8 +14,8 @@ public class MappingProfileExpense : Profile
 {
     public MappingProfileExpense()
     {
-        CreateMap<InputDTOExpense, Expense>()
-            .IncludeBase<InputDTOFinancialOperation, FinancialOperation<ExpenseCategory>>();
+        CreateMap<CreateDTOExpense, Expense>()
+            .IncludeBase<CreateDTOFinancialOperation, FinancialOperation<ExpenseCategory>>();
 
         CreateMap<Expense, OutputDTOExpense>()
             .IncludeBase<FinancialOperation<ExpenseCategory>, OutputDTOFinancialOperation>()

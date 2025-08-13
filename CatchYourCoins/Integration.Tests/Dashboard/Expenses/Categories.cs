@@ -1,5 +1,5 @@
 ﻿using Application.Dashboard.Commands;
-using Application.Dashboard.DTOs.InputDTOs.Expenses;
+using Application.Dashboard.DTOs.CreateDTOs.Expenses;
 using Domain;
 using Domain.Dashboard.Entities.Expenses;
 using Domain.Dashboard.Specifications.Expenses;
@@ -22,9 +22,9 @@ public class Categories(TestFixture fixture) : TestBase(fixture)
     public async Task CreateCategory_WithValidData_ShouldCreateCategoryInDB()
     {
         // Arrange
-        CommandCRUDCreate<InputDTOExpenseCategory> command = new()
+        CommandCRUDCreate<CreateDTOExpenseCategory> command = new()
         {
-            Data = new InputDTOExpenseCategory
+            Data = new CreateDTOExpenseCategory
             {
                 Name = "Test1",
                 Limit = 1000

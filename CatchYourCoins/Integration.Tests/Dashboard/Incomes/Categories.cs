@@ -1,5 +1,5 @@
 ﻿using Application.Dashboard.Commands;
-using Application.Dashboard.DTOs.InputDTOs.Incomes;
+using Application.Dashboard.DTOs.CreateDTOs.Incomes;
 using Domain;
 using Domain.Dashboard.Entities.Incomes;
 using Domain.Dashboard.Specifications.Incomes;
@@ -22,9 +22,9 @@ public class Categories(TestFixture fixture) : TestBase(fixture)
     public async Task CreateCategory_WithValidData_ShouldCreateCategoryInDB()
     {
         // Arrange
-        CommandCRUDCreate<InputDTOIncomeCategory> command = new()
+        CommandCRUDCreate<CreateDTOIncomeCategory> command = new()
         {
-            Data = new InputDTOIncomeCategory
+            Data = new CreateDTOIncomeCategory
             {
                 Name = "Test",
                 Limit = 1000

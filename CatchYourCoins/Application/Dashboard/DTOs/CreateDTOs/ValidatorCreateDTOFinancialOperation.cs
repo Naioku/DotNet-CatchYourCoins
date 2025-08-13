@@ -1,11 +1,11 @@
 ﻿using FluentValidation;
 
-namespace Application.Dashboard.DTOs.InputDTOs;
+namespace Application.Dashboard.DTOs.CreateDTOs;
 
-public class ValidatorInputDTOFinancialOperation<TDTO> : AbstractValidator<TDTO>
-    where TDTO : InputDTOFinancialOperation
+public class ValidatorCreateDTOFinancialOperation<TDTO> : AbstractValidator<TDTO>
+    where TDTO : CreateDTOFinancialOperation
 {
-    public ValidatorInputDTOFinancialOperation()
+    public ValidatorCreateDTOFinancialOperation()
     {
         RuleFor(x => x.Amount)
             .NotEmpty()

@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Dashboard.Commands;
+using Application.Extensions;
+using Application.Mapping;
 using Application.Tests.Factories;
 using Application.Tests.Factories.DTOs;
 using Application.Tests.TestObjects;
@@ -49,7 +52,7 @@ public class TestHandlerCRUDUpdate : TestCQRSHandlerBase<HandlerCRUDUpdate<TestO
         new(
             GetMock<IRepository>().Object,
             GetMock<IUnitOfWork>().Object,
-            GetMock<IMapper>().Object
+            GetMock<IMapperExtended>().Object
         );
 
     protected override void SetUpMocks()
@@ -58,14 +61,15 @@ public class TestHandlerCRUDUpdate : TestCQRSHandlerBase<HandlerCRUDUpdate<TestO
         RegisterMock<IUnitOfWork>();
         RegisterMock<ISpecificationDashboardEntity<TestObjEntity>>();
 
-        Mock<IMapper> mockMapper = new();
+        Mock<IMapperExtended> mockMapper = new();
         mockMapper
-            .Setup(m => m.Map(
+            .Setup(m => m.UpdateCollection(
                 It.Is<IReadOnlyList<TestObjDTO>>(dto => dto == _dtosNew),
-                It.Is<IReadOnlyList<TestObjEntity>>(entity => entity == _entitiesOld)
+                It.Is<IEnumerable<TestObjEntity>>(entity => entity == _entitiesOld)
             ))
             .Returns(_entitiesNew);
-        RegisterMock<IMapper, Mock<IMapper>>(mockMapper);
+        RegisterMock<IMapperExtended, Mock<IMapperExtended>>(mockMapper);
+        
         base.SetUpMocks();
     }
 

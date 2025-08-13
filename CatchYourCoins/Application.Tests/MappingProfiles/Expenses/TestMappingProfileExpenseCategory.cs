@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using Application.Dashboard.DTOs.InputDTOs.Expenses;
+﻿using System.Collections.Generic;
+using Application.Dashboard.DTOs.CreateDTOs.Expenses;
 using Application.Dashboard.DTOs.OutputDTOs.Expenses;
 using Application.Dashboard.DTOs.UpdateDTOs;
 using Application.Dashboard.DTOs.UpdateDTOs.Expenses;
 using Application.MappingProfiles.Expenses;
 using AutoMapper;
 using Domain.Dashboard.Entities.Expenses;
+using Domain.Interfaces.Services;
 using JetBrains.Annotations;
 using Xunit;
 
@@ -16,29 +16,17 @@ namespace Application.Tests.MappingProfiles.Expenses;
 public class TestMappingProfileExpenseCategory
     : TestMappingProfileFinancialCategory<
         ExpenseCategory,
-        InputDTOExpenseCategory,
+        CreateDTOExpenseCategory,
         OutputDTOExpenseCategory,
         UpdateDTOExpenseCategory
     >
 {
-    private readonly InputDTOExpenseCategory _inputDTO = new()
-    {
-        Name = "Test",
-        Limit = 100,
-    };
-    
-    private readonly UpdateDTOExpenseCategory _updateDTO = new()
-    {
-        Id = 1,
-        Limit = new Optional<decimal?>(null),
-    };
-    
-    private readonly ExpenseCategory _oldEntity = new()
+    private ExpenseCategory Entity => new()
     {
         Id = 1,
         Name = "Test",
         Limit = 100,
-        UserId = Guid.NewGuid(),
+        UserId = GetMock<IServiceCurrentUser>().Object.User.Id,
     };
 
     protected override void AddRequiredProfiles(IList<Profile> profiles)
@@ -47,27 +35,75 @@ public class TestMappingProfileExpenseCategory
         profiles.Add(new MappingProfileExpenseCategory());
     }
 
-    protected override InputDTOExpenseCategory GetInputDTO() => _inputDTO;
-    protected override UpdateDTOExpenseCategory GetUpdateDTO() => _updateDTO;
-    protected override ExpenseCategory GetOldEntity() => _oldEntity;
-
     [Fact]
-    public void CheckMapping_InputDTOToEntity()
+    public void CheckMapping_CreateDTOToEntity()
     {
-        CheckMapping_InputDTOToEntity_Base((entity) =>
+        // Arrange
+        CreateDTOExpenseCategory dto = new()
         {
-            Assert.Equal(_inputDTO.Name, entity.Name);
-            Assert.Equal(_inputDTO.Limit, entity.Limit);
-        });
+            Name = "Test",
+            Limit = 100,
+        };
+        
+        // Act
+        ExpenseCategory entity = Map_CreateDTOToEntity(dto);
+        
+        // Assert
+        AssertBaseProperties_CreateDTOToEntity(dto, entity);
     }
     
     [Fact]
-    public void CheckMapping_UpdateDTOToEntity()
+    public void CheckMapping_UpdateDTOToEntity_UpdateAllToValue()
     {
-        CheckMapping_UpdateDTOToEntity_Base((entity) =>
+        // Arrange
+        ExpenseCategory oldEntity = Entity;
+        ExpenseCategory newEntity = Entity;
+        UpdateDTOExpenseCategory dto = new()
         {
-            Assert.Equal(_oldEntity.Name, entity.Name);
-            Assert.Equal(_updateDTO.Limit.Value, entity.Limit);
-        });
+            Id = oldEntity.Id,
+            Name = new Optional<string>("Test2"),
+            Limit = new Optional<decimal?>(200),
+        };
+
+        // Act
+        Map_UpdateDTOToEntity(dto, newEntity);
+
+        // Assert
+        AssertBaseProperties_UpdateDTOToEntity_UpdateAllToValue(dto, newEntity);
+    }
+
+    [Fact]
+    public void CheckMapping_UpdateDTOToEntity_UpdateAllPossibleToNull()
+    {
+        ExpenseCategory oldEntity = Entity;
+        ExpenseCategory newEntity = Entity;
+        UpdateDTOExpenseCategory dto = new()
+        {
+            Id = oldEntity.Id,
+            Limit = new Optional<decimal?>(200),
+        };
+
+        // Act
+        Map_UpdateDTOToEntity(dto, newEntity);
+
+        // Assert
+        AssertBaseProperties_UpdateDTOToEntity_UpdateAllPossibleToNull(dto, oldEntity, newEntity);
+    }
+
+    [Fact]
+    public void CheckMapping_UpdateDTOToEntity_UpdateNone()
+    {
+        ExpenseCategory oldEntity = Entity;
+        ExpenseCategory newEntity = Entity;
+        UpdateDTOExpenseCategory dto = new()
+        {
+            Id = oldEntity.Id,
+        };
+
+        // Act
+        Map_UpdateDTOToEntity(dto, newEntity);
+
+        // Assert
+        AssertBaseProperties_UpdateDTOToEntity_UpdateNone(dto, oldEntity, newEntity);
     }
 }

@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using Application.Dashboard.DTOs.InputDTOs.Incomes;
+using Application.Dashboard.DTOs.CreateDTOs.Incomes;
 using Application.Dashboard.DTOs.OutputDTOs.Incomes;
 using Application.Dashboard.DTOs.UpdateDTOs;
 using Application.Dashboard.DTOs.UpdateDTOs.Incomes;
 using Application.MappingProfiles.Incomes;
 using AutoMapper;
 using Domain.Dashboard.Entities.Incomes;
+using Domain.Interfaces.Services;
 using JetBrains.Annotations;
 using Xunit;
 
@@ -16,35 +17,27 @@ namespace Application.Tests.MappingProfiles.Incomes;
 public class TestMappingProfileIncome
     : TestMappingProfileFinancialOperation<
         Income,
-        InputDTOIncome,
+        CreateDTOIncome,
         OutputDTOIncome,
         UpdateDTOIncome,
         IncomeCategory
     >
 {
-    private readonly InputDTOIncome _inputDTO = new()
-    {
-        Amount = 100,
-        Date = DateTime.Now,
-        Description = "Test",
-        CategoryId = 1,
-    };
-    
-    private readonly UpdateDTOIncome _updateDTO = new()
-    {
-        Id = 1,
-        Amount = new Optional<decimal?>(200),
-        Description = new Optional<string?>("Test2"),
-    };
-
-    private readonly Income _oldEntity = new()
+    private Income Entity => new()
     {
         Id = 1,
         Amount = 100,
-        Date = DateTime.Now,
+        Date = DateTime.Today,
         Description = "Test",
         CategoryId = 1,
-        UserId = Guid.NewGuid()
+        Category = new IncomeCategory
+        {
+            Id = 1,
+            Name = "Test",
+            Limit = 100,
+            UserId = FactoryUsers.DefaultUser1Anonymous.Id,
+        },
+        UserId = GetMock<IServiceCurrentUser>().Object.User.Id,
     };
 
     protected override void AddRequiredProfiles(IList<Profile> profiles)
@@ -53,32 +46,80 @@ public class TestMappingProfileIncome
         profiles.Add(new MappingProfileIncome());
     }
 
-    protected override InputDTOIncome GetInputDTO() => _inputDTO;
-    protected override UpdateDTOIncome GetUpdateDTO() => _updateDTO;
-    protected override Income GetOldEntity() => _oldEntity;
-
     [Fact]
     public void CheckMapping_InputDTOToEntity()
     {
-        CheckMapping_InputDTOToEntity_Base((entity) =>
+        // Arrange
+        CreateDTOIncome dto = new()
         {
-            Assert.Equal(_inputDTO.Amount, entity.Amount);
-            Assert.Equal(_inputDTO.Date, entity.Date);
-            Assert.Equal(_inputDTO.Description, entity.Description);
-            Assert.Equal(_inputDTO.CategoryId, entity.CategoryId);
-        });
+            Amount = 100,
+            Date = DateTime.Now,
+            Description = "Test",
+            CategoryId = 1,
+        };
+        
+        // Act
+        Income entity = Map_CreateDTOToEntity(dto);
+        
+        // Assert
+        AssertBaseProperties_CreateDTOToEntity(dto, entity);
     }
     
     [Fact]
-    public void CheckMapping_UpdateDTOToEntity()
+    public void CheckMapping_UpdateDTOToEntity_UpdateAllToValue()
     {
-        CheckMapping_UpdateDTOToEntity_Base((entity) =>
+        // Arrange
+        Income oldEntity = Entity;
+        Income newEntity = Entity;
+        UpdateDTOIncome dto = new()
         {
-            Assert.Equal(_updateDTO.Id, entity.Id);
-            Assert.Equal(_updateDTO.Amount.Value, entity.Amount);
-            Assert.Equal(_oldEntity.Date, entity.Date);
-            Assert.Equal(_updateDTO.Description.Value, entity.Description);
-            Assert.Equal(_oldEntity.CategoryId, entity.CategoryId);
-        });
+            Id = oldEntity.Id,
+            Amount = new Optional<decimal>(200),
+            Description = new Optional<string?>("Test2"),
+            CategoryId = new Optional<int?>(2),
+            Date = new Optional<DateTime>(oldEntity.Date - TimeSpan.FromDays(1)),
+        };
+
+        // Act
+        Map_UpdateDTOToEntity(dto, newEntity);
+
+        // Assert
+        AssertBaseProperties_UpdateDTOToEntity_UpdateAllToValue(dto, oldEntity, newEntity);
+    }
+
+    [Fact]
+    public void CheckMapping_UpdateDTOToEntity_UpdateAllPossibleToNull()
+    {
+        Income oldEntity = Entity;
+        Income newEntity = Entity;
+        UpdateDTOIncome dto = new()
+        {
+            Id = oldEntity.Id,
+            Description = new Optional<string?>(null),
+            CategoryId = new Optional<int?>(null),
+        };
+
+        // Act
+        Map_UpdateDTOToEntity(dto, newEntity);
+
+        // Assert
+        AssertBaseProperties_UpdateDTOToEntity_UpdateAllPossibleToNull(dto, oldEntity, newEntity);
+    }
+
+    [Fact]
+    public void CheckMapping_UpdateDTOToEntity_UpdateNone()
+    {
+        Income oldEntity = Entity;
+        Income newEntity = Entity;
+        UpdateDTOIncome dto = new()
+        {
+            Id = oldEntity.Id,
+        };
+
+        // Act
+        Map_UpdateDTOToEntity(dto, newEntity);
+
+        // Assert
+        AssertBaseProperties_UpdateDTOToEntity_UpdateNone(dto, oldEntity, newEntity);
     }
 }

@@ -1,5 +1,5 @@
 ﻿using Application.Dashboard.Commands;
-using Application.Dashboard.DTOs.InputDTOs.Expenses;
+using Application.Dashboard.DTOs.CreateDTOs.Expenses;
 using Domain;
 using Domain.Dashboard.Entities.Expenses;
 using Domain.Dashboard.Specifications.Expenses;
@@ -22,9 +22,9 @@ public class PaymentMethods(TestFixture fixture) : TestBase(fixture)
     public async Task CreatePaymentMethod_WithValidData_ShouldCreatePaymentMethodInDB()
     {
         // Arrange
-        var command = new CommandCRUDCreate<InputDTOExpensePaymentMethod>
+        var command = new CommandCRUDCreate<CreateDTOExpensePaymentMethod>
         {
-            Data = new InputDTOExpensePaymentMethod
+            Data = new CreateDTOExpensePaymentMethod
             {
                 Name = "Test",
                 Limit = 1000

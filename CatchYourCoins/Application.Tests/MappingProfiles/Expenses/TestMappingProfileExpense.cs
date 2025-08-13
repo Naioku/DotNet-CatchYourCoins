@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using Application.Dashboard.DTOs.InputDTOs.Expenses;
+using Application.Dashboard.DTOs.CreateDTOs.Expenses;
 using Application.Dashboard.DTOs.OutputDTOs.Expenses;
 using Application.Dashboard.DTOs.UpdateDTOs;
 using Application.Dashboard.DTOs.UpdateDTOs.Expenses;
 using Application.MappingProfiles.Expenses;
 using AutoMapper;
 using Domain.Dashboard.Entities.Expenses;
+using Domain.Interfaces.Services;
 using FluentAssertions;
 using JetBrains.Annotations;
 using Xunit;
@@ -17,27 +18,35 @@ namespace Application.Tests.MappingProfiles.Expenses;
 public class TestMappingProfileExpense
     : TestMappingProfileFinancialOperation<
         Expense,
-        InputDTOExpense,
+        CreateDTOExpense,
         OutputDTOExpense,
         UpdateDTOExpense,
         ExpenseCategory
     >
 {
-    private readonly InputDTOExpense _inputDTO = new()
+    private Expense Entity => new()
     {
+        Id = 1,
         Amount = 100,
         Date = DateTime.Today,
         Description = "Test",
         CategoryId = 1,
+        Category = new ExpenseCategory
+        {
+            Id = 1,
+            Name = "Test",
+            Limit = 100,
+            UserId = FactoryUsers.DefaultUser1Anonymous.Id,
+        },
         PaymentMethodId = 1,
-    };
-
-    private readonly UpdateDTOExpense _updateDTO = new()
-    {
-        Id = 1,
-        Amount = new Optional<decimal?>(200),
-        Description = new Optional<string?>("Test2"),
-        PaymentMethodId = new Optional<int?>(null),
+        PaymentMethod = new ExpensePaymentMethod
+        {
+            Id = 1,
+            Name = "Test",
+            Limit = 100,
+            UserId = FactoryUsers.DefaultUser1Anonymous.Id,
+        },
+        UserId = GetMock<IServiceCurrentUser>().Object.User.Id,
     };
 
     protected override void AddRequiredProfiles(IList<Profile> profiles)
@@ -46,45 +55,89 @@ public class TestMappingProfileExpense
         profiles.Add(new MappingProfileExpense());
     }
 
-    protected override InputDTOExpense GetInputDTO() => _inputDTO;
-    protected override UpdateDTOExpense GetUpdateDTO() => _updateDTO;
-    protected override Expense GetOldEntity() => new()
+    [Fact]
+    public void CheckMapping_CreateDTOToEntity()
     {
-        Id = 1,
-        Amount = 100,
-        Date = DateTime.Today,
-        Description = "Test",
-        CategoryId = 1,
-        PaymentMethodId = 1,
-        UserId = Guid.NewGuid()
-    };
+        // Arrange
+        CreateDTOExpense dto = new()
+        {
+            Amount = 100,
+            Date = DateTime.Today,
+            Description = "Test",
+            CategoryId = 1,
+            PaymentMethodId = 1,
+        };
+
+        // Act
+        Expense entity = Map_CreateDTOToEntity(dto);
+
+        // Assert
+        AssertBaseProperties_CreateDTOToEntity(dto, entity);
+    }
 
     [Fact]
-    public void CheckMapping_InputDTOToEntity()
+    public void CheckMapping_UpdateDTOToEntity_UpdateAllToValue()
     {
-        CheckMapping_InputDTOToEntity_Base((entity) =>
+        // Arrange
+        Expense oldEntity = Entity;
+        Expense newEntity = Entity;
+        UpdateDTOExpense dto = new()
         {
-            entity.Amount.Should().Be(_inputDTO.Amount);
-            entity.Date.Should().Be(_inputDTO.Date);
-            entity.Description.Should().Be(_inputDTO.Description);
-            entity.CategoryId.Should().Be(_inputDTO.CategoryId);
-        });
+            Id = oldEntity.Id,
+            Amount = new Optional<decimal>(200),
+            Description = new Optional<string?>("Test2"),
+            PaymentMethodId = new Optional<int?>(2),
+            CategoryId = new Optional<int?>(2),
+            Date = new Optional<DateTime>(oldEntity.Date - TimeSpan.FromDays(1)),
+        };
+
+        // Act
+        Map_UpdateDTOToEntity(dto, newEntity);
+
+        // Assert
+        AssertBaseProperties_UpdateDTOToEntity_UpdateAllToValue(dto, oldEntity, newEntity);
+        newEntity.PaymentMethodId.Should().Be(dto.PaymentMethodId.Value);
+        newEntity.PaymentMethod.Should().BeNull();
     }
-    
+
     [Fact]
-    public void CheckMapping_UpdateDTOToEntity()
+    public void CheckMapping_UpdateDTOToEntity_UpdateAllPossibleToNull()
     {
-        Expense oldEntity = GetOldEntity();
-        CheckMapping_UpdateDTOToEntity_Base((entity) =>
+        Expense oldEntity = Entity;
+        Expense newEntity = Entity;
+        UpdateDTOExpense dto = new()
         {
-            entity.Id.Should().Be(_updateDTO.Id);
-            entity.Amount.Should().Be(_updateDTO.Amount.Value);
-            entity.Date.Should().Be(oldEntity.Date);
-            entity.Description.Should().Be(_updateDTO.Description.Value);
-            entity.CategoryId.Should().Be(oldEntity.CategoryId);
-            entity.Category.Should().Be(oldEntity.Category);
-            entity.PaymentMethodId.Should().Be(_updateDTO.PaymentMethodId.Value);
-            entity.PaymentMethod.Should().BeNull();
-        });
+            Id = oldEntity.Id,
+            Description = new Optional<string?>(null),
+            PaymentMethodId = new Optional<int?>(null),
+            CategoryId = new Optional<int?>(null),
+        };
+
+        // Act
+        Map_UpdateDTOToEntity(dto, newEntity);
+
+        // Assert
+        AssertBaseProperties_UpdateDTOToEntity_UpdateAllPossibleToNull(dto, oldEntity, newEntity);
+        newEntity.PaymentMethodId.Should().BeNull();
+        newEntity.PaymentMethod.Should().BeNull();
+    }
+
+    [Fact]
+    public void CheckMapping_UpdateDTOToEntity_UpdateNone()
+    {
+        Expense oldEntity = Entity;
+        Expense newEntity = Entity;
+        UpdateDTOExpense dto = new()
+        {
+            Id = oldEntity.Id,
+        };
+
+        // Act
+        Map_UpdateDTOToEntity(dto, newEntity);
+
+        // Assert
+        AssertBaseProperties_UpdateDTOToEntity_UpdateNone(dto, oldEntity, newEntity);
+        newEntity.PaymentMethodId.Should().Be(oldEntity.PaymentMethodId);
+        newEntity.PaymentMethod.Should().Be(oldEntity.PaymentMethod);
     }
 }

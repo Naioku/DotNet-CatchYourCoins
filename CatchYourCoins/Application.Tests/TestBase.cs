@@ -13,9 +13,11 @@ public abstract class TestBase : IAsyncLifetime
 {
     private readonly Dictionary<Type, object> _mocks = new();
 
-    protected TestFactoryUsers FactoryUsers { get; } = new();
+    protected static readonly TestFactoryUsers FactoryUsers = new();
     
-    protected Mock<T> GetMock<T>() where T : class => _mocks[typeof(T)] as Mock<T>;
+    protected Mock<T> GetMock<T>() where T : class =>
+        _mocks[typeof(T)] as Mock<T> ?? throw new InvalidOperationException($"Mock {nameof(T)} not registered.");
+
     protected void RegisterMock<T>() where T : class => _mocks[typeof(T)] = new Mock<T>();
 
     protected void RegisterMock<T, TMock>(TMock mock)
@@ -49,7 +51,7 @@ public abstract class TestBase : IAsyncLifetime
     /// Initialize mock with passed user. Defaults to <see cref="TestFactoryUsers.DefaultUser1Authenticated"/>.
     /// </summary>
     /// <param name="loggedInUser">User, which will be returned from the mock.</param>
-    protected void MockServiceCurrentUser(CurrentUser loggedInUser = null)
+    protected void MockServiceCurrentUser(CurrentUser? loggedInUser = null)
     {
         Mock<IServiceCurrentUser> mock = new();
         mock

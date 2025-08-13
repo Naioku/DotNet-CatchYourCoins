@@ -1,4 +1,5 @@
 ﻿using Application.Extensions;
+using Application.Mapping;
 using AutoMapper;
 using Domain;
 using Domain.Dashboard.Entities;
@@ -35,7 +36,7 @@ public class ValidatorCRUDUpdate<TEntity, TDTO, TDTOValidator> : AbstractValidat
 public class HandlerCRUDUpdate<TEntity, TDTO>(
     IRepositoryCRUD<TEntity> repository,
     IUnitOfWork unitOfWork,
-    IMapper mapper) : IRequestHandler<CommandCRUDUpdate<TEntity, TDTO>, Result>
+    IMapperExtended mapper) : IRequestHandler<CommandCRUDUpdate<TEntity, TDTO>, Result>
     where TEntity : DashboardEntity
     where TDTO : class
 {
@@ -43,7 +44,7 @@ public class HandlerCRUDUpdate<TEntity, TDTO>(
     {
         try
         {
-            ICollection<TEntity> entities = await repository.GetAsync(request.Specification);
+            IEnumerable<TEntity> entities = await repository.GetAsync(request.Specification);
             if (!entities.Any())
             {
                 return Result.Failure(new Dictionary<string, string>
@@ -52,7 +53,7 @@ public class HandlerCRUDUpdate<TEntity, TDTO>(
                 });
             }
             
-            mapper.MapEnumerable(request.Data, entities);
+            entities = mapper.UpdateCollection(request.Data, entities);
             repository.Update(entities);
             await unitOfWork.SaveChangesAsync(cancellationToken);
             return Result.Success();

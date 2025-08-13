@@ -1,4 +1,5 @@
-﻿using Application.Dashboard.DTOs.InputDTOs;
+﻿using Application.Dashboard.DTOs;
+using Application.Dashboard.DTOs.CreateDTOs;
 using Application.Dashboard.DTOs.OutputDTOs;
 using Application.Dashboard.DTOs.UpdateDTOs;
 using AutoMapper;
@@ -11,20 +12,13 @@ public class MappingProfileFinancialCategory : Profile
 {
     public MappingProfileFinancialCategory(IServiceCurrentUser serviceCurrentUser)
     {
-        // Todo: Create base mapper.
-        CreateMap<InputDTOFinancialCategory, FinancialCategory>()
-            .ForMember(
-                m => m.UserId,
-                opt => opt.MapFrom(_ => serviceCurrentUser.User.Id)
-            );
+        CreateMap<CreateDTOFinancialCategory, FinancialCategory>()
+            .IncludeBase<IInputDTODashboardEntity, DashboardEntity>();
 
         CreateMap<FinancialCategory, OutputDTOFinancialCategory>();
 
         CreateMap<UpdateDTOFinancialCategory, FinancialCategory>()
-            .ForMember(
-                m => m.UserId,
-                opt => opt.MapFrom(_ => serviceCurrentUser.User.Id)
-            )
+            .IncludeBase<IInputDTODashboardEntity, DashboardEntity>()
             .ForMember(
                 m => m.Name,
                 opt => opt.MapFrom((src, dest) => src.Name.HasValue ? src.Name.Value : dest.Name)
