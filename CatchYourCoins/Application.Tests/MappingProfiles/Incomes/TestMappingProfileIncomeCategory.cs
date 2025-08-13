@@ -53,6 +53,19 @@ public class TestMappingProfileIncomeCategory
     }
     
     [Fact]
+    public void CheckMapping_EntityToOutputDTO()
+    {
+        // Arrange
+        IncomeCategory entity = Entity;
+
+        // Act
+        OutputDTOIncomeCategory dto = Map_EntityToOutputDTO(entity);
+
+        // Assert
+        AssertBaseProperties_EntityToOutputDTO(entity, dto);
+    }
+    
+    [Fact]
     public void CheckMapping_UpdateDTOToEntity_UpdateAllToValue()
     {
         // Arrange

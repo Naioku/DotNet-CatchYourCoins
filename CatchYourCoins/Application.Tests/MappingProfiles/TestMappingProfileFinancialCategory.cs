@@ -27,6 +27,13 @@ public abstract class TestMappingProfileFinancialCategory<TEntity, TCreateDTO, T
         newEntity.Limit.Should().Be(dto.Limit);
     }
     
+    protected void AssertBaseProperties_EntityToOutputDTO(TEntity entity, TOutputDTO dto)
+    {
+        dto.Id.Should().Be(entity.Id);
+        dto.Name.Should().Be(entity.Name);
+        dto.Limit.Should().Be(entity.Limit);
+    }
+    
     protected void AssertBaseProperties_UpdateDTOToEntity_UpdateAllToValue(TUpdateDTO dto, TEntity newEntity)
     {
         newEntity.Id.Should().Be(dto.Id);

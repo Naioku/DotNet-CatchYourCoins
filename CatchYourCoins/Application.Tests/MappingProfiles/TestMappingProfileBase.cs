@@ -32,7 +32,6 @@ public abstract class TestMappingProfileBase<TEntity, TCreateDTO, TOutputDTO, TU
     }
     
     protected TEntity Map_CreateDTOToEntity(TCreateDTO dto) => CreateMapper().Map<TEntity>(dto);
-
-    // Todo: CheckMapping_EntityToOutputDTO_Base
+    protected TOutputDTO Map_EntityToOutputDTO(TEntity entity) => CreateMapper().Map<TOutputDTO>(entity);
     protected void Map_UpdateDTOToEntity(TUpdateDTO dto, TEntity entity) => CreateMapper().Map(dto, entity);
 }

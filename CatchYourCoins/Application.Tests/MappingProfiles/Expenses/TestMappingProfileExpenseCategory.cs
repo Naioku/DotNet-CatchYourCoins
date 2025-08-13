@@ -53,6 +53,19 @@ public class TestMappingProfileExpenseCategory
     }
     
     [Fact]
+    public void CheckMapping_EntityToOutputDTO()
+    {
+        // Arrange
+        ExpenseCategory entity = Entity;
+
+        // Act
+        OutputDTOExpenseCategory dto = Map_EntityToOutputDTO(entity);
+
+        // Assert
+        AssertBaseProperties_EntityToOutputDTO(entity, dto);
+    }
+    
+    [Fact]
     public void CheckMapping_UpdateDTOToEntity_UpdateAllToValue()
     {
         // Arrange

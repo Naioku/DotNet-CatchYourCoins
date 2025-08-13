@@ -53,6 +53,19 @@ public class TestMappingProfileExpensePaymentMethod
     }
     
     [Fact]
+    public void CheckMapping_EntityToOutputDTO()
+    {
+        // Arrange
+        ExpensePaymentMethod entity = Entity;
+
+        // Act
+        OutputDTOExpensePaymentMethod dto = Map_EntityToOutputDTO(entity);
+
+        // Assert
+        AssertBaseProperties_EntityToOutputDTO(entity, dto);
+    }
+    
+    [Fact]
     public void CheckMapping_UpdateDTOToEntity_UpdateAllToValue()
     {
         // Arrange
