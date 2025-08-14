@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using Application.Dashboard.DTOs.CreateDTOs.Expenses;
 using Application.Dashboard.DTOs.OutputDTOs.Expenses;
-using Application.Dashboard.DTOs.UpdateDTOs;
 using Application.Dashboard.DTOs.UpdateDTOs.Expenses;
 using Application.MappingProfiles.Expenses;
 using AutoMapper;
@@ -74,8 +73,8 @@ public class TestMappingProfileExpensePaymentMethod
         UpdateDTOExpensePaymentMethod dto = new()
         {
             Id = oldEntity.Id,
-            Name = new Optional<string>("Test2"),
-            Limit = new Optional<decimal?>(200),
+            SetName = "Test2",
+            SetLimit = 200,
         };
 
         // Act
@@ -93,7 +92,7 @@ public class TestMappingProfileExpensePaymentMethod
         UpdateDTOExpensePaymentMethod dto = new()
         {
             Id = oldEntity.Id,
-            Limit = new Optional<decimal?>(200),
+            SetLimit = 200,
         };
 
         // Act

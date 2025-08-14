@@ -50,8 +50,7 @@ public class RepositoryCRUD<TEntity>(
                 .Take(specification.Take);
         }
 
-        return await query.AsNoTracking().ToListAsync();
-        // return await query.ToListAsync();
+        return await query.ToListAsync();
     }
 
     public void Update(IEnumerable<TEntity> entities) => dbContext.Set<TEntity>().UpdateRange(entities);

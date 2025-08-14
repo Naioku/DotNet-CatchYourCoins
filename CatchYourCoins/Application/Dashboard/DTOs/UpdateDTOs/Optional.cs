@@ -15,4 +15,6 @@ public class Optional<T>
     {
         HasValue = false;
     }
+
+    public override string ToString() => (Value?.ToString() ?? base.ToString()) ?? string.Empty;
 }

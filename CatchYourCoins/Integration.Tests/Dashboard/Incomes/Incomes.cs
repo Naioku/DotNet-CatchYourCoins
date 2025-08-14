@@ -1,7 +1,6 @@
 ﻿using Application.Dashboard.Commands;
 using Application.Dashboard.DTOs.CreateDTOs.Incomes;
 using Application.Dashboard.DTOs.OutputDTOs.Incomes;
-using Application.Dashboard.DTOs.UpdateDTOs;
 using Application.Dashboard.DTOs.UpdateDTOs.Incomes;
 using Application.Dashboard.Queries;
 using Domain;
@@ -241,8 +240,8 @@ public class Incomes(TestFixture fixture) : TestBase(fixture)
                 new UpdateDTOIncome
                 {
                     Id = entities[0].Id,
-                    Amount = new Optional<decimal>(200),
-                    Description = new Optional<string?>("Test2"),
+                    SetAmount = 200,
+                    SetDescription = "Test2",
                 }
             ]
         };

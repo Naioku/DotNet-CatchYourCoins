@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using Application.Dashboard.DTOs.CreateDTOs.Incomes;
 using Application.Dashboard.DTOs.OutputDTOs.Incomes;
-using Application.Dashboard.DTOs.UpdateDTOs;
 using Application.Dashboard.DTOs.UpdateDTOs.Incomes;
 using Application.MappingProfiles.Incomes;
 using AutoMapper;
@@ -74,8 +73,8 @@ public class TestMappingProfileIncomeCategory
         UpdateDTOIncomeCategory dto = new()
         {
             Id = oldEntity.Id,
-            Name = new Optional<string>("Test2"),
-            Limit = new Optional<decimal?>(200),
+            SetName = "Test2",
+            SetLimit = 200,
         };
 
         // Act
@@ -93,7 +92,7 @@ public class TestMappingProfileIncomeCategory
         UpdateDTOIncomeCategory dto = new()
         {
             Id = oldEntity.Id,
-            Limit = new Optional<decimal?>(200),
+            SetLimit = 200,
         };
 
         // Act

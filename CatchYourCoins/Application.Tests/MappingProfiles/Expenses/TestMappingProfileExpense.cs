@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using Application.Dashboard.DTOs.CreateDTOs.Expenses;
 using Application.Dashboard.DTOs.OutputDTOs.Expenses;
-using Application.Dashboard.DTOs.UpdateDTOs;
 using Application.Dashboard.DTOs.UpdateDTOs.Expenses;
 using Application.MappingProfiles.Expenses;
 using AutoMapper;
@@ -97,11 +96,11 @@ public class TestMappingProfileExpense
         UpdateDTOExpense dto = new()
         {
             Id = oldEntity.Id,
-            Amount = new Optional<decimal>(200),
-            Description = new Optional<string?>("Test2"),
-            PaymentMethodId = new Optional<int?>(2),
-            CategoryId = new Optional<int?>(2),
-            Date = new Optional<DateTime>(oldEntity.Date - TimeSpan.FromDays(1)),
+            SetAmount = 200,
+            SetDescription = "Test2",
+            SetPaymentMethodId = 2,
+            SetCategoryId = 2,
+            SetDate = oldEntity.Date - TimeSpan.FromDays(1),
         };
 
         // Act
@@ -121,9 +120,9 @@ public class TestMappingProfileExpense
         UpdateDTOExpense dto = new()
         {
             Id = oldEntity.Id,
-            Description = new Optional<string?>(null),
-            PaymentMethodId = new Optional<int?>(null),
-            CategoryId = new Optional<int?>(null),
+            SetDescription = null,
+            SetPaymentMethodId = null,
+            SetCategoryId = null,
         };
 
         // Act

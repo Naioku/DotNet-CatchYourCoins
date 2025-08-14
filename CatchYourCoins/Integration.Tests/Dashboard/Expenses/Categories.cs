@@ -1,5 +1,7 @@
 ﻿using Application.Dashboard.Commands;
 using Application.Dashboard.DTOs.CreateDTOs.Expenses;
+using Application.Dashboard.DTOs.UpdateDTOs;
+using Application.Dashboard.DTOs.UpdateDTOs.Expenses;
 using Domain;
 using Domain.Dashboard.Entities.Expenses;
 using Domain.Dashboard.Specifications.Expenses;
@@ -84,5 +86,60 @@ public class Categories(TestFixture fixture) : TestBase(fixture)
         entity.Should().NotBeNull();
         entity.Category.Should().BeNull();
         entity.CategoryId.Should().BeNull();
+    }
+    
+    [Fact]
+    public async Task UpdateExpenseCategory_WithValidData_ShouldUpdateExpenseInDB()
+    {
+        // Arrange
+        IReadOnlyList<ExpenseCategory> entities =
+        [
+            new()
+            {
+                UserId = _testServiceCurrentUser.User.Id,
+                Name = "Test1",
+                Limit = 1000,
+            }
+        ];
+        await dbContext.Set<ExpenseCategory>().AddRangeAsync(entities);
+        await dbContext.SaveChangesAsync();
+        dbContext.ChangeTracker.Clear();
+
+        CommandCRUDUpdate<ExpenseCategory, UpdateDTOExpenseCategory> command = new()
+        {
+            Specification = SpecificationExpenseCategory.GetBuilder()
+                .WithIdRange(entities.Select(e => e.Id).ToList())
+                .Build(),
+            Data =
+            [
+                new UpdateDTOExpenseCategory
+                {
+                    Id = entities[0].Id,
+                    SetName = "Test2",
+                    SetLimit = 2000,
+                }
+            ]
+        };
+
+        // Act
+        Result result = await mediator.Send(command);
+        dbContext.ChangeTracker.Clear();
+
+        // Assert
+        result.IsSuccess.Should().BeTrue();
+        result.Errors.Should().BeEmpty();
+
+        IReadOnlyList<ExpenseCategory> entitiesUpdated = await dbContext.Set<ExpenseCategory>()
+            .ToListAsync();
+
+        entitiesUpdated.Should().NotBeEmpty();
+
+        for (var i = 0; i < entitiesUpdated.Count; i++)
+        {
+            ExpenseCategory entity = entitiesUpdated[i];
+            entity.UserId.Should().Be(_testServiceCurrentUser.User.Id);
+            entity.Name.Should().Be(command.Data[i].Name.Value);
+            entity.Limit.Should().Be(command.Data[i].Limit.Value);
+        }
     }
 }

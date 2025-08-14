@@ -1,7 +1,6 @@
 ﻿using Application.Dashboard.Commands;
 using Application.Dashboard.DTOs.CreateDTOs.Expenses;
 using Application.Dashboard.DTOs.OutputDTOs.Expenses;
-using Application.Dashboard.DTOs.UpdateDTOs;
 using Application.Dashboard.DTOs.UpdateDTOs.Expenses;
 using Application.Dashboard.Queries;
 using Domain;
@@ -286,6 +285,7 @@ public class Expenses(TestFixture fixture) : TestBase(fixture)
         // Arrange
         Assert.NotNull(_categoryUser1);
         Assert.NotNull(_paymentMethodUser1);
+        Assert.NotNull(_paymentMethodUser2);
         IReadOnlyList<Expense> entities =
         [
             new()
@@ -312,9 +312,9 @@ public class Expenses(TestFixture fixture) : TestBase(fixture)
                 new UpdateDTOExpense
                 {
                     Id = entities[0].Id,
-                    Amount = new Optional<decimal>(200),
-                    Description = new Optional<string?>("Test2"),
-                    PaymentMethodId = new Optional<int?>(_paymentMethodUser1.Id),
+                    SetAmount = 200,
+                    SetDescription = "Test2",
+                    SetPaymentMethodId = _paymentMethodUser2.Id,
                 }
             ]
         };
@@ -343,7 +343,7 @@ public class Expenses(TestFixture fixture) : TestBase(fixture)
             expense.Description.Should().Be(command.Data[i].Description.Value);
             expense.CategoryId.Should().Be(_categoryUser1.Id);
             expense.Category.Should().NotBeNull();
-            expense.PaymentMethodId.Should().Be(_paymentMethodUser1.Id);
+            expense.PaymentMethodId.Should().Be(_paymentMethodUser2.Id);
             expense.PaymentMethod.Should().NotBeNull();
         }
     }

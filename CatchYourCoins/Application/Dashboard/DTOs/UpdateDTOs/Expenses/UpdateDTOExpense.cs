@@ -2,5 +2,10 @@
 
 public class UpdateDTOExpense : UpdateDTOFinancialOperation
 {
-    public Optional<int?> PaymentMethodId { get; init; } = new();
+    public Optional<int?> PaymentMethodId { get; private set; } = new();
+
+    public int? SetPaymentMethodId
+    {
+        init => PaymentMethodId = new Optional<int?>(value);
+    }
 }

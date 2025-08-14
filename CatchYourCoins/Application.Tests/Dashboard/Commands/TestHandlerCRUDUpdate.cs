@@ -1,16 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Dashboard.Commands;
-using Application.Extensions;
 using Application.Mapping;
 using Application.Tests.Factories;
 using Application.Tests.Factories.DTOs;
 using Application.Tests.TestObjects;
 using Application.Tests.TestObjects.Entity;
-using AutoMapper;
 using Domain;
 using Domain.Dashboard.Specifications;
 using Domain.Interfaces.Repositories;
