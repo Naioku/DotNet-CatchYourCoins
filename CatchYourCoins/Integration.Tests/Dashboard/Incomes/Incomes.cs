@@ -9,7 +9,6 @@ using Domain.Dashboard.Entities.Incomes;
 using Domain.Dashboard.Specifications.Incomes;
 using Domain.Interfaces.Services;
 using FluentAssertions;
-using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -17,7 +16,6 @@ namespace Integration.Dashboard.Incomes;
 
 public class Incomes(TestFixture fixture) : TestBase(fixture)
 {
-    private readonly IMediator _mediator = fixture.ServiceProvider.GetRequiredService<IMediator>();
     private readonly IServiceCurrentUser _testServiceCurrentUser = fixture.ServiceProvider.GetRequiredService<IServiceCurrentUser>();
 
     private IncomeCategory? _categoryUser1;
@@ -65,7 +63,7 @@ public class Incomes(TestFixture fixture) : TestBase(fixture)
         };
     
         // Act
-        Result result = await _mediator.Send(command);
+        Result result = await mediator.Send(command);
     
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -98,7 +96,7 @@ public class Incomes(TestFixture fixture) : TestBase(fixture)
         };
     
         // Act
-        Result result = await _mediator.Send(command);
+        Result result = await mediator.Send(command);
         
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -130,7 +128,7 @@ public class Incomes(TestFixture fixture) : TestBase(fixture)
         };
     
         // Act
-        Result result = await _mediator.Send(command);
+        Result result = await mediator.Send(command);
         
         // Assert
         result.IsSuccess.Should().BeFalse();
@@ -163,7 +161,7 @@ public class Incomes(TestFixture fixture) : TestBase(fixture)
         };
     
         // Act
-        Result<IReadOnlyList<OutputDTOIncome>> result = await _mediator.Send(query);
+        Result<IReadOnlyList<OutputDTOIncome>> result = await mediator.Send(query);
     
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -205,7 +203,7 @@ public class Incomes(TestFixture fixture) : TestBase(fixture)
         };
     
         // Act
-        Result<IReadOnlyList<OutputDTOIncome>> result = await _mediator.Send(query);
+        Result<IReadOnlyList<OutputDTOIncome>> result = await mediator.Send(query);
     
         // Assert
         result.IsSuccess.Should().BeFalse();
@@ -250,7 +248,7 @@ public class Incomes(TestFixture fixture) : TestBase(fixture)
         };
 
         // Act
-        Result result = await _mediator.Send(command);
+        Result result = await mediator.Send(command);
         dbContext.ChangeTracker.Clear();
 
         // Assert

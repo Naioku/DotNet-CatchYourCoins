@@ -5,8 +5,6 @@ using Domain.Dashboard.Entities.Expenses;
 using Domain.Dashboard.Specifications.Expenses;
 using Domain.Interfaces.Services;
 using FluentAssertions;
-using Infrastructure.Persistence;
-using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -14,8 +12,6 @@ namespace Integration.Dashboard.Expenses;
 
 public class Categories(TestFixture fixture) : TestBase(fixture)
 {
-    private readonly IMediator _mediator = fixture.ServiceProvider.GetRequiredService<IMediator>();
-    private readonly AppDbContext _dbContext = fixture.ServiceProvider.GetRequiredService<AppDbContext>();
     private readonly IServiceCurrentUser _testServiceCurrentUser = fixture.ServiceProvider.GetRequiredService<IServiceCurrentUser>();
 
     [Fact]
@@ -32,13 +28,13 @@ public class Categories(TestFixture fixture) : TestBase(fixture)
         };
 
         // Act
-        Result result = await _mediator.Send(command);
+        Result result = await mediator.Send(command);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
         result.Errors.Should().BeEmpty();
 
-        ExpenseCategory? category = await _dbContext.Set<ExpenseCategory>().FirstOrDefaultAsync();
+        ExpenseCategory? category = await dbContext.Set<ExpenseCategory>().FirstOrDefaultAsync();
 
         category.Should().NotBeNull();
         category.UserId.Should().Be(_testServiceCurrentUser.User.Id);
@@ -77,13 +73,13 @@ public class Categories(TestFixture fixture) : TestBase(fixture)
         };
 
         // Act
-        Result result = await _mediator.Send(command);
+        Result result = await mediator.Send(command);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
         result.Errors.Should().BeEmpty();
 
-        Expense? entity = await _dbContext.Set<Expense>().FirstOrDefaultAsync();
+        Expense? entity = await dbContext.Set<Expense>().FirstOrDefaultAsync();
 
         entity.Should().NotBeNull();
         entity.Category.Should().BeNull();

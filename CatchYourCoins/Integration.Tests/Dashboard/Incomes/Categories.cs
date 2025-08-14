@@ -5,8 +5,6 @@ using Domain.Dashboard.Entities.Incomes;
 using Domain.Dashboard.Specifications.Incomes;
 using Domain.Interfaces.Services;
 using FluentAssertions;
-using Infrastructure.Persistence;
-using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -14,8 +12,6 @@ namespace Integration.Dashboard.Incomes;
 
 public class Categories(TestFixture fixture) : TestBase(fixture)
 {
-    private readonly IMediator _mediator = fixture.ServiceProvider.GetRequiredService<IMediator>();
-    private readonly AppDbContext _dbContext = fixture.ServiceProvider.GetRequiredService<AppDbContext>();
     private readonly IServiceCurrentUser _testServiceCurrentUser = fixture.ServiceProvider.GetRequiredService<IServiceCurrentUser>();
 
     [Fact]
@@ -32,13 +28,13 @@ public class Categories(TestFixture fixture) : TestBase(fixture)
         };
 
         // Act
-        Result result = await _mediator.Send(command);
+        Result result = await mediator.Send(command);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
         result.Errors.Should().BeEmpty();
         
-        IncomeCategory? category = await _dbContext.Set<IncomeCategory>().FirstOrDefaultAsync();
+        IncomeCategory? category = await dbContext.Set<IncomeCategory>().FirstOrDefaultAsync();
 
         category.Should().NotBeNull();
         category.UserId.Should().Be(_testServiceCurrentUser.User.Id);
@@ -77,13 +73,13 @@ public class Categories(TestFixture fixture) : TestBase(fixture)
         };
         
         // Act
-        Result result = await _mediator.Send(command);
+        Result result = await mediator.Send(command);
         
         // Assert
         result.IsSuccess.Should().BeTrue();
         result.Errors.Should().BeEmpty();
         
-        Income? entity = await _dbContext.Set<Income>().FirstOrDefaultAsync();
+        Income? entity = await dbContext.Set<Income>().FirstOrDefaultAsync();
 
         entity.Should().NotBeNull();
         entity.Category.Should().BeNull();

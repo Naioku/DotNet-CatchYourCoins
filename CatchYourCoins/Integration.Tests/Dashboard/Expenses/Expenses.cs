@@ -9,7 +9,6 @@ using Domain.Dashboard.Entities.Expenses;
 using Domain.Dashboard.Specifications.Expenses;
 using Domain.Interfaces.Services;
 using FluentAssertions;
-using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -17,7 +16,6 @@ namespace Integration.Dashboard.Expenses;
 
 public class Expenses(TestFixture fixture) : TestBase(fixture)
 {
-    private readonly IMediator _mediator = fixture.ServiceProvider.GetRequiredService<IMediator>();
     private readonly IServiceCurrentUser _testServiceCurrentUser = fixture.ServiceProvider.GetRequiredService<IServiceCurrentUser>();
 
     private ExpenseCategory? _categoryUser1;
@@ -86,7 +84,7 @@ public class Expenses(TestFixture fixture) : TestBase(fixture)
         };
 
         // Act
-        Result result = await _mediator.Send(command);
+        Result result = await mediator.Send(command);
         dbContext.ChangeTracker.Clear();
 
         // Assert
@@ -122,7 +120,7 @@ public class Expenses(TestFixture fixture) : TestBase(fixture)
         };
 
         // Act
-        Result result = await _mediator.Send(command);
+        Result result = await mediator.Send(command);
         dbContext.ChangeTracker.Clear();
 
         // Assert
@@ -158,7 +156,7 @@ public class Expenses(TestFixture fixture) : TestBase(fixture)
         };
 
         // Act
-        Result result = await _mediator.Send(command);
+        Result result = await mediator.Send(command);
         dbContext.ChangeTracker.Clear();
 
         // Assert
@@ -193,7 +191,7 @@ public class Expenses(TestFixture fixture) : TestBase(fixture)
         };
 
         // Act
-        Result result = await _mediator.Send(command);
+        Result result = await mediator.Send(command);
 
         // Assert
         result.IsSuccess.Should().BeFalse();
@@ -228,7 +226,7 @@ public class Expenses(TestFixture fixture) : TestBase(fixture)
         };
 
         // Act
-        Result<IReadOnlyList<OutputDTOExpense>> result = await _mediator.Send(query);
+        Result<IReadOnlyList<OutputDTOExpense>> result = await mediator.Send(query);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -274,7 +272,7 @@ public class Expenses(TestFixture fixture) : TestBase(fixture)
         };
 
         // Act
-        Result<IReadOnlyList<OutputDTOExpense>> result = await _mediator.Send(query);
+        Result<IReadOnlyList<OutputDTOExpense>> result = await mediator.Send(query);
 
         // Assert
         result.IsSuccess.Should().BeFalse();
@@ -322,7 +320,7 @@ public class Expenses(TestFixture fixture) : TestBase(fixture)
         };
 
         // Act
-        Result result = await _mediator.Send(command);
+        Result result = await mediator.Send(command);
         dbContext.ChangeTracker.Clear();
 
         // Assert

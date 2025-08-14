@@ -3,7 +3,6 @@ using Domain.Interfaces.Services;
 using Infrastructure.Extensions;
 using Infrastructure.Persistence;
 using JetBrains.Annotations;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
