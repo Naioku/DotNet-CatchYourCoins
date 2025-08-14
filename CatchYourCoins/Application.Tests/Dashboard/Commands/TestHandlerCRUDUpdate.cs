@@ -66,7 +66,7 @@ public class TestHandlerCRUDUpdate : TestCQRSHandlerBase<HandlerCRUDUpdate<TestO
             ))
             .Returns(_entitiesNew);
         RegisterMock<IMapperExtended, Mock<IMapperExtended>>(mockMapper);
-        
+
         base.SetUpMocks();
     }
 
@@ -76,7 +76,10 @@ public class TestHandlerCRUDUpdate : TestCQRSHandlerBase<HandlerCRUDUpdate<TestO
         ISpecificationDashboardEntity<TestObjEntity> mockSpecification = GetMock<ISpecificationDashboardEntity<TestObjEntity>>().Object;
 
         GetMock<IRepository>()
-            .Setup(m => m.GetAsync(It.Is<ISpecificationDashboardEntity<TestObjEntity>>(s => s == mockSpecification)))
+            .Setup(m => m.GetAsync(
+                It.Is<ISpecificationDashboardEntity<TestObjEntity>>(s => s == mockSpecification),
+                It.IsAny<CancellationToken>())
+            )
             .ReturnsAsync(_entitiesOld);
 
         Command command = new()
@@ -109,7 +112,10 @@ public class TestHandlerCRUDUpdate : TestCQRSHandlerBase<HandlerCRUDUpdate<TestO
         ISpecificationDashboardEntity<TestObjEntity> mockSpecification = GetMock<ISpecificationDashboardEntity<TestObjEntity>>().Object;
 
         GetMock<IRepository>()
-            .Setup(m => m.GetAsync(It.Is<ISpecificationDashboardEntity<TestObjEntity>>(s => s == mockSpecification)))
+            .Setup(m => m.GetAsync(
+                It.Is<ISpecificationDashboardEntity<TestObjEntity>>(s => s == mockSpecification),
+                It.IsAny<CancellationToken>())
+            )
             .ReturnsAsync([]);
 
         Command command = new()

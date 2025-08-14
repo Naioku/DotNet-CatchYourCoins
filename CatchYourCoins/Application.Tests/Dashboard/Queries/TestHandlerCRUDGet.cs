@@ -65,16 +65,17 @@ public class TestHandlerCRUDGet : TestCQRSHandlerBase<HandlerCRUDGet<TestObjEnti
     {
         // Arrange
         ISpecificationDashboardEntity<TestObjEntity> mockSpecification = GetMock<ISpecificationDashboardEntity<TestObjEntity>>().Object;
-        
+
         Query query = new()
         {
             Specification = mockSpecification,
         };
-        
+
         GetMock<IRepository>()
-            .Setup(m => m.GetAsync(It.Is<ISpecificationDashboardEntity<TestObjEntity>>(
-                s => s == mockSpecification
-            )))
+            .Setup(m => m.GetAsync(
+                It.Is<ISpecificationDashboardEntity<TestObjEntity>>(s => s == mockSpecification),
+                It.IsAny<CancellationToken>()
+            ))
             .ReturnsAsync(_entities);
 
         // Act
@@ -94,16 +95,17 @@ public class TestHandlerCRUDGet : TestCQRSHandlerBase<HandlerCRUDGet<TestObjEnti
     {
         // Arrange
         ISpecificationDashboardEntity<TestObjEntity> mockSpecification = GetMock<ISpecificationDashboardEntity<TestObjEntity>>().Object;
-        
+
         Query query = new()
         {
             Specification = mockSpecification,
         };
 
         GetMock<IRepository>()
-            .Setup(m => m.GetAsync(It.Is<ISpecificationDashboardEntity<TestObjEntity>>(
-                s => s == mockSpecification
-            )))
+            .Setup(m => m.GetAsync(
+                It.Is<ISpecificationDashboardEntity<TestObjEntity>>(s => s == mockSpecification),
+                It.IsAny<CancellationToken>()
+            ))
             .ReturnsAsync([]);
 
         // Act

@@ -21,7 +21,7 @@ public class HandlerCRUDGet<TEntity, TDTO>(
 {
     public async Task<Result<IReadOnlyList<TDTO>>> Handle(QueryCRUDGet<TEntity, TDTO> request, CancellationToken cancellationToken)
     {
-        IReadOnlyList<TEntity> entity = await repository.GetAsync(request.Specification);
+        IReadOnlyList<TEntity> entity = await repository.GetAsync(request.Specification, cancellationToken);
 
         return !entity.Any()
             ? Result<IReadOnlyList<TDTO>>.Failure(GetFailureMessages())

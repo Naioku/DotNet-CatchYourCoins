@@ -19,7 +19,7 @@ public class HandlerCRUDDelete<TEntity>(
 {
     public async Task<Result> Handle(CommandCRUDDelete<TEntity> request, CancellationToken cancellationToken)
     {
-        IReadOnlyList<TEntity> expense = await repository.GetAsync(request.Specification);
+        IReadOnlyList<TEntity> expense = await repository.GetAsync(request.Specification, cancellationToken);
         if (!expense.Any())
         {
             return Result.Failure(GetFailureMessages());

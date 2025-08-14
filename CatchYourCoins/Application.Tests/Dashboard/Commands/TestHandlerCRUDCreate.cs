@@ -74,7 +74,10 @@ public class TestHandlerCRUDCreate : TestCQRSHandlerBase<HandlerCRUDCreate<TestO
         result.Errors.Should().BeNullOrEmpty();
 
         GetMock<IRepository>().Verify(
-            m => m.CreateAsync(It.Is<TestObjEntity>(entity => entity == _entity)),
+            m => m.CreateAsync(
+                It.Is<TestObjEntity>(entity => entity == _entity),
+                It.IsAny<CancellationToken>()
+            ),
             Times.Once
         );
         GetMock<IUnitOfWork>().Verify(
@@ -88,7 +91,10 @@ public class TestHandlerCRUDCreate : TestCQRSHandlerBase<HandlerCRUDCreate<TestO
     {
         // Arrange
         GetMock<IRepository>()
-            .Setup(m => m.CreateAsync(It.IsAny<TestObjEntity>()))
+            .Setup(m => m.CreateAsync(
+                It.IsAny<TestObjEntity>(),
+                It.IsAny<CancellationToken>()
+            ))
             .ThrowsAsync(new Exception());
 
         Command command = new() { Data = _dto };

@@ -35,7 +35,7 @@ public class HandlerCRUDCreate<TEntity, TDTO>(
     {
         try
         {
-            await repository.CreateAsync(mapper.Map<TEntity>(request.Data));
+            await repository.CreateAsync(mapper.Map<TEntity>(request.Data), cancellationToken);
             await unitOfWork.SaveChangesAsync(cancellationToken);
             return Result.Success();
         }

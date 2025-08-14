@@ -39,7 +39,7 @@ public class HandlerCRUDCreateRange<TEntity, TDTO>(
         try
         {
             IList<TEntity> entities = mapper.Map<IList<TEntity>>(request.Data);
-            await repository.CreateRangeAsync(entities);
+            await repository.CreateRangeAsync(entities, cancellationToken);
             await unitOfWork.SaveChangesAsync(cancellationToken);
             return Result.Success();
         }

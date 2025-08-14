@@ -33,7 +33,10 @@ public abstract class TestHandlerCRUDDelete : TestCQRSHandlerBase<HandlerCRUDDel
 
         TestObjEntity entity = FactoryEntity.CreateEntity(FactoryUsers.DefaultUser1Authenticated);
         GetMock<IRepository>()
-            .Setup(m => m.GetAsync(It.Is<ISpecificationDashboardEntity<TestObjEntity>>(s => s == mockSpecification)))
+            .Setup(m => m.GetAsync(
+                It.Is<ISpecificationDashboardEntity<TestObjEntity>>(s => s == mockSpecification),
+                It.IsAny<CancellationToken>()
+            ))
             .ReturnsAsync([entity]);
 
         Command command = new() { Specification = mockSpecification };
@@ -61,9 +64,10 @@ public abstract class TestHandlerCRUDDelete : TestCQRSHandlerBase<HandlerCRUDDel
         ISpecificationDashboardEntity<TestObjEntity> mockSpecification = GetMock<ISpecificationDashboardEntity<TestObjEntity>>().Object;
 
         GetMock<IRepository>()
-            .Setup(m => m.GetAsync(It.Is<ISpecificationDashboardEntity<TestObjEntity>>(
-                s => s == mockSpecification
-            )))
+            .Setup(m => m.GetAsync(
+                It.Is<ISpecificationDashboardEntity<TestObjEntity>>(s => s == mockSpecification),
+                It.IsAny<CancellationToken>()
+            ))
             .ReturnsAsync([]);
 
         Command command = new() { Specification = mockSpecification };

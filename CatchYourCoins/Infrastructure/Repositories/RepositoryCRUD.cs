@@ -13,12 +13,13 @@ public class RepositoryCRUD<TEntity>(
     IServiceCurrentUser serviceCurrentUser) : IRepositoryCRUD<TEntity>
     where TEntity : DashboardEntity
 {
-    public async Task CreateAsync(TEntity entity) => await dbContext.Set<TEntity>().AddAsync(entity);
+    public async Task CreateAsync(TEntity entity, CancellationToken cancellationToken) =>
+        await dbContext.Set<TEntity>().AddAsync(entity, cancellationToken);
 
-    public async Task CreateRangeAsync(IEnumerable<TEntity> entities) =>
-        await dbContext.Set<TEntity>().AddRangeAsync(entities);
+    public async Task CreateRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken) =>
+        await dbContext.Set<TEntity>().AddRangeAsync(entities, cancellationToken);
 
-    public async Task<List<TEntity>> GetAsync(ISpecificationDashboardEntity<TEntity> specification)
+    public async Task<List<TEntity>> GetAsync(ISpecificationDashboardEntity<TEntity> specification, CancellationToken cancellationToken)
     {
         IQueryable<TEntity> query = dbContext.Set<TEntity>()
             .WhereAuthorized(serviceCurrentUser.User.Id)
@@ -50,7 +51,7 @@ public class RepositoryCRUD<TEntity>(
                 .Take(specification.Take);
         }
 
-        return await query.ToListAsync();
+        return await query.ToListAsync(cancellationToken: cancellationToken);
     }
 
     public void Update(IEnumerable<TEntity> entities) => dbContext.Set<TEntity>().UpdateRange(entities);

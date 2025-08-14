@@ -44,7 +44,7 @@ public class HandlerCRUDUpdate<TEntity, TDTO>(
     {
         try
         {
-            IEnumerable<TEntity> entities = await repository.GetAsync(request.Specification);
+            IEnumerable<TEntity> entities = await repository.GetAsync(request.Specification, cancellationToken);
             if (!entities.Any())
             {
                 return Result.Failure(new Dictionary<string, string>

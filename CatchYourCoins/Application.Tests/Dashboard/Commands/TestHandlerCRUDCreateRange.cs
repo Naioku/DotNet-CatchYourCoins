@@ -25,7 +25,7 @@ public abstract class TestHandlerCRUDCreateRange : TestCQRSHandlerBase<HandlerCR
 {
     private List<TestObjEntity> _entities;
     private List<TestObjDTO> _dtos;
-    
+
     protected override void InitializeFields()
     {
         base.InitializeFields();
@@ -33,7 +33,7 @@ public abstract class TestHandlerCRUDCreateRange : TestCQRSHandlerBase<HandlerCR
         _entities = FactoryEntity.CreateEntities(FactoryUsers.DefaultUser1Authenticated, 5);
         _dtos = factoryDTO.CreateDTOs(_entities);
     }
-    
+
     protected override void CleanUp()
     {
         base.CleanUp();
@@ -64,7 +64,9 @@ public abstract class TestHandlerCRUDCreateRange : TestCQRSHandlerBase<HandlerCR
 
         // Assert
         GetMock<IRepository>().Verify(
-            m => m.CreateRangeAsync(It.Is<IEnumerable<TestObjEntity>>(entities => entities == _entities)),
+            m => m.CreateRangeAsync(It.Is<IEnumerable<TestObjEntity>>(entities => entities == _entities),
+                It.IsAny<CancellationToken>()
+            ),
             Times.Once
         );
         GetMock<IUnitOfWork>().Verify(
@@ -78,14 +80,17 @@ public abstract class TestHandlerCRUDCreateRange : TestCQRSHandlerBase<HandlerCR
     {
         // Arrange
         GetMock<IRepository>()
-            .Setup(m => m.CreateRangeAsync(It.IsAny<IList<TestObjEntity>>()))
+            .Setup(m => m.CreateRangeAsync(
+                It.IsAny<IList<TestObjEntity>>(),
+                It.IsAny<CancellationToken>()
+            ))
             .ThrowsAsync(new Exception());
-        
+
         Command command = new() { Data = _dtos };
 
         // Act
         Result result = await Handler.Handle(command, CancellationToken.None);
-        
+
         // Assert
         result.IsSuccess.Should().BeFalse();
         result.Errors.Should().NotBeNullOrEmpty();
@@ -98,12 +103,12 @@ public abstract class TestHandlerCRUDCreateRange : TestCQRSHandlerBase<HandlerCR
         GetMock<IUnitOfWork>()
             .Setup(m => m.SaveChangesAsync(It.IsAny<CancellationToken>()))
             .ThrowsAsync(new Exception());
-        
+
         Command command = new() { Data = _dtos };
 
         // Act
         Result result = await Handler.Handle(command, CancellationToken.None);
-        
+
         // Assert
         result.IsSuccess.Should().BeFalse();
         result.Errors.Should().NotBeNullOrEmpty();
