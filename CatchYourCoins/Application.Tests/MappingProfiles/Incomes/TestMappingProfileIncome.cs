@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using Application.Dashboard.DTOs.InputDTOs.Incomes;
+using Application.Dashboard.DTOs.CreateDTOs.Incomes;
 using Application.Dashboard.DTOs.OutputDTOs.Incomes;
+using Application.Dashboard.DTOs.UpdateDTOs.Incomes;
 using Application.MappingProfiles.Incomes;
 using AutoMapper;
 using Domain.Dashboard.Entities.Incomes;
+using Domain.Interfaces.Services;
 using JetBrains.Annotations;
 using Xunit;
 
@@ -14,17 +16,27 @@ namespace Application.Tests.MappingProfiles.Incomes;
 public class TestMappingProfileIncome
     : TestMappingProfileFinancialOperation<
         Income,
-        InputDTOIncome,
+        CreateDTOIncome,
         OutputDTOIncome,
+        UpdateDTOIncome,
         IncomeCategory
     >
 {
-    private readonly InputDTOIncome _dto = new()
+    private Income Entity => new()
     {
+        Id = 1,
         Amount = 100,
-        Date = DateTime.Now,
+        Date = DateTime.Today,
         Description = "Test",
         CategoryId = 1,
+        Category = new IncomeCategory
+        {
+            Id = 1,
+            Name = "Test",
+            Limit = 100,
+            UserId = FactoryUsers.DefaultUser1Anonymous.Id,
+        },
+        UserId = GetMock<IServiceCurrentUser>().Object.User.Id,
     };
 
     protected override void AddRequiredProfiles(IList<Profile> profiles)
@@ -33,17 +45,93 @@ public class TestMappingProfileIncome
         profiles.Add(new MappingProfileIncome());
     }
 
-    protected override InputDTOIncome GetDTO() => _dto;
-
     [Fact]
     public void CheckMapping_InputDTOToEntity()
     {
-        CheckMapping_InputDTOToEntity_Base((entity) =>
+        // Arrange
+        CreateDTOIncome dto = new()
         {
-            Assert.Equal(_dto.Amount, entity.Amount);
-            Assert.Equal(_dto.Date, entity.Date);
-            Assert.Equal(_dto.Description, entity.Description);
-            Assert.Equal(_dto.CategoryId, entity.CategoryId);
-        });
+            Amount = 100,
+            Date = DateTime.Now,
+            Description = "Test",
+            CategoryId = 1,
+        };
+        
+        // Act
+        Income entity = Map_CreateDTOToEntity(dto);
+        
+        // Assert
+        AssertBaseProperties_CreateDTOToEntity(dto, entity);
+    }
+    
+    [Fact]
+    public void CheckMapping_EntityToOutputDTO()
+    {
+        // Arrange
+        Income entity = Entity;
+
+        // Act
+        OutputDTOIncome dto = Map_EntityToOutputDTO(entity);
+
+        // Assert
+        AssertBaseProperties_EntityToOutputDTO(entity, dto);
+    }
+    
+    [Fact]
+    public void CheckMapping_UpdateDTOToEntity_UpdateAllToValue()
+    {
+        // Arrange
+        Income oldEntity = Entity;
+        Income newEntity = Entity;
+        UpdateDTOIncome dto = new()
+        {
+            Id = oldEntity.Id,
+            SetAmount = 200,
+            SetDescription = "Test2",
+            SetCategoryId = 2,
+            SetDate = oldEntity.Date - TimeSpan.FromDays(1),
+        };
+
+        // Act
+        Map_UpdateDTOToEntity(dto, newEntity);
+
+        // Assert
+        AssertBaseProperties_UpdateDTOToEntity_UpdateAllToValue(dto, oldEntity, newEntity);
+    }
+
+    [Fact]
+    public void CheckMapping_UpdateDTOToEntity_UpdateAllPossibleToNull()
+    {
+        Income oldEntity = Entity;
+        Income newEntity = Entity;
+        UpdateDTOIncome dto = new()
+        {
+            Id = oldEntity.Id,
+            SetDescription = null,
+            SetCategoryId = null,
+        };
+
+        // Act
+        Map_UpdateDTOToEntity(dto, newEntity);
+
+        // Assert
+        AssertBaseProperties_UpdateDTOToEntity_UpdateAllPossibleToNull(dto, oldEntity, newEntity);
+    }
+
+    [Fact]
+    public void CheckMapping_UpdateDTOToEntity_UpdateNone()
+    {
+        Income oldEntity = Entity;
+        Income newEntity = Entity;
+        UpdateDTOIncome dto = new()
+        {
+            Id = oldEntity.Id,
+        };
+
+        // Act
+        Map_UpdateDTOToEntity(dto, newEntity);
+
+        // Assert
+        AssertBaseProperties_UpdateDTOToEntity_UpdateNone(dto, oldEntity, newEntity);
     }
 }

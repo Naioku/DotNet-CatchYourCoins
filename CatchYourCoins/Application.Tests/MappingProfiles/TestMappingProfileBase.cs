@@ -1,22 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Application.MappingProfiles;
 using AutoMapper;
+using Domain.Interfaces.Services;
 using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Application.Tests.MappingProfiles;
 
-public abstract class TestMappingProfileBase<TEntity, TInputDTO, TOutputDTO> : TestBase
+public abstract class TestMappingProfileBase<TEntity, TCreateDTO, TOutputDTO, TUpdateDTO> : TestBase
 {
     protected abstract void AddRequiredProfiles(IList<Profile> profiles);
 
-    protected abstract TInputDTO GetDTO();
-
-    protected void CheckMapping_InputDTOToEntity_Base(Action<TEntity> assertions)
+    private IMapper CreateMapper()
     {
-        // Arrange
         MapperConfiguration config = new(config =>
             {
-                List<Profile> profiles = [];
+                List<Profile> profiles =
+                [
+                    new MappingProfileDashboardEntity(GetMock<IServiceCurrentUser>().Object)
+                ];
                 AddRequiredProfiles(profiles);
                 
                 foreach (Profile profile in profiles)
@@ -26,12 +27,11 @@ public abstract class TestMappingProfileBase<TEntity, TInputDTO, TOutputDTO> : T
             },
             new NullLoggerFactory()
         );
-        IMapper mapper = config.CreateMapper();
         
-        // Act
-        TEntity result = mapper.Map<TEntity>(GetDTO());
-        
-        // Assert
-        assertions(result);
+        return config.CreateMapper();
     }
+    
+    protected TEntity Map_CreateDTOToEntity(TCreateDTO dto) => CreateMapper().Map<TEntity>(dto);
+    protected TOutputDTO Map_EntityToOutputDTO(TEntity entity) => CreateMapper().Map<TOutputDTO>(entity);
+    protected void Map_UpdateDTOToEntity(TUpdateDTO dto, TEntity entity) => CreateMapper().Map(dto, entity);
 }

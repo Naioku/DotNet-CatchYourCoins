@@ -1,11 +1,11 @@
 ﻿using Application.Dashboard.Commands;
-using Application.Dashboard.DTOs.InputDTOs.Expenses;
+using Application.Dashboard.DTOs.CreateDTOs.Expenses;
+using Application.Dashboard.DTOs.UpdateDTOs.Expenses;
 using Domain;
 using Domain.Dashboard.Entities.Expenses;
+using Domain.Dashboard.Specifications.Expenses;
 using Domain.Interfaces.Services;
 using FluentAssertions;
-using Infrastructure.Persistence;
-using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -13,17 +13,15 @@ namespace Integration.Dashboard.Expenses;
 
 public class PaymentMethods(TestFixture fixture) : TestBase(fixture)
 {
-    private readonly IMediator _mediator = fixture.ServiceProvider.GetRequiredService<IMediator>();
-    private readonly AppDbContext _dbContext = fixture.ServiceProvider.GetRequiredService<AppDbContext>();
     private readonly IServiceCurrentUser _testServiceCurrentUser = fixture.ServiceProvider.GetRequiredService<IServiceCurrentUser>();
 
     [Fact]
     public async Task CreatePaymentMethod_WithValidData_ShouldCreatePaymentMethodInDB()
     {
         // Arrange
-        var command = new CommandCRUDCreate<InputDTOExpensePaymentMethod>
+        var command = new CommandCRUDCreate<CreateDTOExpensePaymentMethod>
         {
-            Data = new InputDTOExpensePaymentMethod
+            Data = new CreateDTOExpensePaymentMethod
             {
                 Name = "Test",
                 Limit = 1000
@@ -31,13 +29,13 @@ public class PaymentMethods(TestFixture fixture) : TestBase(fixture)
         };
 
         // Act
-        Result result = await _mediator.Send(command);
+        Result result = await mediator.Send(command);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
         result.Errors.Should().BeEmpty();
         
-        ExpensePaymentMethod? paymentMethod = await _dbContext.Set<ExpensePaymentMethod>().FirstOrDefaultAsync();
+        ExpensePaymentMethod? paymentMethod = await dbContext.Set<ExpensePaymentMethod>().FirstOrDefaultAsync();
         
         paymentMethod.Should().NotBeNull();
         paymentMethod.UserId.Should().Be(_testServiceCurrentUser.User.Id);
@@ -70,20 +68,77 @@ public class PaymentMethods(TestFixture fixture) : TestBase(fixture)
         
         CommandCRUDDelete<ExpensePaymentMethod> command = new()
         {
-            Id = paymentMethod.Id,
+            Specification = SpecificationExpensePaymentMethod.GetBuilder()
+                .WithId(paymentMethod.Id)
+                .Build(),
         };
         
         // Act
-        Result result = await _mediator.Send(command);
+        Result result = await mediator.Send(command);
         
         // Assert
         result.IsSuccess.Should().BeTrue();
         result.Errors.Should().BeEmpty();
         
-        Expense? entity = await _dbContext.Set<Expense>().FirstOrDefaultAsync();
+        Expense? entity = await dbContext.Set<Expense>().FirstOrDefaultAsync();
 
         entity.Should().NotBeNull();
         entity.PaymentMethod.Should().BeNull();
         entity.PaymentMethodId.Should().BeNull();
+    }
+    
+    [Fact]
+    public async Task UpdateExpenseCategory_WithValidData_ShouldUpdateExpenseInDB()
+    {
+        // Arrange
+        IReadOnlyList<ExpensePaymentMethod> entities =
+        [
+            new()
+            {
+                UserId = _testServiceCurrentUser.User.Id,
+                Name = "Test1",
+                Limit = 1000,
+            }
+        ];
+        await dbContext.Set<ExpensePaymentMethod>().AddRangeAsync(entities);
+        await dbContext.SaveChangesAsync();
+        dbContext.ChangeTracker.Clear();
+
+        CommandCRUDUpdate<ExpensePaymentMethod, UpdateDTOExpensePaymentMethod> command = new()
+        {
+            Specification = SpecificationExpensePaymentMethod.GetBuilder()
+                .WithIdRange(entities.Select(e => e.Id).ToList())
+                .Build(),
+            Data =
+            [
+                new UpdateDTOExpensePaymentMethod
+                {
+                    Id = entities[0].Id,
+                    SetName = "Test2",
+                    SetLimit = 2000,
+                }
+            ]
+        };
+
+        // Act
+        Result result = await mediator.Send(command);
+        dbContext.ChangeTracker.Clear();
+
+        // Assert
+        result.IsSuccess.Should().BeTrue();
+        result.Errors.Should().BeEmpty();
+
+        IReadOnlyList<ExpensePaymentMethod> entitiesUpdated = await dbContext.Set<ExpensePaymentMethod>()
+            .ToListAsync();
+
+        entitiesUpdated.Should().NotBeEmpty();
+
+        for (var i = 0; i < entitiesUpdated.Count; i++)
+        {
+            ExpensePaymentMethod entity = entitiesUpdated[i];
+            entity.UserId.Should().Be(_testServiceCurrentUser.User.Id);
+            entity.Name.Should().Be(command.Data[i].Name.Value);
+            entity.Limit.Should().Be(command.Data[i].Limit.Value);
+        }
     }
 }

@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <TargetFrameworks>net9.0</TargetFrameworks>
-
+        <Nullable>enable</Nullable>
         <IsPackable>false</IsPackable>
     </PropertyGroup>
 
@@ -20,6 +20,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\Application\Application.csproj"/>
+        <ProjectReference Include="..\Domain\Domain.csproj" />
     </ItemGroup>
 
 </Project>

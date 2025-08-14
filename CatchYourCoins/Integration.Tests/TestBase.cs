@@ -1,6 +1,7 @@
 ﻿using Domain.IdentityEntities;
 using Infrastructure.Persistence;
 using Integration.Factories;
+using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -9,6 +10,7 @@ namespace Integration;
 public class TestBase(TestFixture fixture) : IClassFixture<TestFixture>, IAsyncLifetime
 {
     private readonly UserManager<AppUser> _userManager = fixture.ServiceProvider.GetRequiredService<UserManager<AppUser>>();
+    protected readonly IMediator mediator = fixture.ServiceProvider.GetRequiredService<IMediator>();
     protected readonly AppDbContext dbContext = fixture.ServiceProvider.GetRequiredService<AppDbContext>();
     protected AppUser user1 = null!;
     protected AppUser user2 = null!;

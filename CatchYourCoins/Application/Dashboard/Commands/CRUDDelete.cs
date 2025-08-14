@@ -1,34 +1,26 @@
 ﻿using Domain;
+using Domain.Dashboard.Entities;
+using Domain.Dashboard.Specifications;
 using Domain.Interfaces.Repositories;
-using FluentValidation;
-using JetBrains.Annotations;
 using MediatR;
 
 namespace Application.Dashboard.Commands;
 
 public class CommandCRUDDelete<TEntity> : IRequest<Result>
+    where TEntity : DashboardEntity
 {
-    public required int Id { get; init; }
-}
-
-[UsedImplicitly]
-public class ValidatorCRUDDelete<TEntity> : AbstractValidator<CommandCRUDDelete<TEntity>>
-{
-    public ValidatorCRUDDelete()
-    {
-        RuleFor(x => x.Id)
-            .GreaterThanOrEqualTo(0);
-    }
+    public required ISpecificationDashboardEntity<TEntity> Specification { get; init; }
 }
 
 public class HandlerCRUDDelete<TEntity>(
     IRepositoryCRUD<TEntity> repository,
     IUnitOfWork unitOfWork) : IRequestHandler<CommandCRUDDelete<TEntity>, Result>
+    where TEntity : DashboardEntity
 {
     public async Task<Result> Handle(CommandCRUDDelete<TEntity> request, CancellationToken cancellationToken)
     {
-        TEntity? expense = await repository.GetByIdAsync(request.Id);
-        if (expense == null)
+        IReadOnlyList<TEntity> expense = await repository.GetAsync(request.Specification, cancellationToken);
+        if (!expense.Any())
         {
             return Result.Failure(GetFailureMessages());
         }

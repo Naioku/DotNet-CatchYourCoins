@@ -1,11 +1,12 @@
 ﻿using Application.Dashboard.Commands;
-using Application.Dashboard.DTOs.InputDTOs.Expenses;
+using Application.Dashboard.DTOs.CreateDTOs.Expenses;
+using Application.Dashboard.DTOs.UpdateDTOs;
+using Application.Dashboard.DTOs.UpdateDTOs.Expenses;
 using Domain;
 using Domain.Dashboard.Entities.Expenses;
+using Domain.Dashboard.Specifications.Expenses;
 using Domain.Interfaces.Services;
 using FluentAssertions;
-using Infrastructure.Persistence;
-using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -13,17 +14,15 @@ namespace Integration.Dashboard.Expenses;
 
 public class Categories(TestFixture fixture) : TestBase(fixture)
 {
-    private readonly IMediator _mediator = fixture.ServiceProvider.GetRequiredService<IMediator>();
-    private readonly AppDbContext _dbContext = fixture.ServiceProvider.GetRequiredService<AppDbContext>();
     private readonly IServiceCurrentUser _testServiceCurrentUser = fixture.ServiceProvider.GetRequiredService<IServiceCurrentUser>();
 
     [Fact]
     public async Task CreateCategory_WithValidData_ShouldCreateCategoryInDB()
     {
         // Arrange
-        CommandCRUDCreate<InputDTOExpenseCategory> command = new()
+        CommandCRUDCreate<CreateDTOExpenseCategory> command = new()
         {
-            Data = new InputDTOExpenseCategory
+            Data = new CreateDTOExpenseCategory
             {
                 Name = "Test1",
                 Limit = 1000
@@ -31,20 +30,20 @@ public class Categories(TestFixture fixture) : TestBase(fixture)
         };
 
         // Act
-        Result result = await _mediator.Send(command);
+        Result result = await mediator.Send(command);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
         result.Errors.Should().BeEmpty();
-        
-        ExpenseCategory? category = await _dbContext.Set<ExpenseCategory>().FirstOrDefaultAsync();
-        
+
+        ExpenseCategory? category = await dbContext.Set<ExpenseCategory>().FirstOrDefaultAsync();
+
         category.Should().NotBeNull();
         category.UserId.Should().Be(_testServiceCurrentUser.User.Id);
         category.Name.Should().Be(command.Data.Name);
         category.Limit.Should().Be(command.Data.Limit);
     }
-    
+
     [Fact]
     public async Task DeleteCategory_WhenCategoryBelongsToExpense_ShouldDeleteCategoryLeavingNullInExpensesDB()
     {
@@ -67,23 +66,80 @@ public class Categories(TestFixture fixture) : TestBase(fixture)
             CategoryId = category.Id,
         });
         await dbContext.SaveChangesAsync();
-        
+
         CommandCRUDDelete<ExpenseCategory> command = new()
         {
-            Id = category.Id,
+            Specification = SpecificationExpenseCategory.GetBuilder()
+                .WithId(category.Id)
+                .Build(),
         };
-        
+
         // Act
-        Result result = await _mediator.Send(command);
-        
+        Result result = await mediator.Send(command);
+
         // Assert
         result.IsSuccess.Should().BeTrue();
         result.Errors.Should().BeEmpty();
-        
-        Expense? entity = await _dbContext.Set<Expense>().FirstOrDefaultAsync();
+
+        Expense? entity = await dbContext.Set<Expense>().FirstOrDefaultAsync();
 
         entity.Should().NotBeNull();
         entity.Category.Should().BeNull();
         entity.CategoryId.Should().BeNull();
+    }
+    
+    [Fact]
+    public async Task UpdateExpenseCategory_WithValidData_ShouldUpdateExpenseInDB()
+    {
+        // Arrange
+        IReadOnlyList<ExpenseCategory> entities =
+        [
+            new()
+            {
+                UserId = _testServiceCurrentUser.User.Id,
+                Name = "Test1",
+                Limit = 1000,
+            }
+        ];
+        await dbContext.Set<ExpenseCategory>().AddRangeAsync(entities);
+        await dbContext.SaveChangesAsync();
+        dbContext.ChangeTracker.Clear();
+
+        CommandCRUDUpdate<ExpenseCategory, UpdateDTOExpenseCategory> command = new()
+        {
+            Specification = SpecificationExpenseCategory.GetBuilder()
+                .WithIdRange(entities.Select(e => e.Id).ToList())
+                .Build(),
+            Data =
+            [
+                new UpdateDTOExpenseCategory
+                {
+                    Id = entities[0].Id,
+                    SetName = "Test2",
+                    SetLimit = 2000,
+                }
+            ]
+        };
+
+        // Act
+        Result result = await mediator.Send(command);
+        dbContext.ChangeTracker.Clear();
+
+        // Assert
+        result.IsSuccess.Should().BeTrue();
+        result.Errors.Should().BeEmpty();
+
+        IReadOnlyList<ExpenseCategory> entitiesUpdated = await dbContext.Set<ExpenseCategory>()
+            .ToListAsync();
+
+        entitiesUpdated.Should().NotBeEmpty();
+
+        for (var i = 0; i < entitiesUpdated.Count; i++)
+        {
+            ExpenseCategory entity = entitiesUpdated[i];
+            entity.UserId.Should().Be(_testServiceCurrentUser.User.Id);
+            entity.Name.Should().Be(command.Data[i].Name.Value);
+            entity.Limit.Should().Be(command.Data[i].Limit.Value);
+        }
     }
 }

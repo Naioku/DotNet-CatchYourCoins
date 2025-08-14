@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Domain;
+using Domain.Dashboard.Entities;
 using Domain.Interfaces.Repositories;
 using FluentValidation;
 using JetBrains.Annotations;
@@ -31,13 +32,14 @@ public class HandlerCRUDCreateRange<TEntity, TDTO>(
     IRepositoryCRUD<TEntity> repository,
     IUnitOfWork unitOfWork,
     IMapper mapper) : IRequestHandler<CommandCRUDCreateRange<TDTO>, Result>
+    where TEntity : DashboardEntity
 {
     public async Task<Result> Handle(CommandCRUDCreateRange<TDTO> request, CancellationToken cancellationToken)
     {
         try
         {
             IList<TEntity> entities = mapper.Map<IList<TEntity>>(request.Data);
-            await repository.CreateRangeAsync(entities);
+            await repository.CreateRangeAsync(entities, cancellationToken);
             await unitOfWork.SaveChangesAsync(cancellationToken);
             return Result.Success();
         }

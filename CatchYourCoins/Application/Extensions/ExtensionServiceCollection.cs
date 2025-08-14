@@ -1,10 +1,13 @@
 ﻿using Application.Account.Commands;
 using Application.Dashboard.Commands;
-using Application.Dashboard.DTOs.InputDTOs.Expenses;
-using Application.Dashboard.DTOs.InputDTOs.Incomes;
+using Application.Dashboard.DTOs.CreateDTOs.Expenses;
+using Application.Dashboard.DTOs.CreateDTOs.Incomes;
 using Application.Dashboard.DTOs.OutputDTOs.Expenses;
 using Application.Dashboard.DTOs.OutputDTOs.Incomes;
+using Application.Dashboard.DTOs.UpdateDTOs.Expenses;
+using Application.Dashboard.DTOs.UpdateDTOs.Incomes;
 using Application.Dashboard.Queries;
+using Application.Mapping;
 using Application.MappingProfiles;
 using Application.MappingProfiles.Expenses;
 using Application.MappingProfiles.Incomes;
@@ -37,6 +40,7 @@ public static class ExtensionServiceCollection
                 using (IServiceScope scope = provider.CreateScope())
                 {
                     IServiceCurrentUser serviceCurrentUser = scope.ServiceProvider.GetRequiredService<IServiceCurrentUser>();
+                    config.AddProfile(new MappingProfileDashboardEntity(serviceCurrentUser));
                     config.AddProfile(new MappingProfileFinancialCategory(serviceCurrentUser));
                     config.AddProfile(new MappingProfileFinancialOperation(serviceCurrentUser));
                     config.AddProfile(new MappingProfileExpensePaymentMethod());
@@ -48,6 +52,7 @@ public static class ExtensionServiceCollection
             },
                 provider.GetService<ILoggerFactory>()).CreateMapper()
         );
+        services.AddScoped<IMapperExtended, MapperExtended>();
 
         services.AddValidatorsFromAssemblyContaining<ValidatorRegister>();
 
@@ -56,57 +61,60 @@ public static class ExtensionServiceCollection
     
     public static IServiceCollection AddCrudHandlers(this IServiceCollection services)
     {
-        Tuple<Type, Type, Type>[] mappings =
+        Tuple<Type, Type, Type, Type>[] mappings =
         [
-            new(typeof(ExpenseCategory), typeof(InputDTOExpenseCategory), typeof(OutputDTOExpenseCategory)),
-            new(typeof(ExpensePaymentMethod), typeof(InputDTOExpensePaymentMethod), typeof(OutputDTOExpensePaymentMethod)),
-            new(typeof(Expense), typeof(InputDTOExpense), typeof(OutputDTOExpense)),
-            new(typeof(IncomeCategory), typeof(InputDTOIncomeCategory), typeof(OutputDTOIncomeCategory)),
-            new(typeof(Income), typeof(InputDTOIncome), typeof(OutputDTOIncome)),
+            new(typeof(ExpenseCategory), typeof(CreateDTOExpenseCategory), typeof(OutputDTOExpenseCategory), typeof(UpdateDTOExpenseCategory)),
+            new(typeof(ExpensePaymentMethod), typeof(CreateDTOExpensePaymentMethod), typeof(OutputDTOExpensePaymentMethod), typeof(UpdateDTOExpensePaymentMethod)),
+            new(typeof(Expense), typeof(CreateDTOExpense), typeof(OutputDTOExpense), typeof(UpdateDTOExpense)),
+            new(typeof(IncomeCategory), typeof(CreateDTOIncomeCategory), typeof(OutputDTOIncomeCategory), typeof(UpdateDTOIncomeCategory)),
+            new(typeof(Income), typeof(CreateDTOIncome), typeof(OutputDTOIncome), typeof(UpdateDTOIncome)),
         ];
     
-        foreach (Tuple<Type, Type, Type> mapping in mappings)
+        foreach (Tuple<Type, Type, Type, Type> mapping in mappings)
         {
-            (Type typeEntity, Type typeInputDTO, Type _) = mapping;
+            Type typeEntity = mapping.Item1;
+            Type typeInputDTO = mapping.Item2;
             Type command = typeof(CommandCRUDCreate<>).MakeGenericType(typeInputDTO);
             Type handler = typeof(HandlerCRUDCreate<,>).MakeGenericType(typeEntity, typeInputDTO);
             Type requestHandler = typeof(IRequestHandler<,>).MakeGenericType(command, typeof(Result));
             services.AddTransient(requestHandler, handler);
         }
         
-        foreach (Tuple<Type, Type, Type> mapping in mappings)
+        foreach (Tuple<Type, Type, Type, Type> mapping in mappings)
         {
-            (Type typeEntity, Type typeInputDTO, Type _) = mapping;
+            Type typeEntity = mapping.Item1;
+            Type typeInputDTO = mapping.Item2;
             Type command = typeof(CommandCRUDCreateRange<>).MakeGenericType(typeInputDTO);
             Type handler = typeof(HandlerCRUDCreateRange<,>).MakeGenericType(typeEntity, typeInputDTO);
             Type requestHandler = typeof(IRequestHandler<,>).MakeGenericType(command, typeof(Result));
             services.AddTransient(requestHandler, handler);
         }
         
-        foreach (Tuple<Type, Type, Type> mapping in mappings)
+        foreach (Tuple<Type, Type, Type, Type> mapping in mappings)
         {
-            (Type typeEntity, Type _, Type _) = mapping;
+            Type typeEntity = mapping.Item1;
+            Type typeUpdateDTO = mapping.Item4;
+            Type command = typeof(CommandCRUDUpdate<,>).MakeGenericType(typeEntity, typeUpdateDTO);
+            Type handler = typeof(HandlerCRUDUpdate<,>).MakeGenericType(typeEntity, typeUpdateDTO);
+            Type requestHandler = typeof(IRequestHandler<,>).MakeGenericType(command, typeof(Result));
+            services.AddTransient(requestHandler, handler);
+        }
+        
+        foreach (Tuple<Type, Type, Type, Type> mapping in mappings)
+        {
+            Type typeEntity = mapping.Item1;
             Type command = typeof(CommandCRUDDelete<>).MakeGenericType(typeEntity);
             Type handler = typeof(HandlerCRUDDelete<>).MakeGenericType(typeEntity);
             Type requestHandler = typeof(IRequestHandler<,>).MakeGenericType(command, typeof(Result));
             services.AddTransient(requestHandler, handler);
         }
         
-        foreach (Tuple<Type, Type, Type> mapping in mappings)
+        foreach (Tuple<Type, Type, Type, Type> mapping in mappings)
         {
-            (Type typeEntity, Type _, Type typeOutputDTO) = mapping;
-            Type command = typeof(QueryCRUDGetById<>).MakeGenericType(typeOutputDTO);
-            Type handler = typeof(HandlerCRUDGetById<,>).MakeGenericType(typeEntity, typeOutputDTO);
-            Type result = typeof(Result<>).MakeGenericType(typeOutputDTO);
-            Type requestHandler = typeof(IRequestHandler<,>).MakeGenericType(command, result);
-            services.AddTransient(requestHandler, handler);
-        }
-        
-        foreach (Tuple<Type, Type, Type> mapping in mappings)
-        {
-            (Type typeEntity, Type _, Type typeOutputDTO) = mapping;
-            Type command = typeof(QueryCRUDGetAll<>).MakeGenericType(typeOutputDTO);
-            Type handler = typeof(HandlerCRUDGetAll<,>).MakeGenericType(typeEntity, typeOutputDTO);
+            Type typeEntity = mapping.Item1;
+            Type typeOutputDTO = mapping.Item3;
+            Type command = typeof(QueryCRUDGet<,>).MakeGenericType(typeEntity, typeOutputDTO);
+            Type handler = typeof(HandlerCRUDGet<,>).MakeGenericType(typeEntity, typeOutputDTO);
             Type result = typeof(Result<>).MakeGenericType(typeof(IReadOnlyList<>).MakeGenericType(typeOutputDTO));
             Type requestHandler = typeof(IRequestHandler<,>).MakeGenericType(command, result);
             services.AddTransient(requestHandler, handler);

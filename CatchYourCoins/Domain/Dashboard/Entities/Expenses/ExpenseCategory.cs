@@ -1,3 +1,3 @@
 ﻿namespace Domain.Dashboard.Entities.Expenses;
 
-public class ExpenseCategory : FinancialCategory;
+public sealed class ExpenseCategory : FinancialCategory;

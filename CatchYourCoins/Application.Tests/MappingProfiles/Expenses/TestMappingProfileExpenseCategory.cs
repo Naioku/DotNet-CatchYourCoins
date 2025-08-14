@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
-using Application.Dashboard.DTOs.InputDTOs.Expenses;
+using Application.Dashboard.DTOs.CreateDTOs.Expenses;
 using Application.Dashboard.DTOs.OutputDTOs.Expenses;
+using Application.Dashboard.DTOs.UpdateDTOs.Expenses;
 using Application.MappingProfiles.Expenses;
 using AutoMapper;
 using Domain.Dashboard.Entities.Expenses;
+using Domain.Interfaces.Services;
 using JetBrains.Annotations;
 using Xunit;
 
@@ -13,14 +15,17 @@ namespace Application.Tests.MappingProfiles.Expenses;
 public class TestMappingProfileExpenseCategory
     : TestMappingProfileFinancialCategory<
         ExpenseCategory,
-        InputDTOExpenseCategory,
-        OutputDTOExpenseCategory
+        CreateDTOExpenseCategory,
+        OutputDTOExpenseCategory,
+        UpdateDTOExpenseCategory
     >
 {
-    private readonly InputDTOExpenseCategory _dto = new()
+    private ExpenseCategory Entity => new()
     {
+        Id = 1,
         Name = "Test",
         Limit = 100,
+        UserId = GetMock<IServiceCurrentUser>().Object.User.Id,
     };
 
     protected override void AddRequiredProfiles(IList<Profile> profiles)
@@ -29,16 +34,88 @@ public class TestMappingProfileExpenseCategory
         profiles.Add(new MappingProfileExpenseCategory());
     }
 
+    [Fact]
+    public void CheckMapping_CreateDTOToEntity()
+    {
+        // Arrange
+        CreateDTOExpenseCategory dto = new()
+        {
+            Name = "Test",
+            Limit = 100,
+        };
+        
+        // Act
+        ExpenseCategory entity = Map_CreateDTOToEntity(dto);
+        
+        // Assert
+        AssertBaseProperties_CreateDTOToEntity(dto, entity);
+    }
+    
+    [Fact]
+    public void CheckMapping_EntityToOutputDTO()
+    {
+        // Arrange
+        ExpenseCategory entity = Entity;
 
-    protected override InputDTOExpenseCategory GetDTO() => _dto;
+        // Act
+        OutputDTOExpenseCategory dto = Map_EntityToOutputDTO(entity);
+
+        // Assert
+        AssertBaseProperties_EntityToOutputDTO(entity, dto);
+    }
+    
+    [Fact]
+    public void CheckMapping_UpdateDTOToEntity_UpdateAllToValue()
+    {
+        // Arrange
+        ExpenseCategory oldEntity = Entity;
+        ExpenseCategory newEntity = Entity;
+        UpdateDTOExpenseCategory dto = new()
+        {
+            Id = oldEntity.Id,
+            SetName = "Test2",
+            SetLimit = 200,
+        };
+
+        // Act
+        Map_UpdateDTOToEntity(dto, newEntity);
+
+        // Assert
+        AssertBaseProperties_UpdateDTOToEntity_UpdateAllToValue(dto, newEntity);
+    }
 
     [Fact]
-    public void CheckMapping_InputDTOToEntity()
+    public void CheckMapping_UpdateDTOToEntity_UpdateAllPossibleToNull()
     {
-        CheckMapping_InputDTOToEntity_Base((entity) =>
+        ExpenseCategory oldEntity = Entity;
+        ExpenseCategory newEntity = Entity;
+        UpdateDTOExpenseCategory dto = new()
         {
-            Assert.Equal(_dto.Name, entity.Name);
-            Assert.Equal(_dto.Limit, entity.Limit);
-        });
+            Id = oldEntity.Id,
+            SetLimit = 200,
+        };
+
+        // Act
+        Map_UpdateDTOToEntity(dto, newEntity);
+
+        // Assert
+        AssertBaseProperties_UpdateDTOToEntity_UpdateAllPossibleToNull(dto, oldEntity, newEntity);
+    }
+
+    [Fact]
+    public void CheckMapping_UpdateDTOToEntity_UpdateNone()
+    {
+        ExpenseCategory oldEntity = Entity;
+        ExpenseCategory newEntity = Entity;
+        UpdateDTOExpenseCategory dto = new()
+        {
+            Id = oldEntity.Id,
+        };
+
+        // Act
+        Map_UpdateDTOToEntity(dto, newEntity);
+
+        // Assert
+        AssertBaseProperties_UpdateDTOToEntity_UpdateNone(dto, oldEntity, newEntity);
     }
 }

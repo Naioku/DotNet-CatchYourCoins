@@ -1,5 +1,5 @@
-﻿using Application.Dashboard.DTOs.InputDTOs;
-using Application.Dashboard.DTOs.InputDTOs.Incomes;
+﻿using Application.Dashboard.DTOs.CreateDTOs;
+using Application.Dashboard.DTOs.CreateDTOs.Incomes;
 using Application.Dashboard.DTOs.OutputDTOs;
 using Application.Dashboard.DTOs.OutputDTOs.Incomes;
 using AutoMapper;
@@ -12,8 +12,8 @@ public class MappingProfileIncomeCategory : Profile
 {
     public MappingProfileIncomeCategory()
     {
-        CreateMap<InputDTOIncomeCategory, IncomeCategory>()
-            .IncludeBase<InputDTOFinancialCategory, FinancialCategory>();
+        CreateMap<CreateDTOIncomeCategory, IncomeCategory>()
+            .IncludeBase<CreateDTOFinancialCategory, FinancialCategory>();
         
         CreateMap<IncomeCategory, OutputDTOIncomeCategory>()
             .IncludeBase<FinancialCategory, OutputDTOFinancialCategory>();

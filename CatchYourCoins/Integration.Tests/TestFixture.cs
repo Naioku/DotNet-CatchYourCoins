@@ -3,7 +3,6 @@ using Domain.Interfaces.Services;
 using Infrastructure.Extensions;
 using Infrastructure.Persistence;
 using JetBrains.Annotations;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -31,9 +30,9 @@ public class TestFixture : IDisposable
         services.AddSingleton<TestServiceCurrentUser>();
         services.AddScoped<IServiceCurrentUser>(sp => sp.GetRequiredService<TestServiceCurrentUser>());
 
-        services.AddDbContext<AppDbContext>(options =>
-            options.UseSqlServer(configuration.GetConnectionString("Main"))
-        );
+        // services.AddDbContext<AppDbContext>(options =>
+        //     options.UseSqlServer(configuration.GetConnectionString("Main"))
+        // );
         
         ServiceProvider = services.BuildServiceProvider();
 
