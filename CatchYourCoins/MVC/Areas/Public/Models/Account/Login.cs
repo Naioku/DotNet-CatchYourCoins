@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace MVC.Models.Account;
+namespace MVC.Areas.Public.Models.Account;
 
 public class Login
 {

@@ -1,5 +1,7 @@
 ﻿using Application.Account.Commands;
 using Application.Dashboard.Commands;
+using Application.Dashboard.DTOs;
+using Application.Dashboard.DTOs.CreateDTOs;
 using Application.Dashboard.DTOs.CreateDTOs.Expenses;
 using Application.Dashboard.DTOs.CreateDTOs.Incomes;
 using Application.Dashboard.DTOs.OutputDTOs.Expenses;
@@ -28,6 +30,15 @@ public static class ExtensionServiceCollection
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {
         services.AddMediatR(config => { config.RegisterServicesFromAssemblyContaining<CommandRegister>(); });
+        // services.AddTransient<
+        //     IValidator<CommandCRUDCreateRange<CreateDTOExpenseCategory>>,
+        //     ValidatorCRUDCreateRange<CreateDTOExpenseCategory, ValidatorCreateDTOFinancialCategory<CreateDTOExpenseCategory>>
+        // >();
+        
+        services.AddTransient<
+            IValidator<DTORange<CreateDTOExpenseCategory>>,
+            ValidatorDTORange<CreateDTOExpenseCategory, ValidatorCreateDTOFinancialCategory<CreateDTOExpenseCategory>>
+        >();
 
         services.AddCrudHandlers();
         services.AddLogging(builder =>

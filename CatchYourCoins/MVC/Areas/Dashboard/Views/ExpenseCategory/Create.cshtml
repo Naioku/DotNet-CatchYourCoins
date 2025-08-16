@@ -1,0 +1,119 @@
+﻿@using Application.Dashboard.DTOs.CreateDTOs.Expenses
+@model Application.Dashboard.DTOs.DTORange<Application.Dashboard.DTOs.CreateDTOs.Expenses.CreateDTOExpenseCategory>
+
+@{
+    ViewData["Title"] = "Dashboard - Create expense categories";
+    List<CreateDTOExpenseCategory> items = Model?.Items ?? [];
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<form
+    asp-area="Dashboard"
+    asp-controller="ExpenseCategory"
+    asp-action="Create"
+    method="post"
+>
+    <div id="categories-container">
+        @if (!items.Any())
+        {
+            @for (int i = 0; i < 3; i++)
+            {
+                <div class="category-item">
+                    <div>
+                        <input name="Items[@i].Name" placeholder="Name"/>
+                    </div>
+                    <div>
+                        <input name="Items[@i].Limit" type="number" placeholder="Limit"/>
+                    </div>
+                    @if (i > 0)
+                    {
+                        <button type="button" class="remove-category-btn">Delete</button>
+                    }
+                    <hr/>
+                </div>
+            }
+        }
+        else
+        {
+            @for (int i = 0; i < items.Count; i++)
+            {
+                <div class="category-item">
+                    <div>
+                        <input name="Items[@i].Name" value="@items[i].Name" placeholder="Name"/>
+                        <span asp-validation-for="@items[i].Name"></span>
+                    </div>
+                    <div>
+                        <input name="Items[@i].Limit" value="@items[i].Limit" type="number" placeholder="Limit"/>
+                        <span asp-validation-for="@items[i].Limit"></span>
+                    </div>
+                    @if (i > 0)
+                    {
+                        <button type="button" class="remove-category-btn">Delete</button>
+                    }
+                    <hr/>
+                </div>
+            }
+        }
+    </div>
+
+    <div>
+        <button id="add-category" type="button">Add more</button>
+    </div>
+
+    <button type="submit">Create</button>
+</form>
+
+@section Scripts {
+    <script>
+        document.getElementById('add-category').addEventListener('click', function () {
+            const container = document.getElementById('categories-container');
+            const items = container.querySelectorAll('.category-item');
+            const newIndex = items.length;
+
+            const newItem = document.createElement('div');
+            newItem.className = 'category-item';
+            newItem.innerHTML = `
+                <div>
+                    <input name="Items[${newIndex}].Name" placeholder="Name" />
+                </div>
+                <div>
+                    <input name="Items[${newIndex}].Limit" type="number" placeholder="Limit" />
+                </div>
+                <button type="button" class="remove-category-btn">Delete</button>
+                <hr />
+            `;
+
+            container.appendChild(newItem);
+            newItem.querySelector('.remove-category-btn').addEventListener('click', removeCategory);
+        });
+
+        function removeCategory() {
+            const categoryItem = this.closest('.category-item');
+            categoryItem.remove();
+            updateIndexes();
+        }
+
+        document.querySelectorAll('.remove-category-btn').forEach(button => {
+            button.addEventListener('click', removeCategory);
+        });
+
+        function updateIndexes() {
+            const container = document.getElementById('categories-container');
+            const items = container.querySelectorAll('.category-item');
+
+            items.forEach((item, index) => {
+                const nameInput = item.querySelector('input[name*="].Name"]');
+                const limitInput = item.querySelector('input[name*="].Limit"]');
+
+                if (nameInput) {
+                    nameInput.name = `Items[${index}].Name`;
+                }
+
+                if (limitInput) {
+                    limitInput.name = `Items[${index}].Limit`;
+                }
+            });
+        }
+    </script>
+}

@@ -16,10 +16,7 @@ builder.Services.AddControllersWithViews(options =>
     options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
 });
 
-builder.Services.ConfigureApplicationCookie(options =>
-{
-    options.LoginPath = "/Account/Login";
-});
+builder.Services.ConfigureApplicationCookie(options => { options.LoginPath = "/Public/Account/Login"; });
 
 var app = builder.Build();
 
@@ -42,8 +39,15 @@ app.UseAuthorization();
 app.MapStaticAssets();
 
 app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}")
+    name: "MyArea",
+    pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
+);
+
+app.MapControllerRoute(
+        name: "default",
+        pattern: "{controller=Home}/{action=Index}/{id?}",
+        defaults: new { area = "Public" }
+    )
     .WithStaticAssets();
 
 

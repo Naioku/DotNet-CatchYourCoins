@@ -4,13 +4,14 @@ using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace MVC.Filters;
 
-public class AllowAnonymousOnlyAttribute(string redirectController = "Dashboard", string redirectAction = "Index") : AllowAnonymousAttribute, IAuthorizationFilter
+public class AllowAnonymousOnlyAttribute(string redirectController = "Home", string redirectAction = "Show")
+    : AllowAnonymousAttribute, IAuthorizationFilter
 {
     public void OnAuthorization(AuthorizationFilterContext context)
     {
         if (context.HttpContext.User.Identity is { IsAuthenticated: true })
         {
-            context.Result = new RedirectToActionResult(redirectAction, redirectController, null);
+            context.Result = new RedirectToActionResult(redirectAction, redirectController, new { area = "Dashboard" });
         }
     }
 }

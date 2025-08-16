@@ -3,8 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using MVC.Filters;
 using MVC.Models;
 
-namespace MVC.Controllers;
+namespace MVC.Areas.Public.Controllers;
 
+[Area("Public")]
 [AllowAnonymousOnly]
 public class Home(ILogger<Home> logger) : Controller
 {

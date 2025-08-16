@@ -5,10 +5,12 @@ using FluentValidation.Results;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using MVC.Controllers;
 using MVC.Filters;
 
-namespace MVC.Controllers;
+namespace MVC.Areas.Public.Controllers;
 
+[Area("Public")]
 [AllowAnonymous]
 public class Account(
     IMediator mediator,
@@ -20,20 +22,20 @@ public class Account(
 
     [AllowAnonymousOnly]
     [HttpPost]
-    public async Task<IActionResult> Register(CommandRegister command)
+    public async Task<IActionResult> Register(CommandRegister command, CancellationToken cancellationToken)
     {
-        ValidationResult validationResult = await validatorRegister.ValidateAsync(command);
+        ValidationResult validationResult = await validatorRegister.ValidateAsync(command, cancellationToken);
         if (!validationResult.IsValid)
         {
             validationResult.AddToModelState(ModelState);
             return View(command);
         }
 
-        Result result = await mediator.Send(command);
+        Result result = await mediator.Send(command, cancellationToken);
         
         if (result.IsSuccess)
         {
-            return RedirectToAction("Index", "Dashboard");
+            return RedirectToAction("Show", "Home", new { area = "Dashboard" });
         }
 
         foreach (KeyValuePair<string, string> error in result.Errors)
@@ -49,16 +51,16 @@ public class Account(
 
     [AllowAnonymousOnly]
     [HttpPost]
-    public async Task<IActionResult> Login(CommandLogIn command, string? returnUrl = null)
+    public async Task<IActionResult> Login(CommandLogIn command, CancellationToken cancellationToken, string? returnUrl = null)
     {
-        ValidationResult validationResult = await validatorLogIn.ValidateAsync(command);
+        ValidationResult validationResult = await validatorLogIn.ValidateAsync(command, cancellationToken);
         if (!validationResult.IsValid)
         {
             validationResult.AddToModelState(ModelState);
             return View(command);
         }
         
-        Result<ResultLogIn> result = await mediator.Send(command);
+        Result<ResultLogIn> result = await mediator.Send(command, cancellationToken);
 
         if (!result.IsSuccess)
         {
@@ -79,12 +81,12 @@ public class Account(
             return LocalRedirect(returnUrl);
         }
         
-        return RedirectToAction("Index", "Dashboard");
+        return RedirectToAction("Show", "Home", new { area = "Dashboard" });
     }
 
     public async Task<IActionResult> Logout()
     {
         await mediator.Send(new CommandSignOut());
-        return RedirectToAction("Index", "Home");
+        return RedirectToAction("Index", "Home", new { area = "Public" });
     }
 }

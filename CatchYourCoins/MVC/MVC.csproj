@@ -18,4 +18,25 @@
         </PackageReference>
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Areas\Public\Models\" />
+      <Folder Include="Views\Dashboard\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="Views\Account\Login.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Account\Register.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Dashboard\ExpenseCategory\Create.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Home\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Home\Privacy.cshtml" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <AdditionalFiles Include="Areas\Dashboard\Views\ExpenseCategory\Create.cshtml" />
+      <AdditionalFiles Include="Areas\Public\Views\Account\Login.cshtml" />
+      <AdditionalFiles Include="Areas\Public\Views\Account\Register.cshtml" />
+      <AdditionalFiles Include="Areas\Public\Views\Home\Index.cshtml" />
+      <AdditionalFiles Include="Areas\Public\Views\Home\Privacy.cshtml" />
+    </ItemGroup>
+
 </Project>
