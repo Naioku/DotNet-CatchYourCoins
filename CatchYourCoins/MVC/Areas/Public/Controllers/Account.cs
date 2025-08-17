@@ -5,7 +5,7 @@ using FluentValidation.Results;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MVC.Controllers;
+using MVC.Extensions;
 using MVC.Filters;
 
 namespace MVC.Areas.Public.Controllers;

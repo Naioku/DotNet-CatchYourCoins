@@ -6,7 +6,7 @@ using FluentValidation;
 using FluentValidation.Results;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using MVC.Controllers;
+using MVC.Extensions;
 
 namespace MVC.Areas.Dashboard.Controllers;
 
