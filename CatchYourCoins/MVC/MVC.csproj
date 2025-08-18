@@ -20,7 +20,6 @@
 
     <ItemGroup>
       <Folder Include="Areas\Public\Models\" />
-      <Folder Include="Views\Dashboard\" />
     </ItemGroup>
 
     <ItemGroup>
@@ -32,7 +31,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <AdditionalFiles Include="Areas\Dashboard\Views\ExpenseCategory\Create.cshtml" />
+      <AdditionalFiles Include="Areas\Dashboard\Views\ControllerExpenseCategory\Create.cshtml" />
       <AdditionalFiles Include="Areas\Public\Views\Account\Login.cshtml" />
       <AdditionalFiles Include="Areas\Public\Views\Account\Register.cshtml" />
       <AdditionalFiles Include="Areas\Public\Views\Home\Index.cshtml" />

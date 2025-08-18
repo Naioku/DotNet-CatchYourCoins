@@ -1,5 +1,4 @@
-﻿@using Application.Dashboard.DTOs.CreateDTOs.Expenses
-@model Application.Dashboard.DTOs.DTORange<Application.Dashboard.DTOs.CreateDTOs.Expenses.CreateDTOExpenseCategory>
+﻿@model DTORange<CreateDTOExpenseCategory>
 
 @{
     ViewData["Title"] = "Dashboard - Create expense categories";
@@ -10,7 +9,7 @@
 
 <form
     asp-area="Dashboard"
-    asp-controller="ExpenseCategory"
+    asp-controller="ControllerExpenseCategory"
     asp-action="Create"
     method="post"
 >

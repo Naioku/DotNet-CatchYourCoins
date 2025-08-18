@@ -1,0 +1,29 @@
+﻿@model DTORange<OutputDTOExpenseCategory>
+
+@{
+    ViewData["Title"] = "Dashboard - Create expense categories";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<table class="table">
+    <tr class="table-primary">
+        <th scope="col">
+            Name
+        </th>
+        <th scope="col">
+            Limit
+        </th>
+    </tr>
+    @foreach (var item in Model.Items)
+    {
+        <tr class="table-secondary">
+            <td>
+                <div>@item.Name</div>
+            </td>
+            <td>
+                <div>@item.Limit</div>
+            </td>
+        </tr>
+    }
+</table>
